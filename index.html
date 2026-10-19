@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clausa — contratos sob controle</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--ink:#14263A;--paper:#F1F3F5;--card:#FFFFFF;--seal:#A3302F;--teal:#2E6B63;--gray:#5B6672;--line:#D3D9DF;--hi-high:#F3D6D4;--hi-mid:#F4E8C6;--hi-ok:#D5E8E4;--text:#14263A;--bb:#14263A;--bf:#F1F3F5;--nav:rgba(241,243,245,.92);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#E8EDF2;--paper:#0F1B2A;--card:#16273A;--seal:#E27570;--teal:#6FB5AA;--gray:#9AA7B4;--line:#2A3D52;--hi-high:#5A2A2B;--hi-mid:#574A22;--hi-ok:#1F4741;--text:#E8EDF2;--bb:#0A1420;--bf:#E8EDF2;--nav:rgba(15,27,42,.92)}}
+:root[data-theme="dark"]{--ink:#E8EDF2;--paper:#0F1B2A;--card:#16273A;--seal:#E27570;--teal:#6FB5AA;--gray:#9AA7B4;--line:#2A3D52;--hi-high:#5A2A2B;--hi-mid:#574A22;--hi-ok:#1F4741;--text:#E8EDF2;--bb:#0A1420;--bf:#E8EDF2;--nav:rgba(15,27,42,.92)}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--text);font:400 16px/1.65 "IBM Plex Sans",system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--nav);z-index:30}
+h1,h2,h3{font-family:"Source Serif 4",Georgia,serif;font-weight:600;line-height:1.15;margin:0}
+a{color:inherit}.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+#bar{position:fixed;left:0;top:env(safe-area-inset-top,0px);height:3px;width:0;background:var(--seal);z-index:40}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--nav);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+.logo{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:22px;display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo i{width:14px;height:14px;border-radius:50%;background:var(--seal)}
+.links{display:flex;gap:22px;font-size:15px}.links a{text-decoration:none;color:var(--gray);padding:4px 0;border-bottom:2px solid transparent}
+.links a.act{color:var(--text);border-color:var(--seal)}
+.btn{font:600 15px "IBM Plex Sans",sans-serif;border:0;border-radius:6px;padding:12px 20px;background:var(--seal);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line);padding:8px 12px;font-size:14px}
+.btn.sm{padding:9px 16px;font-size:14px}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.hero{display:grid;grid-template-columns:1fr 1.1fr;gap:44px;padding:64px 0 80px;align-items:start}
+.hero h1{font-size:clamp(34px,5vw,56px)}.hero p.lead{color:var(--gray);font-size:19px;max-width:46ch;margin:20px 0 28px}
+.doc{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:26px 28px;font:400 16px/1.7 "Source Serif 4",Georgia,serif;box-shadow:6px 6px 0 var(--line)}
+.doc h3{font:500 14px "IBM Plex Sans",sans-serif;color:var(--gray);margin-bottom:12px}.doc p{margin:0 0 10px}
+.cl{cursor:pointer;border-radius:3px;padding:1px 2px;transition:background .4s}
+.cl.on[data-r="alto"]{background:var(--hi-high)}.cl.on[data-r="medio"]{background:var(--hi-mid)}.cl.on[data-r="ok"]{background:var(--hi-ok)}
+.note{margin:14px 0;min-height:76px;border-left:4px solid var(--teal);padding:8px 14px;font:400 14px/1.5 "IBM Plex Sans",sans-serif;color:var(--gray);background:var(--paper)}.note b{color:var(--text)}
+section{padding:88px 0}.band{background:var(--bb);color:var(--bf)}.band .gray{color:var(--bf);opacity:.75}
+section h2{font-size:clamp(28px,4vw,42px);margin-bottom:18px;max-width:20ch}.sub{color:var(--gray);max-width:58ch;margin:0 0 40px;font-size:18px}
+.problem{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:40px}
+.problem h3{font-size:22px;margin-bottom:8px}.problem p{margin:0;opacity:.8}
+.how{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+.step{min-height:62vh;display:flex;flex-direction:column;justify-content:center;opacity:.35;transition:opacity .4s}.step.cur{opacity:1}
+.step b{font:600 14px "IBM Plex Sans",sans-serif;color:var(--seal)}.step h3{font-size:28px;margin:6px 0 10px}.step p{color:var(--gray);margin:0;max-width:44ch}
+.panel{position:sticky;top:calc(env(safe-area-inset-top,0px) + 90px);align-self:start;height:360px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:24px;overflow:hidden}
+.pane{position:absolute;inset:24px;opacity:0;transform:translateY(12px);transition:.4s;pointer-events:none}.pane.show{opacity:1;transform:none;pointer-events:auto}
+.drop{border:2px dashed var(--line);border-radius:6px;padding:28px;text-align:center;color:var(--gray)}
+.file{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.chip{font:600 12px "IBM Plex Sans",sans-serif;border-radius:20px;padding:3px 10px;white-space:nowrap}
+.chip.alto{background:var(--hi-high)}.chip.medio{background:var(--hi-mid)}.chip.ok{background:var(--hi-ok)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}.tab{font:500 15px "IBM Plex Sans",sans-serif;border:1px solid var(--line);background:transparent;color:var(--text);border-radius:30px;padding:9px 18px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tp{display:none;grid-template-columns:1fr 1fr;gap:40px;align-items:center}.tp.show{display:grid}
+.tp h3{font-size:26px;margin-bottom:10px}.tp ul{padding-left:18px;color:var(--gray)}.tp li{margin:6px 0}
+.mock{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}.row:last-child{border:0}
+.row button{font:500 13px "IBM Plex Sans",sans-serif;border:1px solid var(--line);background:transparent;color:var(--text);border-radius:5px;padding:4px 10px;cursor:pointer}
+.row.done span:first-child{text-decoration:line-through;opacity:.5}
+.prog{height:8px;background:var(--line);border-radius:4px;margin:6px 0 14px;overflow:hidden}.prog div{height:100%;width:0;background:var(--teal);transition:width .4s}
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center}.calc label{display:block;margin:16px 0 4px;font-weight:500}.calc input[type=range]{width:100%;accent-color:var(--seal)}
+.out{background:var(--bb);color:var(--bf);border-radius:6px;padding:30px}.out strong{display:block;font:600 44px "Source Serif 4",Georgia,serif}.out small{opacity:.8}
+.sec{display:grid;grid-template-columns:repeat(2,1fr);gap:28px 44px}.sec h3{font-size:20px;margin-bottom:6px}.sec p{margin:0;opacity:.8}
+details{border-bottom:1px solid var(--line);padding:16px 0;max-width:760px}summary{cursor:pointer;font-weight:500}details p{color:var(--gray);margin:8px 0 0}
+form{display:flex;gap:10px;flex-wrap:wrap;max-width:520px}input[type=email]{flex:1 1 240px;padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--text);font:400 16px "IBM Plex Sans",sans-serif}
+#msg{margin-top:12px;font-weight:500;min-height:24px;color:var(--hi-ok)}
+footer{padding:32px 0 48px;color:var(--gray);font-size:14px}
+@media (max-width:900px){.links{display:none}.hero,.calc,.how,.tp.show,.sec,.problem{grid-template-columns:1fr}.hero{padding:40px 0 56px}section{padding:60px 0}.step{min-height:40vh}.panel{height:340px;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:5}.how{gap:16px}}
+.status{background:var(--bb);color:var(--bf);text-align:center;font-size:14px;padding:8px 16px}
+.demo{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}.lb{display:block;font-weight:500;margin-bottom:6px}
+textarea{width:100%;min-height:260px;padding:14px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--text);font:400 15px/1.55 "IBM Plex Sans",sans-serif;resize:vertical}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.mut{color:var(--gray);margin:0}.small{font-size:14px;margin-top:16px}
+.fd{padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}.fd:last-child{border:0}.fd b{margin-left:8px}.fd q{display:block;margin:6px 0;color:var(--gray);font-family:"Source Serif 4",Georgia,serif}
+.sum{font-weight:500;margin:0 0 6px}.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:32px}.cards h3{font-size:22px;margin-bottom:8px}.cards p{margin:0;opacity:.8}
+form input[type=text],form select{flex:1 1 240px;padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--text);font:400 16px "IBM Plex Sans",sans-serif}
+.ck{flex:1 1 100%;font-size:14px;opacity:.9}.ck input{margin-right:6px}
+#privacidade{border-top:1px solid var(--line)}#privacidade h3{font-size:20px;margin:24px 0 6px}#privacidade p,#privacidade li{color:var(--gray);max-width:70ch}
+@media (max-width:900px){.demo,.cards{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div class="status">Projeto em desenvolvimento. Esta página apresenta um conceito e uma demonstração, não um produto à venda.</div>
+<nav class="nav"><div class="wrap">
+  <a class="logo" href="#topo"><i></i>Clausa</a>
+  <div class="links"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#teste">Experimente</a><a href="#calc">Calculadora</a><a href="#seguranca">Segurança</a><a href="#piloto">Piloto</a></div>
+  <div style="display:flex;gap:8px"><button class="btn ghost" id="theme" type="button" aria-label="Alternar tema claro e escuro">Tema</button><a class="btn sm" href="#lista">Lista de espera</a></div>
+</div></nav>
+
+<div id="topo" class="wrap hero">
+  <div>
+    <h1>Leia o contrato inteiro em minutos e saiba onde olhar primeiro.</h1>
+    <p class="lead">A Clausa organiza contratos e due diligence para escritórios de advocacia corporativa: aponta cláusulas de risco, controla prazos e renovações, e deixa a decisão com o advogado.</p>
+    <a class="btn" href="#como">Ver como funciona</a>
+  </div>
+  <div class="doc">
+    <h3>Contrato de prestação de serviços (exemplo fictício)</h3>
+    <p><span class="cl" data-r="medio" tabindex="0" data-t="Renovação automática" data-d="O prazo renova sozinho por mais 36 meses. A Clausa registra a data limite de aviso para não perder a janela de saída.">O prazo de vigência é de 36 meses, renovado automaticamente por igual período</span>, salvo aviso em contrário com 90 dias de antecedência.</p>
+    <p><span class="cl" data-r="alto" tabindex="0" data-t="Multa rescisória elevada" data-d="A multa equivale a todo o saldo do contrato. Costuma ser ponto de negociação em contratos longos.">A rescisão antecipada sujeita a parte que a der causa a multa de 100% do valor remanescente do contrato.</span></p>
+    <p><span class="cl" data-r="ok" tabindex="0" data-t="Foro de eleição" data-d="Cláusula usual, sem alerta. Fica registrada para consulta.">Fica eleito o foro da comarca de São Paulo/SP para dirimir quaisquer controvérsias.</span></p>
+    <div class="note" id="note" aria-live="polite">Clique em “Analisar contrato” ou toque em um trecho para ver a leitura da Clausa.</div>
+    <button class="btn" id="scan" type="button">Analisar contrato</button>
+  </div>
+</div>
+
+<section class="band"><div class="wrap">
+  <h2>O trabalho que consome horas e não exige o seu melhor raciocínio.</h2>
+  <p class="sub gray">Em operações corporativas, parte relevante do tempo vai para localizar informação, comparar versões e conferir datas.</p>
+  <div class="problem">
+    <div><h3>Contratos longos</h3><p>Cláusulas importantes ficam escondidas entre dezenas de páginas e anexos.</p></div>
+    <div><h3>Prazos espalhados</h3><p>Renovações e avisos prévios vivem em planilhas, e-mails e na memória de cada pessoa.</p></div>
+    <div><h3>Diligência manual</h3><p>Centenas de documentos precisam ser conferidos um a um, com pendências difíceis de acompanhar.</p></div>
+  </div>
+</div></section>
+
+<section id="como"><div class="wrap">
+  <h2>Do arquivo ao alerta em três passos</h2>
+  <p class="sub">Role a página para acompanhar o caminho de um contrato dentro da Clausa.</p>
+  <div class="how">
+    <div>
+      <div class="step cur" data-i="0"><b>Passo 1</b><h3>Envie os documentos</h3><p>Arraste contratos, aditivos e anexos. A Clausa separa cada arquivo e identifica o tipo de documento.</p></div>
+      <div class="step" data-i="1"><b>Passo 2</b><h3>Revise o que importa</h3><p>Cada cláusula relevante aparece com o nível de atenção e o motivo. O advogado confirma, ajusta ou descarta.</p></div>
+      <div class="step" data-i="2"><b>Passo 3</b><h3>Acompanhe prazos</h3><p>Vencimentos e avisos prévios entram no calendário do escritório, com lembretes antes da data limite.</p></div>
+    </div>
+    <div class="panel" aria-hidden="true">
+      <div class="pane show"><div class="drop">Arraste os arquivos aqui</div>
+        <div class="file"><span>Contrato_servicos_v3.pdf</span><span class="chip ok">Lido</span></div>
+        <div class="file"><span>Aditivo_01.docx</span><span class="chip ok">Lido</span></div>
+        <div class="file"><span>Anexo_precos.xlsx</span><span class="chip medio">Em análise</span></div></div>
+      <div class="pane"><div class="file"><span>Renovação automática</span><span class="chip medio">Atenção</span></div>
+        <div class="file"><span>Multa de 100% do saldo</span><span class="chip alto">Risco alto</span></div>
+        <div class="file"><span>Limitação de responsabilidade</span><span class="chip medio">Atenção</span></div>
+        <div class="file"><span>Foro de eleição</span><span class="chip ok">Sem alerta</span></div></div>
+      <div class="pane"><div class="file"><span>Aviso de renovação — Contrato A</span><span class="chip alto">em 12 dias</span></div>
+        <div class="file"><span>Entrega de relatório — Contrato B</span><span class="chip medio">em 31 dias</span></div>
+        <div class="file"><span>Fim de vigência — Contrato C</span><span class="chip ok">em 118 dias</span></div></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="recursos" style="padding-top:0"><div class="wrap">
+  <h2>Recursos pensados para a rotina do escritório</h2>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-t="0">Contratos</button>
+    <button class="tab" role="tab" aria-selected="false" data-t="1">Prazos</button>
+    <button class="tab" role="tab" aria-selected="false" data-t="2">Due diligence</button>
+  </div>
+  <div class="tp show"><div><h3>Leitura assistida de contratos</h3><ul><li>Destaque de cláusulas de risco com a justificativa</li><li>Resumo das obrigações de cada parte</li><li>Comparação entre versões da minuta</li></ul></div>
+    <div class="mock"><div class="row"><span>Limitação de responsabilidade</span><span class="chip medio">Atenção</span></div><div class="row"><span>Exclusividade por 24 meses</span><span class="chip alto">Risco alto</span></div><div class="row"><span>Cláusula de confidencialidade</span><span class="chip ok">Sem alerta</span></div></div></div>
+  <div class="tp"><div><h3>Calendário de obrigações</h3><ul><li>Vencimentos, renovações e avisos prévios em um só lugar</li><li>Lembretes antes da data limite</li><li>Responsável definido para cada prazo</li></ul></div>
+    <div class="mock" id="deadlines"><div class="row"><span>Aviso de renovação — Contrato A</span><button type="button">Tratado</button></div><div class="row"><span>Entrega de relatório — Contrato B</span><button type="button">Tratado</button></div><div class="row"><span>Revisão de preços — Contrato D</span><button type="button">Tratado</button></div></div></div>
+  <div class="tp"><div><h3>Sala de dados organizada</h3><ul><li>Checklist por documento e por responsável</li><li>Progresso da diligência em tempo real</li><li>Pendências visíveis para toda a equipe</li></ul></div>
+    <div class="mock" id="dd"><b id="ddp">0% concluído</b><div class="prog"><div id="ddb"></div></div>
+      <label class="row"><span>Certidões negativas</span><input type="checkbox"></label><label class="row"><span>Contratos relevantes</span><input type="checkbox"></label><label class="row"><span>Passivo trabalhista</span><input type="checkbox"></label><label class="row"><span>Propriedade intelectual</span><input type="checkbox"></label></div></div>
+</div></section>
+
+<section id="calc" class="band"><div class="wrap">
+  <h2>Quanto tempo o seu escritório gasta em revisão?</h2>
+  <p class="sub gray">Ajuste os valores. A estimativa é ilustrativa e supõe 40% menos tempo de revisão.</p>
+  <div class="calc">
+    <div><label for="n">Contratos por mês: <b id="nv">30</b></label><input type="range" id="n" min="5" max="200" value="30">
+      <label for="h">Horas por contrato: <b id="hv">3</b></label><input type="range" id="h" min="1" max="10" value="3">
+      <label for="v">Valor da hora (R$): <b id="vv">300</b></label><input type="range" id="v" min="100" max="1000" step="50" value="300"></div>
+    <div class="out" style="background:var(--paper);color:var(--text)"><small>Valor estimado liberado</small><strong id="res">R$ 0</strong><small id="hrs"></small></div>
+  </div>
+</div></section>
+
+<section id="teste"><div class="wrap">
+  <h2>Experimente com um texto de contrato</h2>
+  <p class="sub">Cole um trecho de contrato ou carregue o exemplo. A demonstração procura cláusulas que costumam merecer atenção e mostra o resultado na hora. O texto fica no seu navegador e não é enviado a ninguém.</p>
+  <div class="demo">
+    <div><label class="lb" for="ct">Texto do contrato</label><textarea id="ct" placeholder="Cole aqui o texto do contrato…"></textarea>
+      <div class="acts"><button class="btn" id="an" type="button">Analisar</button><button class="btn ghost" id="ex" type="button">Carregar exemplo</button><button class="btn ghost" id="cl" type="button">Limpar</button></div></div>
+    <div class="mock" id="rs" aria-live="polite"><p class="mut">O resultado aparece aqui.</p></div>
+  </div>
+  <p class="mut small">Demonstração baseada em palavras-chave, sem inteligência artificial. Ela mostra o conceito e não substitui a leitura do contrato por um advogado.</p>
+</div></section>
+
+<section id="piloto" class="band"><div class="wrap">
+  <h2>Estamos construindo com quem vive o problema</h2>
+  <p class="sub gray">A Clausa ainda não está à venda. Estamos conversando com escritórios para entender a rotina e decidir o que construir primeiro.</p>
+  <div class="cards">
+    <div><h3>Conversa sobre a rotina</h3><p>Uma conversa de cerca de 30 minutos sobre como o escritório lida com contratos, prazos e diligências. Sem compromisso.</p></div>
+    <div><h3>Demonstração guiada</h3><p>Apresentação do conceito e das telas em desenvolvimento, com espaço para o escritório dizer o que faria diferença.</p></div>
+    <div><h3>Versão de teste</h3><p>Escritórios interessados podem testar uma versão inicial com o apoio direto de quem está construindo. Condições combinadas caso a caso.</p></div>
+  </div>
+  <p style="margin-top:32px"><a class="btn" href="#lista">Quero participar</a></p>
+</div></section>
+
+<section id="seguranca"><div class="wrap">
+  <h2>Confidencialidade como requisito</h2>
+  <p class="sub">Documentos de clientes exigem cuidado. Estes são os princípios que guiam o produto.</p>
+  <div class="sec">
+    <div><h3>Acesso por perfil</h3><p>Cada pessoa vê apenas os processos e documentos liberados para ela.</p></div>
+    <div><h3>Registro de atividade</h3><p>Todo acesso e alteração fica registrado para consulta.</p></div>
+    <div><h3>Revisão humana</h3><p>A Clausa sugere. O advogado sempre confirma antes de qualquer conclusão.</p></div>
+    <div><h3>Dados do escritório</h3><p>Os documentos do cliente pertencem ao escritório e podem ser exportados ou apagados.</p></div>
+  </div>
+</div></section>
+
+<section id="faq" style="padding-top:0"><div class="wrap">
+  <h2>Dúvidas frequentes</h2>
+  <details><summary>A Clausa substitui o advogado?</summary><p>Não. Ela aponta onde olhar e organiza as informações. A análise e a decisão continuam com o advogado.</p></details>
+  <details><summary>Quais documentos posso enviar?</summary><p>A proposta é aceitar PDF, Word e planilhas. Os formatos exatos serão definidos com os primeiros escritórios.</p></details>
+  <details><summary>Quanto custa?</summary><p>Ainda não definido. Estamos conversando com escritórios para entender o que faz sentido.</p></details>
+  <details><summary>Quando estará disponível?</summary><p>Estamos na fase de conversas. Quem entrar na lista de espera será avisado das primeiras vagas.</p></details>
+</div></section>
+
+<section id="lista" class="band"><div class="wrap">
+  <h2>Peça uma demonstração ou entre na lista de espera</h2>
+  <form id="f" novalidate>
+    <input type="text" name="nome" id="nm" placeholder="Seu nome" aria-label="Nome" required>
+    <input type="text" name="escritorio" placeholder="Escritório ou empresa" aria-label="Escritório ou empresa">
+    <input type="email" name="email" id="e" placeholder="seu@escritorio.com.br" aria-label="E-mail" required>
+    <select name="interesse" aria-label="O que você procura"><option>Quero uma demonstração</option><option>Quero testar uma versão inicial</option><option>Quero entrar na lista de espera</option><option>Quero participar de uma conversa sobre a rotina</option></select>
+    <label class="ck"><input type="checkbox" id="ok" name="consentimento" value="sim">Concordo com o uso dos meus dados para esse contato, conforme a <a href="#privacidade">política de privacidade</a>.</label>
+    <button class="btn" type="submit">Enviar</button>
+  </form>
+  <div id="msg" role="status"></div>
+</div></section>
+
+<section id="privacidade"><div class="wrap">
+  <h2>Política de privacidade</h2>
+  <p class="mut">Atualizada em 19/10/2026.</p>
+  <h3>Quem é responsável</h3><p>[NOME COMPLETO OU RAZÃO SOCIAL], contato: [SEU E-MAIL].</p>
+  <h3>Quais dados coletamos</h3><p>Nome, escritório ou empresa, e-mail e o tipo de contato que você escolheu no formulário.</p>
+  <h3>Para que usamos</h3><p>Apenas para responder ao seu pedido de demonstração, versão de teste, lista de espera ou conversa. A base legal é o seu consentimento (LGPD, art. 7º, I).</p>
+  <h3>Compartilhamento</h3><p>Não vendemos nem cedemos seus dados. Eles ficam no serviço de formulário e de hospedagem que usamos para receber e guardar as mensagens: [NOME DO SERVIÇO].</p>
+  <h3>Por quanto tempo</h3><p>Até você pedir a exclusão ou até o encerramento do projeto, o que ocorrer primeiro.</p>
+  <h3>Seus direitos</h3><p>Você pode pedir confirmação, acesso, correção, exclusão dos dados e a revogação do consentimento a qualquer momento, escrevendo para [SEU E-MAIL] (LGPD, art. 18).</p>
+  <h3>Demonstração e cookies</h3><p>O texto colado na demonstração é processado no seu navegador e não é enviado. A página não usa cookies de rastreamento; guarda apenas a sua preferência de tema claro ou escuro no próprio navegador.</p>
+</div></section>
+
+<footer><div class="wrap">Protótipo de conceito. Nome, textos e números são ilustrativos e os contratos mostrados são fictícios. <a href="#privacidade">Política de privacidade</a></div></footer>
+
+<script>
+(function(){
+  var root=document.documentElement,$=function(s,c){return [].slice.call((c||document).querySelectorAll(s))};
+  try{var s=localStorage.getItem("clausa-theme");if(s)root.setAttribute("data-theme",s)}catch(e){}
+  document.getElementById("theme").onclick=function(){
+    var d=root.getAttribute("data-theme")==="dark"||(!root.getAttribute("data-theme")&&matchMedia("(prefers-color-scheme: dark)").matches);
+    var n=d?"light":"dark";root.setAttribute("data-theme",n);try{localStorage.setItem("clausa-theme",n)}catch(e){}};
+  var bar=document.getElementById("bar");
+  addEventListener("scroll",function(){var h=root.scrollHeight-innerHeight;bar.style.width=(h>0?scrollY/h*100:0)+"%"},{passive:true});
+
+  var cls=$(".cl"),note=document.getElementById("note"),tm=[];
+  function show(c){cls.forEach(function(x){x.classList.remove("on")});c.classList.add("on");
+    note.innerHTML="<b>"+c.dataset.t+"</b> ("+({alto:"risco alto",medio:"atenção",ok:"sem alerta"})[c.dataset.r]+"). "+c.dataset.d}
+  cls.forEach(function(c){c.onclick=function(){show(c)};c.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();show(c)}}});
+  document.getElementById("scan").onclick=function(){tm.forEach(clearTimeout);tm=[];cls.forEach(function(x){x.classList.remove("on")});note.textContent="Analisando…";
+    cls.forEach(function(c,i){tm.push(setTimeout(function(){c.classList.add("on");if(i===cls.length-1)note.innerHTML="<b>Leitura concluída.</b> 1 risco alto, 1 ponto de atenção e 1 cláusula sem alerta. Toque em cada trecho para ver o motivo."},700*(i+1)))})};
+
+  var steps=$(".step"),panes=$(".pane");
+  var so=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var i=+e.target.dataset.i;
+    steps.forEach(function(x,k){x.classList.toggle("cur",k===i)});panes.forEach(function(x,k){x.classList.toggle("show",k===i)})}})},{rootMargin:"-45% 0px -45% 0px"});
+  steps.forEach(function(x){so.observe(x)});
+
+  var secs=$("section[id],#topo"),links=$(".links a");
+  var no=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)links.forEach(function(a){a.classList.toggle("act",a.getAttribute("href")==="#"+e.target.id)})})},{rootMargin:"-40% 0px -55% 0px"});
+  secs.forEach(function(x){no.observe(x)});
+
+  var tabs=$(".tab"),tps=$(".tp");
+  tabs.forEach(function(t,i){t.onclick=function(){tabs.forEach(function(x,k){x.setAttribute("aria-selected",k===i)});tps.forEach(function(x,k){x.classList.toggle("show",k===i)})}});
+  $("#deadlines button").forEach(function(b){b.onclick=function(){var r=b.parentNode;r.classList.toggle("done");b.textContent=r.classList.contains("done")?"Desfazer":"Tratado"}});
+  var cbs=$("#dd input");cbs.forEach(function(c){c.onchange=function(){var k=cbs.filter(function(x){return x.checked}).length,p=Math.round(k/cbs.length*100);
+    document.getElementById("ddb").style.width=p+"%";document.getElementById("ddp").textContent=p+"% concluído"}});
+
+  var n=document.getElementById("n"),h=document.getElementById("h"),v=document.getElementById("v");
+  function calc(){document.getElementById("nv").textContent=n.value;document.getElementById("hv").textContent=h.value;document.getElementById("vv").textContent=v.value;
+    var hr=n.value*h.value*0.4;document.getElementById("res").textContent="R$ "+Math.round(hr*v.value).toLocaleString("pt-BR")+"/mês";
+    document.getElementById("hrs").textContent="Cerca de "+Math.round(hr)+" horas liberadas por mês"}
+  [n,h,v].forEach(function(x){x.oninput=calc});calc();
+
+  var EX="CLÁUSULA 1. O prazo de vigência é de 24 meses, renovado automaticamente por iguais períodos, salvo aviso prévio de 60 dias.\nCLÁUSULA 2. O valor mensal é de R$ 12.500,00, reajustado anualmente pelo IPCA.\nCLÁUSULA 3. A CONTRATADA prestará os serviços com exclusividade à CONTRATANTE durante a vigência.\nCLÁUSULA 4. A rescisão antecipada sujeita a parte que lhe der causa ao pagamento de multa de 50% do valor remanescente.\nCLÁUSULA 5. A responsabilidade da CONTRATADA fica limitada ao valor pago nos últimos 12 meses.\nCLÁUSULA 6. As partes mantêm sigilo sobre as informações trocadas.\nCLÁUSULA 7. Fica eleito o foro da comarca de São Paulo/SP.";
+  var RULES=[
+    {r:"alto",t:"Multa por rescisão",re:/multa[^.;]{0,80}(rescis|antecipad)|rescis[^.;]{0,80}multa/i,d:"Confira o percentual e a base de cálculo. Multas sobre o saldo do contrato costumam ser negociadas."},
+    {r:"alto",t:"Exclusividade",re:/exclusiv/i,d:"Restringe a atuação de uma das partes. Vale checar duração, alcance e exceções."},
+    {r:"medio",t:"Renovação automática",re:/renov[^.;]{0,60}autom|autom[^.;]{0,60}renov|prorroga[^.;]{0,40}autom/i,d:"O contrato se renova sozinho. Registre a data limite do aviso para não perder a saída."},
+    {r:"medio",t:"Limitação de responsabilidade",re:/limita[^.;]{0,50}responsabilidade|responsabilidade[^.;]{0,60}limitad/i,d:"Define o teto de indenização. Verifique se o limite é compatível com o risco da operação."},
+    {r:"medio",t:"Reajuste de preço",re:/reajust|corre[cç][aã]o monet/i,d:"Confirme o índice, a periodicidade e se há teto ou piso."},
+    {r:"medio",t:"Aviso prévio",re:/aviso pr[eé]vio/i,d:"Prazo que deve ser controlado em calendário para evitar perda de direito."},
+    {r:"ok",t:"Confidencialidade",re:/sigilo|confidencial/i,d:"Cláusula usual. Confira prazo de duração e exceções."},
+    {r:"ok",t:"Foro de eleição",re:/foro/i,d:"Cláusula usual, sem alerta. Fica registrada para consulta."}
+  ];
+  var LB={alto:"Risco alto",medio:"Atenção",ok:"Sem alerta"};
+  function el(tag,cls,txt){var x=document.createElement(tag);if(cls)x.className=cls;if(txt!==undefined)x.textContent=txt;return x}
+  function uniq(a){return a.filter(function(v,i){return a.indexOf(v)===i})}
+  function analyze(){
+    var t=document.getElementById("ct").value.trim(),rs=document.getElementById("rs");rs.textContent="";
+    if(t.length<30){rs.appendChild(el("p","mut","Cole um trecho maior de contrato ou use o exemplo."));return}
+    var sents=t.match(/[^.;\n]+[.;]?/g)||[],done=[],found=[],cnt={alto:0,medio:0,ok:0};
+    sents.forEach(function(s){s=s.trim();if(s.length<12)return;RULES.forEach(function(r,i){if(!done[i]&&r.re.test(s)){done[i]=1;found.push({r:r,s:s});cnt[r.r]++}})});
+    if(!found.length){rs.appendChild(el("p","mut","Nenhuma cláusula conhecida foi encontrada neste trecho."));return}
+    found.sort(function(a,b){var o={alto:0,medio:1,ok:2};return o[a.r.r]-o[b.r.r]});
+    rs.appendChild(el("p","sum",found.length+" pontos encontrados: "+cnt.alto+" de risco alto, "+cnt.medio+" de atenção e "+cnt.ok+" sem alerta."));
+    found.forEach(function(f){var d=el("div","fd"),c=el("span","chip "+f.r.r,LB[f.r.r]);d.appendChild(c);d.appendChild(el("b","",f.r.t));
+      d.appendChild(el("q","",f.s.length>220?f.s.slice(0,220)+"…":f.s));d.appendChild(el("span","mut",f.r.d));rs.appendChild(d)});
+    var pr=uniq((t.match(/\d{1,3}\s*(?:dias|meses|anos)/gi)||[]).map(function(x){return x.replace(/\s+/g," ")})),vl=uniq(t.match(/R\$\s?[\d.]+(?:,\d{2})?/g)||[]);
+    if(pr.length||vl.length){rs.appendChild(el("p","sum","Prazos e valores citados")).style.marginTop="14px";var tg=el("div","tags");pr.concat(vl).forEach(function(x){tg.appendChild(el("span","chip ok",x))});rs.appendChild(tg)}
+  }
+  document.getElementById("an").onclick=analyze;
+  document.getElementById("ex").onclick=function(){document.getElementById("ct").value=EX;analyze()};
+  document.getElementById("cl").onclick=function(){document.getElementById("ct").value="";var r=document.getElementById("rs");r.textContent="";r.appendChild(el("p","mut","O resultado aparece aqui."))};
+
+  var ENDPOINT=""; /* Cole aqui o endereço do seu formulário (Formspree, Tally, Netlify Forms) ao hospedar o site. */
+  var fm=document.getElementById("f");
+  fm.onsubmit=function(ev){ev.preventDefault();var m=document.getElementById("msg"),val=document.getElementById("e").value.trim();
+    if(!document.getElementById("nm").value.trim()){m.textContent="Informe o seu nome.";return}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){m.textContent="Digite um e-mail válido, como nome@escritorio.com.br.";return}
+    if(!document.getElementById("ok").checked){m.textContent="Marque a caixa de consentimento para enviar.";return}
+    if(!ENDPOINT){m.textContent="Pronto, simulamos o seu envio. Este protótipo ainda não guarda nem envia dados.";return}
+    m.textContent="Enviando…";
+    fetch(ENDPOINT,{method:"POST",headers:{"Accept":"application/json"},body:new FormData(fm)}).then(function(r){if(!r.ok)throw 0;m.textContent="Recebemos o seu pedido. Entraremos em contato por e-mail.";fm.reset()}).catch(function(){m.textContent="Não foi possível enviar agora. Tente novamente em instantes."})};
+})();
+</script>
+</body>
+</html>
