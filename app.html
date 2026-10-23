@@ -64,6 +64,12 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .msg{display:flex;gap:12px;margin-bottom:22px}
 .ava{width:30px;height:30px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
 .ava.you{background:var(--card2);color:var(--ink);border:1px solid var(--line)}
+.ava.you .scales{color:var(--ink);width:18px;height:18px}
+.msg.you{flex-direction:row-reverse}
+.msg.you .mbody{display:flex;flex-direction:column;align-items:flex-end}
+.msg.you .mname{text-align:right}
+.msg.you .contract-txt{max-width:88%}
+.msg.you .cexpand{align-self:flex-end}
 .ava.ai{background:rgba(255,138,51,.14);border:1px solid rgba(255,138,51,.35)}
 .ava.ai .scales{width:18px;height:18px}
 .mbody{flex:1;min-width:0}
@@ -303,8 +309,8 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
       return;
     }
     byId("input").placeholder="Cole uma nova versão para reanalisar…";
-    var mu=el("div","msg");
-    mu.innerHTML='<div class="ava you">VC</div><div class="mbody"><div class="mname">Você</div>'+
+    var mu=el("div","msg you");
+    mu.innerHTML='<div class="ava you">'+aiScales()+'</div><div class="mbody"><div class="mname">Você</div>'+
       '<div class="contract-txt" id="ctxt">'+esc(c.text)+'</div>'+(c.text.length>400?'<button class="cexpand" id="cexp">ver contrato completo ▾</button>':'')+'</div>';
     inner.appendChild(mu);
     var cexp=byId("cexp");if(cexp)cexp.onclick=function(){var t=byId("ctxt");t.classList.toggle("open");cexp.textContent=t.classList.contains("open")?"recolher ▴":"ver contrato completo ▾"};
