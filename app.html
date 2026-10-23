@@ -64,7 +64,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .msg{display:flex;gap:12px;margin-bottom:22px}
 .ava{width:30px;height:30px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
 .ava.you{background:var(--card2);color:var(--ink);border:1px solid var(--line)}
-.ava.you .scales{color:var(--ink);width:18px;height:18px}
+.ava.you .quill{color:var(--ink);width:17px;height:17px}
 .msg.you{flex-direction:row-reverse}
 .msg.you .mbody{display:flex;flex-direction:column;align-items:flex-end}
 .msg.you .mname{text-align:right}
@@ -203,6 +203,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   var LB={alto:"Risco alto",medio:"Atenção",ok:"Sem alerta"};
   var SCALES='<svg class="scales" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>';
   var DOC='<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+  var QUILL='<svg class="quill" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/></svg>';
   var GREET=["O que temos hoje, "+NAME+"?","Qual o novo contrato, "+NAME+"?","Vamos revisar algo, "+NAME+"?","Por onde começamos, "+NAME+"?"];
 
   var DEFAULTS=[
@@ -310,7 +311,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     }
     byId("input").placeholder="Cole uma nova versão para reanalisar…";
     var mu=el("div","msg you");
-    mu.innerHTML='<div class="ava you">'+aiScales()+'</div><div class="mbody"><div class="mname">Você</div>'+
+    mu.innerHTML='<div class="ava you">'+QUILL+'</div><div class="mbody"><div class="mname">Você</div>'+
       '<div class="contract-txt" id="ctxt">'+esc(c.text)+'</div>'+(c.text.length>400?'<button class="cexpand" id="cexp">ver contrato completo ▾</button>':'')+'</div>';
     inner.appendChild(mu);
     var cexp=byId("cexp");if(cexp)cexp.onclick=function(){var t=byId("ctxt");t.classList.toggle("open");cexp.textContent=t.classList.contains("open")?"recolher ▴":"ver contrato completo ▾"};
