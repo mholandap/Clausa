@@ -24,6 +24,9 @@ a{color:inherit}.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
 .logo{font-family:"Playfair Display",Georgia,serif;font-weight:600;font-size:23px;display:flex;align-items:center;gap:8px;text-decoration:none}
 .logo i{width:14px;height:14px;border-radius:50%;background:var(--seal)}
+.logo .scales{width:19px;height:19px;flex:none;color:var(--teal)}
+.logo:hover .scales{transform:translateY(-1px)}
+.logo .scales{transition:transform .25s ease}
 .links{display:flex;gap:22px;font-size:15px}.links a{text-decoration:none;color:var(--gray);padding:4px 0;border-bottom:2px solid transparent}
 .links a.act{color:var(--text);border-color:var(--seal)}
 .btn{font:600 15px "Inter",sans-serif;border:0;border-radius:6px;padding:12px 20px;background:var(--seal);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
@@ -114,7 +117,7 @@ form input[type=text],form select{flex:1 1 240px;padding:12px 14px;border:1px so
 <div id="bar"></div>
 <div class="status">Projeto em desenvolvimento. Esta página apresenta um conceito e uma demonstração, não um produto à venda.</div>
 <nav class="nav"><div class="wrap">
-  <a class="logo" href="#topo"><i></i>Clausa</a>
+  <a class="logo" href="#topo" aria-label="Clausa — voltar ao início"><i></i>Clausa<svg class="scales" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></a>
   <div class="links"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#teste">Experimente</a><a href="#calc">Calculadora</a><a href="#seguranca">Segurança</a><a href="#piloto">Piloto</a></div>
   <div style="display:flex;gap:8px"><button class="btn ghost" id="theme" type="button" aria-label="Alternar tema claro e escuro">Tema</button><a class="btn sm" href="#lista">Lista de espera</a></div>
 </div></nav>
@@ -292,6 +295,8 @@ form input[type=text],form select{flex:1 1 240px;padding:12px 14px;border:1px so
     root.setAttribute("data-theme",n);try{localStorage.setItem("clausa-theme",n)}catch(e){}};
   var bar=document.getElementById("bar");
   addEventListener("scroll",function(){var h=root.scrollHeight-innerHeight;bar.style.width=(h>0?scrollY/h*100:0)+"%"},{passive:true});
+  var logo=document.querySelector(".logo");
+  if(logo)logo.addEventListener("click",function(e){e.preventDefault();scrollTo({top:0,behavior:"smooth"})});
 
   var cls=$(".cl"),note=document.getElementById("note"),tm=[];
   function show(c){cls.forEach(function(x){x.classList.remove("on")});c.classList.add("on");
