@@ -45,8 +45,8 @@ section h2{font-size:clamp(28px,4vw,42px);margin-bottom:18px;max-width:20ch}.sub
 .problem{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:40px}
 .problem h3{font-size:22px;margin-bottom:8px}.problem p{margin:0;opacity:.8}
 .how{display:grid;grid-template-columns:1fr 1fr;gap:56px}
-.step{min-height:62vh;display:flex;flex-direction:column;justify-content:center;opacity:.35;transition:opacity .4s}.step.cur{opacity:1}
-.step b{font:600 13px "Inter",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}.step h3{font-size:28px;margin:6px 0 10px}.step p{color:var(--gray);margin:0;max-width:44ch}
+.step{min-height:40vh;display:flex;flex-direction:column;justify-content:center;opacity:.35;transition:opacity .4s}.step.cur{opacity:1}
+.step b{font:600 14px "Inter",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}.step h3{font-size:34px;margin:8px 0 12px}.step p{color:var(--gray);margin:0;max-width:44ch;font-size:18.5px;line-height:1.55}
 .panel{position:sticky;top:calc(env(safe-area-inset-top,0px) + 90px);align-self:start;height:360px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:24px;overflow:hidden}
 .pane{position:absolute;inset:24px;opacity:0;transform:translateY(12px);transition:.4s;pointer-events:none}.pane.show{opacity:1;transform:none;pointer-events:auto}
 .drop{border:2px dashed var(--line);border-radius:6px;padding:28px;text-align:center;color:var(--gray)}
@@ -70,7 +70,7 @@ details{border-bottom:1px solid var(--line);padding:16px 0;max-width:760px}summa
 form{display:flex;gap:10px;flex-wrap:wrap;max-width:520px}input[type=email]{flex:1 1 240px;padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--text);font:400 16px "Inter",sans-serif}
 #msg{margin-top:12px;font-weight:500;min-height:24px;color:var(--teal)}
 footer{padding:32px 0 48px;color:var(--gray);font-size:14px}
-@media (max-width:900px){.links{display:none}.hero,.calc,.how,.tp.show,.sec,.problem{grid-template-columns:1fr}.hero{padding:40px 0 56px}section{padding:60px 0}.step{min-height:40vh}.panel{height:340px;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:5}.how{gap:16px}}
+@media (max-width:900px){.links{display:none}.hero,.calc,.how,.tp.show,.sec,.problem{grid-template-columns:1fr}.hero{padding:40px 0 56px}section{padding:60px 0}.step{min-height:28vh}.panel{height:340px;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:5}.how{gap:16px}}
 .status{background:var(--bb);color:var(--bf);text-align:center;font-size:14px;padding:9px 16px;border-bottom:1px solid var(--line)}
 .demo{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}.lb{display:block;font-weight:500;margin-bottom:6px}
 textarea{width:100%;min-height:260px;padding:14px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--text);font:400 15px/1.55 "Inter",sans-serif;resize:vertical}
