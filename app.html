@@ -213,7 +213,11 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     {id:"r11",on:true,sev:"ok",name:"Pagamento",pat:"pagamento|remunera[çc][ãa]o|valor mensal|fatura|boleto|vencimento",reason:"Verifique valores, datas de vencimento e forma de pagamento.",sugg:"Confirmar vencimentos, forma de pagamento e encargos por atraso."},
     {id:"r12",on:true,sev:"ok",name:"Confidencialidade",pat:"sigilo|confidencial|n[ãa]o divulga",reason:"Cláusula usual; confira prazo de duração e exceções.",sugg:"Confirmar o prazo de sigilo após o término e as exceções legais."},
     {id:"r13",on:true,sev:"ok",name:"Força maior / caso fortuito",pat:"for[çc]a maior|caso fortuito",reason:"Define o que ocorre em eventos imprevisíveis fora do controle das partes.",sugg:"Delimitar os eventos de força maior e seus efeitos sobre as obrigações."},
-    {id:"r14",on:true,sev:"ok",name:"Foro de eleição",pat:"foro|comarca|jurisdi[çc][ãa]o",reason:"Define onde eventuais disputas serão resolvidas.",sugg:"Verificar se o foro eleito é conveniente para o cliente."}
+    {id:"r14",on:true,sev:"ok",name:"Foro de eleição",pat:"foro|comarca|jurisdi[çc][ãa]o",reason:"Define onde eventuais disputas serão resolvidas.",sugg:"Verificar se o foro eleito é conveniente para o cliente."},
+    {id:"r15",on:true,sev:"ok",name:"Objeto do contrato",pat:"objeto do (contrato|presente)|objeto desta|tem por objeto|presente instrumento",reason:"Define o que está sendo contratado.",sugg:"Confirmar se o objeto está descrito de forma clara e completa."},
+    {id:"r16",on:true,sev:"ok",name:"Obrigações das partes",pat:"obriga[çc][õo]es|obriga-se|compromete-se|dever[áa]|incumb",reason:"Descreve os deveres de cada parte.",sugg:"Verificar se as obrigações estão equilibradas entre as partes."},
+    {id:"r17",on:true,sev:"medio",name:"Garantia",pat:"garantia|garant[ie]",reason:"Verifique o prazo, a cobertura e as condições da garantia.",sugg:"Confirmar o prazo e o escopo da garantia oferecida."},
+    {id:"r18",on:true,sev:"ok",name:"Identificação das partes",pat:"contratante|contratad[ao]|as partes|locador|locat[áa]rio|outorgante",reason:"Confira a correta qualificação das partes (nome, CNPJ/CPF, endereço).",sugg:"Conferir a qualificação completa de cada parte no preâmbulo."}
   ];
   var EX="CLÁUSULA 1. O prazo de vigência é de 24 meses, renovado automaticamente por iguais períodos, salvo aviso prévio de 60 dias.\nCLÁUSULA 2. O valor mensal é de R$ 12.500,00, reajustado anualmente pelo IPCA.\nCLÁUSULA 3. A CONTRATADA prestará os serviços com exclusividade à CONTRATANTE durante a vigência.\nCLÁUSULA 4. A rescisão antecipada sujeita a parte que lhe der causa ao pagamento de multa de 50% do valor remanescente.\nCLÁUSULA 5. A responsabilidade da CONTRATADA fica limitada ao valor pago nos últimos 12 meses.\nCLÁUSULA 6. As partes mantêm sigilo sobre as informações trocadas.\nCLÁUSULA 7. Fica eleito o foro da comarca de São Paulo/SP.";
 
@@ -223,7 +227,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   function esc(s){return (s+"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
   function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
 
-  var RULES_VERSION=2;
+  var RULES_VERSION=3;
   var rules;
   if(load("clausa-rules-v")===RULES_VERSION){rules=load("clausa-rules")||clone(DEFAULTS)}
   else{rules=clone(DEFAULTS);save("clausa-rules",rules);save("clausa-rules-v",RULES_VERSION)}
