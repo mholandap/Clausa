@@ -217,7 +217,10 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     {id:"r15",on:true,sev:"ok",name:"Objeto do contrato",pat:"objeto do (contrato|presente)|objeto desta|tem por objeto|presente instrumento",reason:"Define o que está sendo contratado.",sugg:"Confirmar se o objeto está descrito de forma clara e completa."},
     {id:"r16",on:true,sev:"ok",name:"Obrigações das partes",pat:"obriga[çc][õo]es|obriga-se|compromete-se|dever[áa]|incumb",reason:"Descreve os deveres de cada parte.",sugg:"Verificar se as obrigações estão equilibradas entre as partes."},
     {id:"r17",on:true,sev:"medio",name:"Garantia",pat:"garantia|garant[ie]",reason:"Verifique o prazo, a cobertura e as condições da garantia.",sugg:"Confirmar o prazo e o escopo da garantia oferecida."},
-    {id:"r18",on:true,sev:"ok",name:"Identificação das partes",pat:"contratante|contratad[ao]|as partes|locador|locat[áa]rio|outorgante",reason:"Confira a correta qualificação das partes (nome, CNPJ/CPF, endereço).",sugg:"Conferir a qualificação completa de cada parte no preâmbulo."}
+    {id:"r18",on:true,sev:"ok",name:"Identificação das partes",pat:"contratante|contratad[ao]|as partes|locador|locat[áa]rio|outorgante",reason:"Confira a correta qualificação das partes (nome, CNPJ/CPF, endereço).",sugg:"Conferir a qualificação completa de cada parte no preâmbulo."},
+    {id:"r19",on:true,sev:"ok",name:"Qualificação das partes",pat:"\\bcpf\\b|\\bcnpj\\b|residente|domiciliad|inscrit[oa]|nacionalidade|estado civil|rg n|portador",reason:"Identificação e qualificação das partes (nome, CPF/CNPJ, endereço, estado civil).",sugg:"Conferir se a qualificação de cada parte está completa e correta."},
+    {id:"r20",on:true,sev:"ok",name:"Dados de contato",pat:"endere[çc]o eletr[ôo]nico|e-mail|email|telefone",reason:"Dados de contato das partes, usados para notificações e intimações.",sugg:"Confirmar se os dados de contato estão atualizados e corretos."},
+    {id:"r21",on:true,sev:"medio",name:"Ação / pedido (peça processual)",pat:"a[çc][ãa]o revisional|peti[çc][ãa]o inicial|requer|pedido de|tutela|liminar|danos morais|juros abusiv|revis[ãa]o (do|de)",reason:"Indica que o documento é uma peça processual, não um contrato; os pedidos merecem conferência.",sugg:"Revisar os pedidos e fundamentos da peça — o Clausa é otimizado para contratos, então confira manualmente."}
   ];
   var EX="CLÁUSULA 1. O prazo de vigência é de 24 meses, renovado automaticamente por iguais períodos, salvo aviso prévio de 60 dias.\nCLÁUSULA 2. O valor mensal é de R$ 12.500,00, reajustado anualmente pelo IPCA.\nCLÁUSULA 3. A CONTRATADA prestará os serviços com exclusividade à CONTRATANTE durante a vigência.\nCLÁUSULA 4. A rescisão antecipada sujeita a parte que lhe der causa ao pagamento de multa de 50% do valor remanescente.\nCLÁUSULA 5. A responsabilidade da CONTRATADA fica limitada ao valor pago nos últimos 12 meses.\nCLÁUSULA 6. As partes mantêm sigilo sobre as informações trocadas.\nCLÁUSULA 7. Fica eleito o foro da comarca de São Paulo/SP.";
 
@@ -227,7 +230,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   function esc(s){return (s+"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
   function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
 
-  var RULES_VERSION=4;
+  var RULES_VERSION=5;
   var rules;
   if(load("clausa-rules-v")===RULES_VERSION){rules=load("clausa-rules")||clone(DEFAULTS)}
   else{rules=clone(DEFAULTS);save("clausa-rules",rules);save("clausa-rules-v",RULES_VERSION)}
