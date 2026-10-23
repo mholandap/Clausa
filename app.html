@@ -81,6 +81,8 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .ava.ai .scales{width:18px;height:18px}
 .mbody{flex:1;min-width:0}
 .mname{font-weight:600;font-size:13px;margin-bottom:5px}
+.aireveal{opacity:0;transform:translateY(8px);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.7,.2,1)}
+.aireveal.show{opacity:1;transform:none}
 .thinking{display:flex;align-items:center;gap:9px;color:var(--gray);font-size:14px}
 .dots{display:inline-flex;gap:4px}
 .dots i{width:6px;height:6px;border-radius:50%;background:var(--orange);display:inline-block;animation:bd 1s infinite ease-in-out}
@@ -326,31 +328,43 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
       var tb=el("div","msg");tb.id="thinking";
       tb.innerHTML='<div class="ava ai">'+aiScales()+'</div><div class="mbody"><div class="mname">Clausa</div><div class="thinking"><span>Analisando o contrato</span><span class="dots"><i></i><i></i><i></i></span></div></div>';
       inner.appendChild(tb);byId("scroll").scrollTop=byId("scroll").scrollHeight;
-      setTimeout(function(){var th=byId("thinking");if(th)th.remove();appendAssistant(inner,c);byId("scroll").scrollTop=byId("scroll").scrollHeight},Math.min(2400,900+c.text.length*0.5));
-    }else{appendAssistant(inner,c);byId("scroll").scrollTop=byId("scroll").scrollHeight}
+      setTimeout(function(){var th=byId("thinking");if(th)th.remove();appendAssistant(inner,c,true);byId("scroll").scrollTop=byId("scroll").scrollHeight},Math.min(1500,600+c.text.length*0.3));
+    }else{appendAssistant(inner,c,false);byId("scroll").scrollTop=byId("scroll").scrollHeight}
   }
   function aiScales(){return SCALES.replace('class="scales"','class="scales" style="width:18px;height:18px"')}
-  function appendAssistant(inner,c){
+  function appendAssistant(inner,c,typeIt){
     var found=computeFindings(c.text);
-    var cnt={alto:0,medio:0,ok:0};found.forEach(function(f){cnt[f.sev]++});
     var ma=el("div","msg");
-    var head='<div class="ava ai">'+aiScales()+'</div><div class="mbody"><div class="mname">Clausa</div>';
-    if(!found.length){var ativas=rules.filter(function(r){return r.on}).length;ma.innerHTML=head+'<p class="mut">Revisei o contrato, mas nenhuma das <b>'+ativas+'</b> regras ativas encontrou correspondência. Se este número for 0, as regras não carregaram — clique em “Restaurar regras padrão” em ⚙️ Regras &amp; modelos. Caso contrário, o texto pode usar termos diferentes.</p></div>';inner.appendChild(ma);return}
-    var body='<p style="margin:0 0 12px">Revisei o contrato e encontrei <b>'+found.length+'</b> ponto(s) para a sua atenção:</p>'+
-      '<div class="sumbar"><div class="stat alto"><b>'+cnt.alto+'</b><span>Risco alto</span></div><div class="stat medio"><b>'+cnt.medio+'</b><span>Atenção</span></div><div class="stat ok"><b>'+cnt.ok+'</b><span>Sem alerta</span></div><div class="stat apr"><b id="aprn">0</b><span>Aprovadas</span></div></div>';
+    var head='<div class="ava ai">'+aiScales()+'</div>';
+    if(!found.length){
+      var ativas=rules.filter(function(r){return r.on}).length;
+      ma.innerHTML=head+'<div class="mbody"><div class="mname">Clausa</div><p class="mut" id="typ"></p></div>';
+      inner.appendChild(ma);
+      typeWords(byId("typ"),"Revisei o contrato, mas nenhuma das "+ativas+" regras ativas encontrou correspondência. Se este número for 0, as regras não carregaram — abra Regras & modelos e clique em Restaurar regras padrão. Caso contrário, o texto pode usar termos diferentes.",typeIt,null);
+      return;
+    }
+    var cnt={alto:0,medio:0,ok:0};found.forEach(function(f){cnt[f.sev]++});
+    var rest='<div class="aireveal" id="rest"><div class="sumbar"><div class="stat alto"><b>'+cnt.alto+'</b><span>Risco alto</span></div><div class="stat medio"><b>'+cnt.medio+'</b><span>Atenção</span></div><div class="stat ok"><b>'+cnt.ok+'</b><span>Sem alerta</span></div><div class="stat apr"><b id="aprn">0</b><span>Aprovadas</span></div></div>';
     found.forEach(function(f,i){
       var dec=c.decisions[i];
-      body+='<div class="find '+f.sev+(dec==="rej"?" rej":"")+'" id="find'+i+'"><div class="fh"><span class="sev '+f.sev+'">'+LB[f.sev]+'</span><span class="ft">'+esc(f.name)+'</span></div>'+
+      rest+='<div class="find '+f.sev+(dec==="rej"?" rej":"")+'" id="find'+i+'"><div class="fh"><span class="sev '+f.sev+'">'+LB[f.sev]+'</span><span class="ft">'+esc(f.name)+'</span></div>'+
         '<q>'+esc(f.s.length>260?f.s.slice(0,260)+"…":f.s)+'</q><div class="why">'+esc(f.reason)+'</div>'+
         (f.sugg?'<div class="sugg"><span class="sl">Sugestão de melhoria</span><p>'+esc(f.sugg)+'</p><div class="sa"><button class="btn sm" data-apr="'+i+'">Aprovar</button><button class="btn ghost sm" data-rej="'+i+'">Rejeitar</button><span class="state '+(dec||"")+'" data-st="'+i+'" '+(dec?"":"hidden")+'>'+(dec==="apr"?"✓ Aprovada":dec==="rej"?"✕ Rejeitada":"")+'</span></div></div>':'')+'</div>';
     });
-    body+='<div style="margin-top:4px"><button class="btn ghost sm" id="rep">Copiar relatório da revisão</button></div>';
-    ma.innerHTML=head+body+'</div>';
+    rest+='<div style="margin-top:4px"><button class="btn ghost sm" id="rep">Copiar relatório da revisão</button></div></div>';
+    ma.innerHTML=head+'<div class="mbody"><div class="mname">Clausa</div><p id="typ" style="margin:0 0 12px"></p>'+rest+'</div>';
     inner.appendChild(ma);
     $("[data-apr]",inner).forEach(function(b){b.onclick=function(){decide(found,+b.dataset.apr,"apr")}});
     $("[data-rej]",inner).forEach(function(b){b.onclick=function(){decide(found,+b.dataset.rej,"rej")}});
     byId("rep").onclick=function(){copyReport(c,found)};
     updateApr(c);
+    typeWords(byId("typ"),"Revisei o contrato e encontrei "+found.length+" ponto(s) para a sua atenção:",typeIt,function(){var r=byId("rest");if(r)r.classList.add("show");byId("scroll").scrollTop=byId("scroll").scrollHeight});
+  }
+  function typeWords(elm,text,typeIt,done){
+    if(!elm){if(done)done();return}
+    if(!typeIt||!matchMedia("(prefers-reduced-motion: no-preference)").matches){elm.textContent=text;if(done)done();return}
+    var words=text.split(" "),i=0;elm.textContent="";
+    var timer=setInterval(function(){elm.textContent+=(i?" ":"")+words[i];i++;byId("scroll").scrollTop=byId("scroll").scrollHeight;if(i>=words.length){clearInterval(timer);if(done)done()}},42);
   }
   function decide(found,i,v){
     var c=getConvo(current);c.decisions[i]=v;persistConvos();
