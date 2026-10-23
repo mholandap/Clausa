@@ -68,6 +68,11 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .ava.ai .scales{width:18px;height:18px}
 .mbody{flex:1;min-width:0}
 .mname{font-weight:600;font-size:13px;margin-bottom:5px}
+.thinking{display:flex;align-items:center;gap:9px;color:var(--gray);font-size:14px}
+.dots{display:inline-flex;gap:4px}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--orange);display:inline-block;animation:bd 1s infinite ease-in-out}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes bd{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-5px);opacity:1}}
 .contract-txt{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13.5px;white-space:pre-wrap;max-height:150px;overflow:hidden;position:relative}
 .contract-txt.open{max-height:none}
 .cexpand{background:none;border:0;color:var(--orange);font:500 12px "Inter";cursor:pointer;padding:6px 0 0}
@@ -195,14 +200,20 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   var GREET=["O que temos hoje, "+NAME+"?","Qual o novo contrato, "+NAME+"?","Vamos revisar algo, "+NAME+"?","Por onde começamos, "+NAME+"?"];
 
   var DEFAULTS=[
-    {id:"r1",on:true,sev:"alto",name:"Multa por rescisão",pat:"multa[^.;]{0,80}(rescis|antecipad)|rescis[^.;]{0,80}multa",reason:"Multas sobre o saldo do contrato costumam ser elevadas e negociáveis.",sugg:"Propor limitar a multa a um número fixo de parcelas (ex.: 3 mensalidades) em vez de um percentual do saldo total."},
-    {id:"r2",on:true,sev:"alto",name:"Exclusividade",pat:"exclusiv",reason:"Restringe a atuação de uma das partes; verifique duração, alcance e exceções.",sugg:"Delimitar a exclusividade por território/segmento e prazo, com hipóteses de exceção previstas."},
-    {id:"r3",on:true,sev:"medio",name:"Renovação automática",pat:"renov[^.;]{0,60}autom|autom[^.;]{0,60}renov|prorroga[^.;]{0,40}autom",reason:"O contrato se renova sozinho; registre a data limite do aviso para não perder a saída.",sugg:"Incluir lembrete da data de aviso prévio e avaliar prazo de renovação mais curto."},
-    {id:"r4",on:true,sev:"medio",name:"Limitação de responsabilidade",pat:"limita[^.;]{0,50}responsabilidade|responsabilidade[^.;]{0,60}limitad",reason:"Define o teto de indenização; confira se é compatível com o risco da operação.",sugg:"Rever o teto de responsabilidade e excluir dolo e violação de confidencialidade do limite."},
-    {id:"r5",on:true,sev:"medio",name:"Reajuste de preço",pat:"reajust|corre[cç][aã]o monet",reason:"Confirme o índice, a periodicidade e se há teto ou piso.",sugg:"Fixar índice claro (ex.: IPCA), periodicidade anual e, se possível, um teto de reajuste."},
-    {id:"r6",on:true,sev:"medio",name:"Aviso prévio",pat:"aviso pr[eé]vio",reason:"Prazo que deve ser controlado em calendário para evitar perda de direito.",sugg:"Registrar o prazo de aviso prévio no calendário de obrigações do escritório."},
-    {id:"r7",on:true,sev:"ok",name:"Confidencialidade",pat:"sigilo|confidencial",reason:"Cláusula usual; confira prazo de duração e exceções.",sugg:"Confirmar prazo de confidencialidade após o término e exceções legais."},
-    {id:"r8",on:true,sev:"ok",name:"Foro de eleição",pat:"foro",reason:"Cláusula usual, sem alerta; fica registrada para consulta.",sugg:"Verificar se o foro eleito é conveniente para o cliente."}
+    {id:"r1",on:true,sev:"alto",name:"Multa e cláusula penal",pat:"multa|penalidade|cl[áa]usula penal",reason:"Penalidades podem ser elevadas; confira o percentual, a base de cálculo e a proporcionalidade.",sugg:"Rever o valor da multa e vinculá-la à gravidade do descumprimento, evitando percentuais sobre o saldo total."},
+    {id:"r2",on:true,sev:"medio",name:"Rescisão",pat:"rescis|resili|distrat",reason:"Verifique as hipóteses de rescisão, prazos de aviso e consequências para cada parte.",sugg:"Equilibrar as hipóteses de rescisão entre as partes e prever prazo de aviso razoável."},
+    {id:"r3",on:true,sev:"alto",name:"Exclusividade",pat:"exclusiv",reason:"Restringe a atuação de uma das partes; confira duração, alcance e exceções.",sugg:"Delimitar a exclusividade por território, segmento e prazo, com exceções previstas."},
+    {id:"r4",on:true,sev:"medio",name:"Renovação / prorrogação",pat:"renov|prorrog",reason:"Renovação automática faz o contrato se estender sozinho; controle a data de aviso.",sugg:"Registrar a data-limite de aviso e avaliar um prazo de renovação mais curto."},
+    {id:"r5",on:true,sev:"medio",name:"Limitação de responsabilidade",pat:"limita[^.;]{0,50}responsab|responsab[^.;]{0,60}limitad|isen[çc][ãa]o de responsab",reason:"Define o teto de indenização; confira se é compatível com o risco.",sugg:"Rever o teto e excluir dolo, culpa grave e violação de sigilo do limite."},
+    {id:"r6",on:true,sev:"medio",name:"Reajuste de preço",pat:"reajust|corre[çc][ãa]o monet|[íi]ndice",reason:"Confirme o índice, a periodicidade e se há teto ou piso.",sugg:"Fixar índice claro (ex.: IPCA), periodicidade anual e, se possível, um teto."},
+    {id:"r7",on:true,sev:"medio",name:"Aviso prévio",pat:"aviso pr[ée]vio|notifica[çc][ãa]o pr[ée]via",reason:"Prazo que deve ser controlado em calendário para não perder direitos.",sugg:"Registrar o prazo de aviso prévio no calendário de obrigações."},
+    {id:"r8",on:true,sev:"medio",name:"Proteção de dados (LGPD)",pat:"lgpd|dados pessoais|prote[çc][ãa]o de dados|titular dos dados",reason:"O tratamento de dados pessoais exige base legal, finalidade e segurança definidas.",sugg:"Incluir cláusula de LGPD com base legal, finalidade, prazo de retenção e responsabilidades."},
+    {id:"r9",on:true,sev:"medio",name:"Propriedade intelectual",pat:"propriedade intelectual|direitos autorais|titularidade|marca registrada|patente",reason:"Defina a quem pertencem os direitos sobre o que for criado ou utilizado.",sugg:"Deixar expressa a titularidade da propriedade intelectual e as licenças de uso."},
+    {id:"r10",on:true,sev:"ok",name:"Prazo e vigência",pat:"vig[êe]ncia|prazo determinad|prazo indeterminad|prazo de vig",reason:"Confira início, duração e se é por prazo determinado ou indeterminado.",sugg:"Confirmar a data de início e o prazo total da vigência."},
+    {id:"r11",on:true,sev:"ok",name:"Pagamento",pat:"pagamento|remunera[çc][ãa]o|valor mensal|fatura|boleto|vencimento",reason:"Verifique valores, datas de vencimento e forma de pagamento.",sugg:"Confirmar vencimentos, forma de pagamento e encargos por atraso."},
+    {id:"r12",on:true,sev:"ok",name:"Confidencialidade",pat:"sigilo|confidencial|n[ãa]o divulga",reason:"Cláusula usual; confira prazo de duração e exceções.",sugg:"Confirmar o prazo de sigilo após o término e as exceções legais."},
+    {id:"r13",on:true,sev:"ok",name:"Força maior / caso fortuito",pat:"for[çc]a maior|caso fortuito",reason:"Define o que ocorre em eventos imprevisíveis fora do controle das partes.",sugg:"Delimitar os eventos de força maior e seus efeitos sobre as obrigações."},
+    {id:"r14",on:true,sev:"ok",name:"Foro de eleição",pat:"foro|comarca|jurisdi[çc][ãa]o",reason:"Define onde eventuais disputas serão resolvidas.",sugg:"Verificar se o foro eleito é conveniente para o cliente."}
   ];
   var EX="CLÁUSULA 1. O prazo de vigência é de 24 meses, renovado automaticamente por iguais períodos, salvo aviso prévio de 60 dias.\nCLÁUSULA 2. O valor mensal é de R$ 12.500,00, reajustado anualmente pelo IPCA.\nCLÁUSULA 3. A CONTRATADA prestará os serviços com exclusividade à CONTRATANTE durante a vigência.\nCLÁUSULA 4. A rescisão antecipada sujeita a parte que lhe der causa ao pagamento de multa de 50% do valor remanescente.\nCLÁUSULA 5. A responsabilidade da CONTRATADA fica limitada ao valor pago nos últimos 12 meses.\nCLÁUSULA 6. As partes mantêm sigilo sobre as informações trocadas.\nCLÁUSULA 7. Fica eleito o foro da comarca de São Paulo/SP.";
 
@@ -280,19 +291,25 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
       return;
     }
     byId("input").placeholder="Cole uma nova versão para reanalisar…";
-    // mensagem do usuário (contrato)
     var mu=el("div","msg");
     mu.innerHTML='<div class="ava you">VC</div><div class="mbody"><div class="mname">Você</div>'+
       '<div class="contract-txt" id="ctxt">'+esc(c.text)+'</div>'+(c.text.length>400?'<button class="cexpand" id="cexp">ver contrato completo ▾</button>':'')+'</div>';
     inner.appendChild(mu);
     var cexp=byId("cexp");if(cexp)cexp.onclick=function(){var t=byId("ctxt");t.classList.toggle("open");cexp.textContent=t.classList.contains("open")?"recolher ▴":"ver contrato completo ▾"};
-
-    // resposta da Clausa
+    if(animate){
+      var tb=el("div","msg");tb.id="thinking";
+      tb.innerHTML='<div class="ava ai">'+aiScales()+'</div><div class="mbody"><div class="mname">Clausa</div><div class="thinking"><span>Analisando o contrato</span><span class="dots"><i></i><i></i><i></i></span></div></div>';
+      inner.appendChild(tb);byId("scroll").scrollTop=byId("scroll").scrollHeight;
+      setTimeout(function(){var th=byId("thinking");if(th)th.remove();appendAssistant(inner,c);byId("scroll").scrollTop=byId("scroll").scrollHeight},Math.min(2400,900+c.text.length*0.5));
+    }else{appendAssistant(inner,c);byId("scroll").scrollTop=byId("scroll").scrollHeight}
+  }
+  function aiScales(){return SCALES.replace('class="scales"','class="scales" style="width:18px;height:18px"')}
+  function appendAssistant(inner,c){
     var found=computeFindings(c.text);
     var cnt={alto:0,medio:0,ok:0};found.forEach(function(f){cnt[f.sev]++});
     var ma=el("div","msg");
-    var head='<div class="ava ai">'+SCALES.replace('width="24"','').replace('class="scales"','class="scales" style="width:18px;height:18px"')+'</div><div class="mbody"><div class="mname">Clausa</div>';
-    if(!found.length){ma.innerHTML=head+'<p class="mut">Não encontrei nenhuma das regras ativas neste texto. Você pode ajustar as regras em “Regras &amp; modelos”.</p></div>';inner.appendChild(ma);return}
+    var head='<div class="ava ai">'+aiScales()+'</div><div class="mbody"><div class="mname">Clausa</div>';
+    if(!found.length){ma.innerHTML=head+'<p class="mut">Revisei o contrato, mas nenhuma das regras ativas encontrou correspondência — pode ser um texto curto ou com termos diferentes dos que as regras procuram. Você pode ajustar ou criar regras em “Regras &amp; modelos”.</p></div>';inner.appendChild(ma);return}
     var body='<p style="margin:0 0 12px">Revisei o contrato e encontrei <b>'+found.length+'</b> ponto(s) para a sua atenção:</p>'+
       '<div class="sumbar"><div class="stat alto"><b>'+cnt.alto+'</b><span>Risco alto</span></div><div class="stat medio"><b>'+cnt.medio+'</b><span>Atenção</span></div><div class="stat ok"><b>'+cnt.ok+'</b><span>Sem alerta</span></div><div class="stat apr"><b id="aprn">0</b><span>Aprovadas</span></div></div>';
     found.forEach(function(f,i){
@@ -308,7 +325,6 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     $("[data-rej]",inner).forEach(function(b){b.onclick=function(){decide(found,+b.dataset.rej,"rej")}});
     byId("rep").onclick=function(){copyReport(c,found)};
     updateApr(c);
-    byId("scroll").scrollTop=byId("scroll").scrollHeight;
   }
   function decide(found,i,v){
     var c=getConvo(current);c.decisions[i]=v;persistConvos();
@@ -339,7 +355,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     if(!c){c={id:"c"+Date.now(),title:"",text:"",decisions:{},created:Date.now()};convos.unshift(c);current=c.id}
     c.text=v;c.decisions={};
     var first=(v.split("\n")[0]||"").trim();c.title=(first.length>42?first.slice(0,42)+"…":first)||("Contrato "+new Date().toLocaleDateString("pt-BR"));
-    byId("input").value="";sizeInput();persistConvos();renderSidebar();renderMain();
+    byId("input").value="";sizeInput();persistConvos();renderSidebar();renderMain(true);
   }
   function sizeInput(){var t=byId("input");t.style.height="auto";t.style.height=Math.min(t.scrollHeight,180)+"px"}
 
