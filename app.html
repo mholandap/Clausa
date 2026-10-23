@@ -10,11 +10,18 @@
   --paper:#0B0B0C;--panel:#0E0E0F;--card:#161617;--card2:#1D1D1F;--ink:#FAFAFA;--gray:#9B9B9E;--line:#2A2A2D;
   --orange:#FF8A33;--orange-deep:#E2590B;
   --alto:#F0625A;--medio:#E0B65C;--ok:#5FB58C;
+  --glow-a:rgba(255,122,26,.24);--glow-b:rgba(226,89,11,.18);
   color-scheme:dark;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;background:var(--paper);color:var(--ink);font:400 15px/1.55 "Inter",system-ui,sans-serif;overflow:hidden}
+body{margin:0;position:relative;z-index:0;background:var(--paper);color:var(--ink);font:400 15px/1.55 "Inter",system-ui,sans-serif;overflow:hidden}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(55% 45% at 50% 6%,var(--glow-a),transparent 72%),radial-gradient(48% 42% at 85% 56%,var(--glow-b),transparent 70%),radial-gradient(44% 42% at 13% 88%,var(--glow-a),transparent 72%)}
+@keyframes glow-breathe{0%,100%{opacity:.8;transform:translateY(0)}50%{opacity:1;transform:translateY(-16px)}}
+@keyframes grad-slide{to{background-position:200% 0}}
+.find,.contract-txt{position:relative;overflow:hidden}
+.find::before,.contract-txt::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,var(--orange) 18%,rgba(255,255,255,.85) 50%,var(--orange) 82%,transparent);background-size:200% 100%}
+@media (prefers-reduced-motion:no-preference){body::after{animation:glow-breathe 18s ease-in-out infinite}.find::before,.contract-txt::before{animation:grad-slide 5s linear infinite}}
 h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;line-height:1.15}
 .scales{color:var(--orange);flex:none}
 .btn{font:600 14px "Inter",sans-serif;border:0;border-radius:10px;padding:10px 16px;background:var(--orange-deep);color:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:transform .15s,filter .15s}
