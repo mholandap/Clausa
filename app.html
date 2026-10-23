@@ -223,7 +223,10 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   function esc(s){return (s+"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
   function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
 
-  var rules=load("clausa-rules")||clone(DEFAULTS);
+  var RULES_VERSION=2;
+  var rules;
+  if(load("clausa-rules-v")===RULES_VERSION){rules=load("clausa-rules")||clone(DEFAULTS)}
+  else{rules=clone(DEFAULTS);save("clausa-rules",rules);save("clausa-rules-v",RULES_VERSION)}
   var templates=load("clausa-templates")||{};
   var convos=load("clausa-convos")||[];
   var current=null;
@@ -274,7 +277,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   }
 
   // ---------- Main ----------
-  function renderMain(){
+  function renderMain(animate){
     var inner=byId("inner"),c=current?getConvo(current):null;
     byId("mtitle").textContent=c&&c.text?c.title:"Clausa";
     inner.innerHTML="";
