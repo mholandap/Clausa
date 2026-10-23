@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clausa — App</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Clausa — preto · laranja · letras brancas */
+:root{
+  --paper:#0B0B0C;--card:#161617;--card2:#1D1D1F;--ink:#FAFAFA;--gray:#9B9B9E;--line:#2A2A2D;
+  --orange:#FF8A33;--orange-deep:#E2590B;
+  --alto:#F0625A;--medio:#E0B65C;--ok:#5FB58C;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 36px rgba(0,0,0,.5);
+  color-scheme:dark;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 15px/1.6 "Inter",system-ui,sans-serif}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(50% 40% at 50% 0%,rgba(255,138,51,.12),transparent 70%)}
+h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;line-height:1.15}
+a{color:var(--orange)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+/* topo */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(11,11,12,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:14px;height:60px}
+.logo{display:flex;align-items:center;gap:9px;font-family:"Playfair Display",Georgia,serif;font-weight:600;font-size:22px;color:var(--ink);text-decoration:none}
+.logo .scales{width:22px;height:22px;color:var(--orange);flex:none}
+.tag{font:600 11px "Inter",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);border:1px solid var(--line);border-radius:30px;padding:4px 10px}
+.top .sp{margin-left:auto}
+.back{font-size:14px;color:var(--gray);text-decoration:none;white-space:nowrap}
+.back:hover{color:var(--ink)}
+/* layout */
+.intro{padding:26px 0 8px}
+.intro h1{font-size:clamp(26px,4vw,36px)}
+.intro p{color:var(--gray);max-width:70ch;margin:10px 0 0}
+.grid{display:grid;grid-template-columns:1.6fr 1fr;gap:22px;padding:22px 0 60px;align-items:start}
+.col{display:flex;flex-direction:column;gap:18px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.panel>.hd{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.panel>.hd h2{font-size:18px}.panel>.hd .n{font:600 12px "Inter",sans-serif;color:var(--orange);background:rgba(255,138,51,.12);border:1px solid rgba(255,138,51,.3);width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+.panel>.bd{padding:18px}
+.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px)}
+label.lb{display:block;font-weight:500;margin-bottom:7px;font-size:14px}
+textarea{width:100%;min-height:200px;padding:13px;border:1px solid var(--line);border-radius:10px;background:var(--card2);color:var(--ink);font:400 14px/1.55 "Inter",sans-serif;resize:vertical}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn{font:600 14px "Inter",sans-serif;border:0;border-radius:9px;padding:11px 18px;background:var(--orange-deep);color:#fff;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:transform .15s ease,filter .15s ease}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:7px 12px;font-size:13px}
+.btn.tiny{padding:5px 10px;font-size:12px;border-radius:7px}
+.mut{color:var(--gray)}.small{font-size:13px}
+input[type=file]{display:none}
+/* regras */
+.rule{border:1px solid var(--line);border-radius:11px;padding:12px 13px;margin-bottom:10px;background:var(--card2)}
+.rule.off{opacity:.5}
+.rule .rh{display:flex;align-items:center;gap:10px}
+.rule .rh .nm{font-weight:600;font-size:14px;flex:1;min-width:0}
+.sev{font:600 11px "Inter",sans-serif;border-radius:30px;padding:3px 9px;white-space:nowrap;border:1px solid transparent}
+.sev.alto{color:var(--alto);border-color:rgba(240,98,90,.4);background:rgba(240,98,90,.12)}
+.sev.medio{color:var(--medio);border-color:rgba(224,182,92,.4);background:rgba(224,182,92,.12)}
+.sev.ok{color:var(--ok);border-color:rgba(95,181,140,.4);background:rgba(95,181,140,.12)}
+.sw{position:relative;width:38px;height:22px;flex:none;cursor:pointer}
+.sw input{opacity:0;width:0;height:0;position:absolute}
+.sw i{position:absolute;inset:0;background:var(--line);border-radius:30px;transition:.2s}
+.sw i::before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.sw input:checked+i{background:var(--orange-deep)}
+.sw input:checked+i::before{transform:translateX(16px)}
+.rule .rdet{margin-top:9px;font-size:13px;color:var(--gray);display:none}
+.rule.open .rdet{display:block}
+.rule .rdet div{margin-top:6px}.rule .rdet b{color:var(--ink);font-weight:500}
+.rule .rtoggle{background:none;border:0;color:var(--orange);font:500 12px "Inter",sans-serif;cursor:pointer;padding:0;margin-top:8px}
+.field{margin:8px 0}.field label{display:block;font-size:12px;color:var(--gray);margin-bottom:3px}
+.field input,.field select,.field textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font:400 13px "Inter",sans-serif}
+.field textarea{min-height:52px;resize:vertical}
+.tpl{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tpl select{flex:1 1 140px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font:400 13px "Inter",sans-serif}
+/* resultados */
+#out .empty{color:var(--gray);text-align:center;padding:30px 10px}
+.sumbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.stat{flex:1 1 90px;background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:12px 14px}
+.stat b{display:block;font:700 24px "Playfair Display",Georgia,serif}
+.stat.alto b{color:var(--alto)}.stat.medio b{color:var(--medio)}.stat.ok b{color:var(--ok)}.stat.apr b{color:var(--orange)}
+.stat span{font-size:12px;color:var(--gray)}
+.find{border:1px solid var(--line);border-left:3px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px;background:var(--card2)}
+.find.alto{border-left-color:var(--alto)}.find.medio{border-left-color:var(--medio)}.find.ok{border-left-color:var(--ok)}
+.find .fh{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.find .fh .ft{font-weight:600}
+.find q{display:block;margin:9px 0;padding:9px 12px;border-left:2px solid var(--line);color:var(--gray);font-style:italic;font-size:13.5px}
+.find .why{font-size:13.5px;color:var(--gray)}
+.sugg{margin-top:11px;background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:11px 12px}
+.sugg .sl{font:600 11px "Inter",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--orange)}
+.sugg p{margin:5px 0 0;font-size:13.5px}
+.sugg .sa{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.state{font:600 12px "Inter",sans-serif;padding:3px 9px;border-radius:30px}
+.state.apr{color:var(--ok);background:rgba(95,181,140,.14)}
+.state.rej{color:var(--alto);background:rgba(240,98,90,.14)}
+.find.rej{opacity:.6}
+footer{padding:26px 0 48px;color:var(--gray);font-size:13px;border-top:1px solid var(--line)}
+@media (max-width:860px){.grid{grid-template-columns:1fr}.side{position:static}}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <a class="logo" href="index.html">Clausa<svg class="scales" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></a>
+  <span class="tag">App · protótipo</span>
+  <span class="sp"></span>
+  <a class="back" href="index.html">← voltar ao site</a>
+</div></header>
+
+<div class="wrap intro">
+  <h1>Revisão de contrato</h1>
+  <p>Cole o contrato, ajuste as regras de risco e revise cada apontamento. Cada sugestão de melhoria depende da sua aprovação — a Clausa aponta, você decide. Tudo roda no seu navegador; nada é enviado.</p>
+</div>
+
+<div class="wrap grid">
+  <!-- Coluna principal: contrato + resultados -->
+  <div class="col">
+    <div class="panel">
+      <div class="hd"><span class="n">1</span><h2>Contrato</h2></div>
+      <div class="bd">
+        <label class="lb" for="ct">Cole o texto do contrato</label>
+        <textarea id="ct" placeholder="Cole aqui o texto do contrato…"></textarea>
+        <div class="acts">
+          <button class="btn" id="analyze">Analisar contrato</button>
+          <button class="btn ghost sm" id="loadex">Carregar exemplo</button>
+          <label class="btn ghost sm" for="file">Carregar arquivo .txt</label>
+          <input type="file" id="file" accept=".txt,text/plain">
+          <button class="btn ghost sm" id="clear">Limpar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="hd"><span class="n">3</span><h2>Apontamentos</h2></div>
+      <div class="bd" id="out"><div class="empty">Os apontamentos aparecem aqui depois de analisar o contrato.</div></div>
+    </div>
+  </div>
+
+  <!-- Coluna lateral: regras + modelos -->
+  <div class="col side">
+    <div class="panel">
+      <div class="hd"><span class="n">2</span><h2>Regras</h2></div>
+      <div class="bd">
+        <p class="mut small" style="margin:0 0 12px">Ligue, desligue, edite ou crie regras. Elas definem o que a Clausa procura no contrato.</p>
+        <div id="rules"></div>
+        <button class="btn ghost sm" id="addrule" style="width:100%;justify-content:center">+ Nova regra</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="hd"><h2>Modelos</h2></div>
+      <div class="bd">
+        <p class="mut small" style="margin:0 0 10px">Salve este conjunto de regras como um modelo reutilizável.</p>
+        <div class="tpl" style="margin-bottom:10px">
+          <select id="tpls"><option value="">— modelos salvos —</option></select>
+          <button class="btn sm" id="loadtpl">Carregar</button>
+          <button class="btn ghost sm" id="deltpl">Excluir</button>
+        </div>
+        <div class="tpl">
+          <input id="tplname" placeholder="Nome do novo modelo" style="flex:1 1 140px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font:400 13px 'Inter',sans-serif">
+          <button class="btn sm" id="savetpl">Salvar</button>
+        </div>
+        <button class="btn ghost tiny" id="resetrules" style="margin-top:12px">Restaurar regras padrão</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer><div class="wrap">Protótipo do aplicativo Clausa. Análise por regras configuráveis (sem IA nesta versão). Não substitui a leitura do contrato por um advogado. Os dados ficam apenas no seu navegador.</div></footer>
+
+<script>
+(function(){
+  var $=function(s,c){return [].slice.call((c||document).querySelectorAll(s))};
+  var byId=function(id){return document.getElementById(id)};
+  var LB={alto:"Risco alto",medio:"Atenção",ok:"Sem alerta"};
+
+  // ---- Regras padrão ----
+  var DEFAULTS=[
+    {id:"r1",on:true,sev:"alto",name:"Multa por rescisão",pat:"multa[^.;]{0,80}(rescis|antecipad)|rescis[^.;]{0,80}multa",reason:"Multas sobre o saldo do contrato costumam ser elevadas e negociáveis.",sugg:"Propor limitar a multa a um número fixo de parcelas (ex.: 3 mensalidades) em vez de um percentual do saldo total."},
+    {id:"r2",on:true,sev:"alto",name:"Exclusividade",pat:"exclusiv",reason:"Restringe a atuação de uma das partes; verifique duração, alcance e exceções.",sugg:"Delimitar a exclusividade por território/segmento e prazo, com hipóteses de exceção previstas."},
+    {id:"r3",on:true,sev:"medio",name:"Renovação automática",pat:"renov[^.;]{0,60}autom|autom[^.;]{0,60}renov|prorroga[^.;]{0,40}autom",reason:"O contrato se renova sozinho; registre a data limite do aviso para não perder a saída.",sugg:"Incluir lembrete da data de aviso prévio e avaliar prazo de renovação mais curto."},
+    {id:"r4",on:true,sev:"medio",name:"Limitação de responsabilidade",pat:"limita[^.;]{0,50}responsabilidade|responsabilidade[^.;]{0,60}limitad",reason:"Define o teto de indenização; confira se é compatível com o risco da operação.",sugg:"Rever o teto de responsabilidade e excluir dolo e violação de confidencialidade do limite."},
+    {id:"r5",on:true,sev:"medio",name:"Reajuste de preço",pat:"reajust|corre[cç][aã]o monet",reason:"Confirme o índice, a periodicidade e se há teto ou piso.",sugg:"Fixar índice claro (ex.: IPCA), periodicidade anual e, se possível, um teto de reajuste."},
+    {id:"r6",on:true,sev:"medio",name:"Aviso prévio",pat:"aviso pr[eé]vio",reason:"Prazo que deve ser controlado em calendário para evitar perda de direito.",sugg:"Registrar o prazo de aviso prévio no calendário de obrigações do escritório."},
+    {id:"r7",on:true,sev:"ok",name:"Confidencialidade",pat:"sigilo|confidencial",reason:"Cláusula usual; confira prazo de duração e exceções.",sugg:"Confirmar prazo de confidencialidade após o término e exceções legais."},
+    {id:"r8",on:true,sev:"ok",name:"Foro de eleição",pat:"foro",reason:"Cláusula usual, sem alerta; fica registrada para consulta.",sugg:"Verificar se o foro eleito é conveniente para o cliente."}
+  ];
+  var EX="CLÁUSULA 1. O prazo de vigência é de 24 meses, renovado automaticamente por iguais períodos, salvo aviso prévio de 60 dias.\nCLÁUSULA 2. O valor mensal é de R$ 12.500,00, reajustado anualmente pelo IPCA.\nCLÁUSULA 3. A CONTRATADA prestará os serviços com exclusividade à CONTRATANTE durante a vigência.\nCLÁUSULA 4. A rescisão antecipada sujeita a parte que lhe der causa ao pagamento de multa de 50% do valor remanescente.\nCLÁUSULA 5. A responsabilidade da CONTRATADA fica limitada ao valor pago nos últimos 12 meses.\nCLÁUSULA 6. As partes mantêm sigilo sobre as informações trocadas.\nCLÁUSULA 7. Fica eleito o foro da comarca de São Paulo/SP.";
+
+  // ---- Estado ----
+  var rules=load("clausa-rules")||clone(DEFAULTS);
+  var templates=load("clausa-templates")||{};
+  var decisions={}; // findingKey -> "apr"/"rej"
+
+  function clone(o){return JSON.parse(JSON.stringify(o))}
+  function load(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null}catch(e){return null}}
+  function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+  function esc(s){return (s+"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
+
+  // ---- Render de regras ----
+  function renderRules(){
+    var box=byId("rules");box.innerHTML="";
+    rules.forEach(function(r,i){
+      var d=el("div","rule"+(r.on?"":" off"));
+      d.innerHTML=
+        '<div class="rh">'+
+          '<label class="sw"><input type="checkbox" '+(r.on?"checked":"")+' data-t="'+i+'"><i></i></label>'+
+          '<span class="nm">'+esc(r.name)+'</span>'+
+          '<span class="sev '+r.sev+'">'+LB[r.sev]+'</span>'+
+        '</div>'+
+        '<div class="rdet">'+
+          '<div><b>Procura por:</b> <code>'+esc(r.pat)+'</code></div>'+
+          '<div><b>Motivo:</b> '+esc(r.reason)+'</div>'+
+          '<div><b>Sugestão:</b> '+esc(r.sugg)+'</div>'+
+          '<div style="margin-top:9px;display:flex;gap:8px"><button class="btn ghost tiny" data-edit="'+i+'">Editar</button><button class="btn ghost tiny" data-del="'+i+'">Excluir</button></div>'+
+        '</div>'+
+        '<button class="rtoggle" data-o="'+i+'">ver detalhes ▾</button>';
+      box.appendChild(d);
+    });
+    $("input[data-t]",box).forEach(function(c){c.onchange=function(){rules[+c.dataset.t].on=c.checked;persist();renderRules()}});
+    $("[data-o]",box).forEach(function(b){b.onclick=function(){b.parentNode.classList.toggle("open");b.textContent=b.parentNode.classList.contains("open")?"ocultar ▴":"ver detalhes ▾"}});
+    $("[data-edit]",box).forEach(function(b){b.onclick=function(){editRule(+b.dataset.edit)}});
+    $("[data-del]",box).forEach(function(b){b.onclick=function(){if(confirmInline("Excluir a regra \\""+rules[+b.dataset.del].name+"\\"?")){rules.splice(+b.dataset.del,1);persist();renderRules()}}});
+  }
+  function confirmInline(msg){return window.confirm?window.confirm(msg):true}
+
+  // ---- Editor de regra (formulário inline) ----
+  function editRule(i){
+    var isNew=(i<0), r=isNew?{id:"r"+Date.now(),on:true,sev:"medio",name:"",pat:"",reason:"",sugg:""}:rules[i];
+    var box=byId("rules");
+    var form=el("div","rule open");
+    form.innerHTML=
+      '<div class="field"><label>Nome da regra</label><input id="f-name" value="'+esc(r.name)+'" placeholder="Ex.: Reajuste de preço"></div>'+
+      '<div class="field"><label>Nível</label><select id="f-sev"><option value="alto"'+sel(r.sev,"alto")+'>Risco alto</option><option value="medio"'+sel(r.sev,"medio")+'>Atenção</option><option value="ok"'+sel(r.sev,"ok")+'>Sem alerta</option></select></div>'+
+      '<div class="field"><label>Palavras-chave (separadas por | )</label><input id="f-pat" value="'+esc(r.pat)+'" placeholder="exclusiv|exclusividade"></div>'+
+      '<div class="field"><label>Motivo / explicação</label><textarea id="f-reason" placeholder="Por que isto merece atenção?">'+esc(r.reason)+'</textarea></div>'+
+      '<div class="field"><label>Sugestão de melhoria</label><textarea id="f-sugg" placeholder="O que propor ao advogado?">'+esc(r.sugg)+'</textarea></div>'+
+      '<div style="display:flex;gap:8px;margin-top:6px"><button class="btn sm" id="f-save">Salvar regra</button><button class="btn ghost sm" id="f-cancel">Cancelar</button></div>';
+    box.insertBefore(form,box.firstChild);
+    byId("f-save").onclick=function(){
+      r.name=byId("f-name").value.trim()||"Regra sem nome";
+      r.sev=byId("f-sev").value;r.pat=byId("f-pat").value.trim();
+      r.reason=byId("f-reason").value.trim();r.sugg=byId("f-sugg").value.trim();
+      if(isNew)rules.push(r);
+      persist();renderRules();
+    };
+    byId("f-cancel").onclick=function(){renderRules()};
+    form.scrollIntoView({behavior:"smooth",block:"center"});
+  }
+  function sel(a,b){return a===b?" selected":""}
+
+  function persist(){save("clausa-rules",rules)}
+
+  // ---- Análise ----
+  function analyze(){
+    var t=byId("ct").value.trim(),out=byId("out");out.innerHTML="";decisions={};
+    if(t.length<30){out.innerHTML='<div class="empty">Cole um trecho maior de contrato ou use o exemplo.</div>';return}
+    var sents=t.match(/[^.;\n]+[.;]?/g)||[],found=[],done={},cnt={alto:0,medio:0,ok:0};
+    sents.forEach(function(s){
+      s=s.trim();if(s.length<12)return;
+      rules.forEach(function(r){
+        if(!r.on||!r.pat)return;
+        var re;try{re=new RegExp(r.pat,"i")}catch(e){return}
+        if(re.test(s)&&!done[r.id]){done[r.id]=1;found.push({r:r,s:s});cnt[r.sev]++}
+      });
+    });
+    if(!found.length){out.innerHTML='<div class="empty">Nenhuma das regras ativas encontrou correspondência neste texto.</div>';return}
+    found.sort(function(a,b){var o={alto:0,medio:1,ok:2};return o[a.r.sev]-o[b.r.sev]});
+
+    var sum=el("div","sumbar");
+    sum.innerHTML=
+      '<div class="stat alto"><b>'+cnt.alto+'</b><span>Risco alto</span></div>'+
+      '<div class="stat medio"><b>'+cnt.medio+'</b><span>Atenção</span></div>'+
+      '<div class="stat ok"><b>'+cnt.ok+'</b><span>Sem alerta</span></div>'+
+      '<div class="stat apr"><b id="apr-n">0</b><span>Sugestões aprovadas</span></div>';
+    out.appendChild(sum);
+
+    found.forEach(function(f,idx){
+      var key="f"+idx;
+      var d=el("div","find "+f.r.sev);d.id=key;
+      d.innerHTML=
+        '<div class="fh"><span class="sev '+f.r.sev+'">'+LB[f.r.sev]+'</span><span class="ft">'+esc(f.r.name)+'</span></div>'+
+        '<q>'+esc(f.s.length>260?f.s.slice(0,260)+"…":f.s)+'</q>'+
+        '<div class="why">'+esc(f.r.reason)+'</div>'+
+        (f.r.sugg?'<div class="sugg"><span class="sl">Sugestão de melhoria</span><p>'+esc(f.r.sugg)+'</p>'+
+          '<div class="sa"><button class="btn sm" data-apr="'+key+'">Aprovar</button><button class="btn ghost sm" data-rej="'+key+'">Rejeitar</button><span class="state" data-st="'+key+'" hidden></span></div></div>':'');
+      out.appendChild(d);
+    });
+    out.appendChild(exportBar());
+    $("[data-apr]",out).forEach(function(b){b.onclick=function(){decide(b.dataset.apr,"apr")}});
+    $("[data-rej]",out).forEach(function(b){b.onclick=function(){decide(b.dataset.rej,"rej")}});
+    window.__found=found;
+  }
+  function decide(key,v){
+    decisions[key]=v;
+    var st=document.querySelector('[data-st="'+key+'"]');
+    st.hidden=false;st.className="state "+v;st.textContent=v==="apr"?"✓ Aprovada":"✕ Rejeitada";
+    var card=byId(key);card.classList.toggle("rej",v==="rej");
+    var n=Object.keys(decisions).filter(function(k){return decisions[k]==="apr"}).length;
+    var el2=byId("apr-n");if(el2)el2.textContent=n;
+  }
+  function exportBar(){
+    var d=el("div","acts");d.style.marginTop="6px";
+    d.innerHTML='<button class="btn sm" id="exp">Copiar relatório da revisão</button>';
+    setTimeout(function(){var b=byId("exp");if(b)b.onclick=exportReport},0);
+    return d;
+  }
+  function exportReport(){
+    var found=window.__found||[],lines=["RELATÓRIO DE REVISÃO — CLAUSA","Gerado em "+new Date().toLocaleString("pt-BR"),""];
+    found.forEach(function(f,idx){
+      var dec=decisions["f"+idx];
+      lines.push("["+LB[f.r.sev].toUpperCase()+"] "+f.r.name);
+      lines.push("Trecho: "+f.s.trim());
+      lines.push("Motivo: "+f.r.reason);
+      if(f.r.sugg)lines.push("Sugestão: "+f.r.sugg+"  →  "+(dec==="apr"?"APROVADA":dec==="rej"?"REJEITADA":"pendente"));
+      lines.push("");
+    });
+    var txt=lines.join("\n");
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){flash("Relatório copiado para a área de transferência.")},function(){showText(txt)});
+    }else showText(txt);
+  }
+  function showText(txt){var o=byId("out");var p=el("div","panel");p.style.marginTop="12px";var b=el("div","bd");var ta=el("textarea");ta.value=txt;ta.style.minHeight="180px";b.appendChild(ta);p.appendChild(b);o.appendChild(p);ta.select()}
+  function flash(msg){var f=el("div","sugg");f.style.margin="12px 0 0";f.innerHTML='<p style="color:var(--ok);margin:0">'+esc(msg)+'</p>';byId("out").appendChild(f);setTimeout(function(){f.remove()},3000)}
+
+  // ---- Modelos ----
+  function renderTpls(){
+    var sel=byId("tpls");sel.innerHTML='<option value="">— modelos salvos —</option>';
+    Object.keys(templates).forEach(function(n){var o=el("option",null,n);o.value=n;sel.appendChild(o)});
+  }
+  byId("savetpl").onclick=function(){
+    var n=byId("tplname").value.trim();if(!n){flash2("Dê um nome ao modelo.");return}
+    templates[n]=clone(rules);save("clausa-templates",templates);byId("tplname").value="";renderTpls();flash2('Modelo "'+n+'" salvo.');
+  };
+  byId("loadtpl").onclick=function(){var n=byId("tpls").value;if(!n||!templates[n])return;rules=clone(templates[n]);persist();renderRules();flash2('Modelo "'+n+'" carregado.')};
+  byId("deltpl").onclick=function(){var n=byId("tpls").value;if(!n)return;delete templates[n];save("clausa-templates",templates);renderTpls();flash2("Modelo excluído.")};
+  byId("resetrules").onclick=function(){rules=clone(DEFAULTS);persist();renderRules();flash2("Regras padrão restauradas.")};
+  function flash2(msg){var s=byId("tplname");s.placeholder=msg;setTimeout(function(){s.placeholder="Nome do novo modelo"},2500)}
+
+  // ---- Eventos ----
+  byId("analyze").onclick=analyze;
+  byId("loadex").onclick=function(){byId("ct").value=EX;analyze()};
+  byId("clear").onclick=function(){byId("ct").value="";byId("out").innerHTML='<div class="empty">Os apontamentos aparecem aqui depois de analisar o contrato.</div>'};
+  byId("addrule").onclick=function(){editRule(-1)};
+  byId("file").onchange=function(e){var f=e.target.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){byId("ct").value=rd.result;analyze()};rd.readAsText(f)};
+
+  renderRules();renderTpls();
+})();
+</script>
+</body>
+</html>
