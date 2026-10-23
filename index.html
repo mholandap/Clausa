@@ -8,7 +8,6 @@
 <style>
 :root{--ink:#E7ECF1;--paper:#0F1A28;--card:#16222F;--seal:#2B4256;--teal:#5FB3A5;--gray:#9AA7B4;--line:#28384A;--hi-high:#4A2B2B;--hi-mid:#4A4420;--hi-ok:#20423B;--text:#E7ECF1;--bb:#0C1520;--bf:#E7ECF1;--nav:rgba(15,26,40,.9);--shadow:0 1px 2px rgba(0,0,0,.35),0 12px 32px rgba(0,0,0,.45);--shadow-lg:0 2px 8px rgba(0,0,0,.4),0 20px 50px rgba(0,0,0,.55);--glow-a:rgba(95,179,165,.24);--glow-b:rgba(79,130,180,.18);--band:rgba(12,21,32,.54);color-scheme:dark;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-:root[data-theme="light"]{--ink:#1B2A3C;--paper:#F4F6F8;--card:#FFFFFF;--seal:#1B2A3C;--teal:#2E6B63;--gray:#5C6B7A;--line:#E2E7EC;--hi-high:#F3DCD8;--hi-mid:#F4EBCF;--hi-ok:#D7E7E0;--text:#1B2A3C;--bb:#EAEFF4;--bf:#1B2A3C;--nav:rgba(244,246,248,.9);--shadow:0 1px 2px rgba(27,42,60,.05),0 10px 30px rgba(27,42,60,.07);--shadow-lg:0 2px 6px rgba(27,42,60,.06),0 18px 44px rgba(27,42,60,.12);--glow-a:rgba(46,107,99,.18);--glow-b:rgba(43,66,86,.10);--band:rgba(234,239,244,.58);color-scheme:light}
 html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
 *{box-sizing:border-box}
 body{margin:0;position:relative;z-index:0;background:var(--paper);color:var(--text);font:400 16px/1.65 "Inter",system-ui,sans-serif}
@@ -61,7 +60,7 @@ section h2{font-size:clamp(28px,4vw,42px);margin-bottom:18px;max-width:20ch}.sub
 .prog{height:8px;background:var(--line);border-radius:4px;margin:6px 0 14px;overflow:hidden}.prog div{height:100%;width:0;background:var(--teal);transition:width .4s}
 .calc{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center}.calc label{display:block;margin:16px 0 4px;font-weight:500}.calc input[type=range]{width:100%;accent-color:var(--seal)}
 .out{background:var(--bb);color:var(--bf);border-radius:6px;padding:30px}.out strong{display:block;font:600 46px "Playfair Display",Georgia,serif}.out small{opacity:.8}
-#res{color:#fff}:root[data-theme="light"] #res{color:var(--ink)}
+#res{color:#fff}
 .sec{display:grid;grid-template-columns:repeat(2,1fr);gap:28px 44px}.sec h3{font-size:20px;margin-bottom:6px}.sec p{margin:0;opacity:.8}
 details{border-bottom:1px solid var(--line);padding:16px 0;max-width:760px}summary{cursor:pointer;font-weight:500}details p{color:var(--gray);margin:8px 0 0}
 form{display:flex;gap:10px;flex-wrap:wrap;max-width:520px}input[type=email]{flex:1 1 240px;padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--text);font:400 16px "Inter",sans-serif}
@@ -116,7 +115,7 @@ form input[type=text],form select{flex:1 1 240px;padding:12px 14px;border:1px so
 <nav class="nav"><div class="wrap">
   <a class="logo" href="#topo"><i></i>Clausa</a>
   <div class="links"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#teste">Experimente</a><a href="#calc">Calculadora</a><a href="#seguranca">Segurança</a><a href="#piloto">Piloto</a></div>
-  <div style="display:flex;gap:8px"><button class="btn ghost" id="theme" type="button" aria-label="Alternar tema claro e escuro">Tema</button><a class="btn sm" href="#lista">Lista de espera</a></div>
+  <div style="display:flex;gap:8px"><a class="btn sm" href="#lista">Lista de espera</a></div>
 </div></nav>
 
 <div id="topo" class="wrap hero">
@@ -262,7 +261,7 @@ form input[type=text],form select{flex:1 1 240px;padding:12px 14px;border:1px so
   <h3>Compartilhamento</h3><p>Não vendemos nem cedemos seus dados. Usamos a Vercel para hospedar a página e a Formspree para receber e encaminhar por e-mail as mensagens enviadas pelo formulário.</p>
   <h3>Por quanto tempo</h3><p>Até você pedir a exclusão ou até o encerramento do projeto, o que ocorrer primeiro.</p>
   <h3>Seus direitos</h3><p>Você pode pedir confirmação, acesso, correção, exclusão dos dados e a revogação do consentimento a qualquer momento, escrevendo para maiaholandap2@gmail.com (LGPD, art. 18).</p>
-  <h3>Demonstração e cookies</h3><p>O texto colado na demonstração é processado no seu navegador e não é enviado. A página não usa cookies de rastreamento; guarda apenas a sua preferência de tema claro ou escuro no próprio navegador.</p>
+  <h3>Demonstração e cookies</h3><p>O texto colado na demonstração é processado no seu navegador e não é enviado. A página não usa cookies de rastreamento nem guarda informações suas no navegador.</p>
 </div></section>
 
 <footer><div class="wrap">Protótipo de conceito. Nome, textos e números são ilustrativos e os contratos mostrados são fictícios. <a href="#privacidade">Política de privacidade</a></div></footer>
@@ -270,7 +269,6 @@ form input[type=text],form select{flex:1 1 240px;padding:12px 14px;border:1px so
 <script>
 (function(){
   var root=document.documentElement,$=function(s,c){return [].slice.call((c||document).querySelectorAll(s))};
-  try{var s=localStorage.getItem("clausa-theme");if(s)root.setAttribute("data-theme",s)}catch(e){}
   /* animações ao rolar: títulos palavra por palavra + entrada dos blocos (desligadas p/ quem prefere menos movimento) */
   if(matchMedia("(prefers-reduced-motion: no-preference)").matches){
     function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
@@ -287,9 +285,6 @@ form input[type=text],form select{flex:1 1 240px;padding:12px 14px;border:1px so
     var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");ro.unobserve(e.target)}})},{rootMargin:"0px 0px -8% 0px"});
     rev.forEach(function(x){ro.observe(x)});
   }
-  document.getElementById("theme").onclick=function(){
-    var n=root.getAttribute("data-theme")==="light"?"dark":"light";
-    root.setAttribute("data-theme",n);try{localStorage.setItem("clausa-theme",n)}catch(e){}};
   var bar=document.getElementById("bar");
   addEventListener("scroll",function(){var h=root.scrollHeight-innerHeight;bar.style.width=(h>0?scrollY/h*100:0)+"%"},{passive:true});
 
