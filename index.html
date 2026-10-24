@@ -35,7 +35,7 @@ a{color:inherit}.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
 .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line);padding:8px 12px;font-size:14px}
 .btn.sm{padding:9px 16px;font-size:14px}
 :focus-visible{outline:3px solid var(--teal);outline-offset:2px}
-.hero{display:grid;grid-template-columns:1fr 1.1fr;gap:44px;padding:64px 0 80px;align-items:start}
+.hero{display:grid;grid-template-columns:1fr 1.1fr;gap:44px;padding:64px 20px 80px;align-items:start}
 .hero h1{font-size:clamp(36px,5.2vw,58px)}.hero p.lead{color:var(--gray);font-size:19px;line-height:1.6;max-width:46ch;margin:20px 0 28px}
 .doc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:26px 28px;font:400 15.5px/1.7 "Inter",system-ui,sans-serif}
 .doc h3{font:500 14px "Inter",sans-serif;color:var(--gray);margin-bottom:12px}.doc p{margin:0 0 10px}
@@ -72,7 +72,7 @@ details{border-bottom:1px solid var(--line);padding:16px 0;max-width:760px}summa
 form{display:flex;gap:10px;flex-wrap:wrap;max-width:520px}input[type=email]{flex:1 1 240px;padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--text);font:400 16px "Inter",sans-serif}
 #msg{margin-top:12px;font-weight:500;min-height:24px;color:var(--teal)}
 footer{padding:32px 0 48px;color:var(--gray);font-size:14px}
-@media (max-width:900px){.links{display:none}.hero,.calc,.how,.tp.show,.sec,.problem{grid-template-columns:1fr}.hero{padding:40px 0 56px}section{padding:60px 0}.step{min-height:28vh}.panel{height:340px;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:5}.how{gap:16px}}
+@media (max-width:900px){.links{display:none}.hero,.calc,.how,.tp.show,.sec,.problem{grid-template-columns:1fr}.hero{padding:40px 20px 56px}section{padding:60px 0}.step{min-height:28vh}.panel{height:340px;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:5}.how{gap:16px}}
 .status{background:var(--bb);color:var(--bf);text-align:center;font-size:14px;padding:9px 16px;border-bottom:1px solid var(--line)}
 .demo{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}.lb{display:block;font-weight:500;margin-bottom:6px}
 textarea{width:100%;min-height:260px;padding:14px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--text);font:400 15px/1.55 "Inter",sans-serif;resize:vertical}
@@ -112,7 +112,7 @@ form input[type=text],form select{flex:1 1 240px;padding:12px 14px;border:1px so
 .problem>div:nth-child(2),.cards>div:nth-child(2){transition-delay:.08s}
 .problem>div:nth-child(3),.cards>div:nth-child(3){transition-delay:.16s}
 .sec>div:nth-child(2){transition-delay:.06s}.sec>div:nth-child(3){transition-delay:.12s}.sec>div:nth-child(4){transition-delay:.18s}
-@media (max-width:700px){#theme{display:none}}
+@media (max-width:700px){#theme,#navapp{display:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -122,7 +122,7 @@ form input[type=text],form select{flex:1 1 240px;padding:12px 14px;border:1px so
 <nav class="nav"><div class="wrap">
   <a class="logo" href="#topo" aria-label="Clausa — voltar ao início">Clausa<svg class="scales" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="6.4" r="1.9" fill="currentColor" stroke="none"/><path d="M24 7.5 V37.5"/><path d="M9.5 14 H38.5"/><path d="M9.5 14 V17"/><path d="M4.8 17 Q9.5 23.6 14.2 17"/><path d="M38.5 14 V17"/><path d="M33.8 17 Q38.5 23.6 43.2 17"/><path d="M17.5 37.5 H30.5"/></svg></a>
   <div class="links"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#teste">Experimente</a><a href="#calc">Calculadora</a><a href="#seguranca">Segurança</a><a href="#piloto">Piloto</a><a href="https://clausa-fawn.vercel.app/" target="_blank" rel="noopener">Questionário ↗</a></div>
-  <div style="display:flex;gap:8px;align-items:center;margin-left:auto;flex:none"><button class="btn ghost" id="theme" type="button" aria-label="Alternar tema claro e escuro">Tema</button><a class="btn ghost sm" href="app.html" target="_blank" rel="noopener">Abrir o app</a><a class="btn sm" href="#lista">Lista de espera</a></div>
+  <div style="display:flex;gap:8px;align-items:center;margin-left:auto;flex:none"><button class="btn ghost" id="theme" type="button" aria-label="Alternar tema claro e escuro">Tema</button><a class="btn ghost sm" id="navapp" href="app.html" target="_blank" rel="noopener">Abrir o app</a><a class="btn sm" href="#lista">Lista de espera</a></div>
 </div></nav>
 
 <div id="topo" class="wrap hero">
