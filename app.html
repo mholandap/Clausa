@@ -351,12 +351,13 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
         '<q>'+esc(f.s.length>260?f.s.slice(0,260)+"…":f.s)+'</q><div class="why">'+esc(f.reason)+'</div>'+
         (f.sugg?'<div class="sugg"><span class="sl">Sugestão de melhoria</span><p>'+esc(f.sugg)+'</p><div class="sa"><button class="btn sm" data-apr="'+i+'">Aprovar</button><button class="btn ghost sm" data-rej="'+i+'">Rejeitar</button><span class="state '+(dec||"")+'" data-st="'+i+'" '+(dec?"":"hidden")+'>'+(dec==="apr"?"✓ Aprovada":dec==="rej"?"✕ Rejeitada":"")+'</span></div></div>':'')+'</div>';
     });
-    rest+='<div style="margin-top:4px"><button class="btn ghost sm" id="rep">Copiar relatório da revisão</button></div></div>';
+    rest+='<div class="reprow" style="margin-top:4px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" id="rep">Copiar relatório</button><button class="btn ghost sm" id="dl">Baixar relatório (.txt)</button></div></div>';
     ma.innerHTML=head+'<div class="mbody"><div class="mname">Clausa</div><p id="typ" style="margin:0 0 12px"></p>'+rest+'</div>';
     inner.appendChild(ma);
     $("[data-apr]",inner).forEach(function(b){b.onclick=function(){decide(found,+b.dataset.apr,"apr")}});
     $("[data-rej]",inner).forEach(function(b){b.onclick=function(){decide(found,+b.dataset.rej,"rej")}});
     byId("rep").onclick=function(){copyReport(c,found)};
+    var dlb=byId("dl");if(dlb)dlb.onclick=function(){downloadReport(c,found)};
     updateApr(c);
     typeWords(byId("typ"),"Revisei o contrato e encontrei "+found.length+" ponto(s) para a sua atenção:",typeIt,function(){var r=byId("rest");if(r)r.classList.add("show");byId("scroll").scrollTop=byId("scroll").scrollHeight});
   }
@@ -374,17 +375,32 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   }
   function updateApr(c){var n=0;for(var k in c.decisions)if(c.decisions[k]==="apr")n++;var e=byId("aprn");if(e)e.textContent=n}
 
-  function copyReport(c,found){
-    var lines=["RELATÓRIO DE REVISÃO — CLAUSA","Contrato: "+(c.title||"")," Gerado em "+new Date().toLocaleString("pt-BR"),""];
+  function buildReport(c,found){
+    var cnt={alto:0,medio:0,ok:0},apr=0;found.forEach(function(f,i){cnt[f.sev]++;if(c.decisions[i]==="apr")apr++});
+    var lines=["RELATÓRIO DE REVISÃO — CLAUSA","Contrato: "+(c.title||""),"Gerado em "+new Date().toLocaleString("pt-BR"),"",
+      "RESUMO: "+cnt.alto+" risco(s) alto(s) · "+cnt.medio+" ponto(s) de atenção · "+cnt.ok+" sem alerta · "+apr+" sugestão(ões) aprovada(s)",
+      "----------------------------------------",""];
     found.forEach(function(f,i){var d=c.decisions[i];
       lines.push("["+LB[f.sev].toUpperCase()+"] "+f.name);
       lines.push("Trecho: "+f.s.trim());lines.push("Motivo: "+f.reason);
       if(f.sugg)lines.push("Sugestão: "+f.sugg+"  ->  "+(d==="apr"?"APROVADA":d==="rej"?"REJEITADA":"pendente"));
       lines.push("");
     });
-    var txt=lines.join("\n");
+    lines.push("— A Clausa aponta os riscos; a decisão é sempre do advogado.");
+    return lines.join("\n");
+  }
+  function copyReport(c,found){
+    var txt=buildReport(c,found);
     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(function(){toast("Relatório copiado!")},function(){alert(txt)});
     else alert(txt);
+  }
+  function downloadReport(c,found){
+    var txt=buildReport(c,found);
+    var blob=new Blob([txt],{type:"text/plain;charset=utf-8"});
+    var nm=(c.title||"revisao").replace(/[^\wÀ-ſ -]/g,"").trim().slice(0,40)||"revisao";
+    var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Clausa - "+nm+".txt";
+    document.body.appendChild(a);a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},120);
   }
   function toast(m){var t=byId("rep");if(!t)return;var o=t.textContent;t.textContent=m;setTimeout(function(){t.textContent=o},2000)}
 
