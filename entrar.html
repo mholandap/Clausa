@@ -191,7 +191,7 @@ label{font-size:12.5px;font-weight:500;margin-bottom:3px;display:block}
   // Google (funciona quando você ligar o provedor Google no Supabase)
   function google(){
     if(!sb){alert("Login ainda não configurado.");return}
-    sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+"/"+APP}});
+    sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:new URL(APP,location.href).href}});
   }
   var gbtns=document.querySelectorAll(".gbtn");
   for(var i=0;i<gbtns.length;i++)gbtns[i].onclick=google;
