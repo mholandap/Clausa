@@ -43,6 +43,11 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 #new{width:100%}
 .convos{flex:1;overflow-y:auto;padding:6px 10px}
 .clabel{font:600 11px "Inter";letter-spacing:.08em;text-transform:uppercase;color:var(--gray);padding:12px 8px 6px}
+.cfilter{display:flex;flex-wrap:wrap;gap:5px;padding:0 2px 8px}
+.cfilter .fchip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:none;color:var(--gray);font:600 11px "Inter";padding:4px 9px;border-radius:20px;cursor:pointer}
+.cfilter .fchip:hover{color:var(--ink)}
+.cfilter .fchip.on{background:var(--card);color:var(--ink);border-color:var(--orange)}
+.cfilter .fchip .fdot{width:7px;height:7px;border-radius:50%}
 .convo{display:flex;align-items:center;gap:8px;padding:10px 10px;border-radius:9px;cursor:pointer;color:var(--ink);font-size:14px;margin-bottom:2px}
 .convo:hover{background:var(--card)}
 .convo.active{background:var(--card);outline:1px solid var(--line)}
@@ -131,6 +136,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .find .why{font-size:13px;color:var(--gray)}
 .sugg{margin-top:11px;background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:11px}
 .sugg .sl{font:600 11px "Inter";letter-spacing:.08em;text-transform:uppercase;color:var(--orange)}
+.sugg.note-ok .sl{color:var(--ok)}
 .sugg p{margin:5px 0 0;font-size:13px}
 .sugg .sa{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
 .state{font:600 12px "Inter";padding:3px 9px;border-radius:30px}
@@ -355,11 +361,35 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   }
 
   // ---------- Sidebar ----------
+  var filter="all";
+  function filterChips(){
+    var chips=[["all","Todos",""],["pinned","Fixados",""],["urgente","Urgente","#F0625A"],["importante","Importante","#E0B65C"],["tranquilo","Tranquilo","#5FB58C"]];
+    var h='<div class="cfilter">';
+    chips.forEach(function(ch){
+      var dot=ch[2]?'<span class="fdot" style="background:'+ch[2]+'"></span>':(ch[0]==="pinned"?'📌 ':'');
+      h+='<button class="fchip'+(filter===ch[0]?" on":"")+'" data-f="'+ch[0]+'">'+dot+ch[1]+'</button>';
+    });
+    return h+'</div>';
+  }
+  function applyFilter(c){
+    if(filter==="all")return true;
+    if(filter==="pinned")return !!c.pinned;
+    return c.label===filter;
+  }
   function renderSidebar(){
     var box=byId("convos");box.innerHTML="";
-    if(!convos.length){box.innerHTML='<div class="clabel">Conversas</div><p class="mut small" style="padding:0 8px">Nenhum contrato ainda. Clique em “+ Novo contrato”.</p>';return}
     box.appendChild(el("div","clabel","Conversas"));
-    var list=convos.slice().sort(function(a,b){return (b.pinned?1:0)-(a.pinned?1:0)});
+    if(!convos.length){
+      var p=el("p","mut small");p.style.padding="0 8px";p.textContent="Nenhum contrato ainda. Clique em “+ Novo contrato”.";
+      box.appendChild(p);return;
+    }
+    var fc=el("div");fc.innerHTML=filterChips();box.appendChild(fc.firstElementChild);
+    $(".fchip",box).forEach(function(b){b.onclick=function(){filter=b.dataset.f;renderSidebar()}});
+    var list=convos.slice().sort(function(a,b){return (b.pinned?1:0)-(a.pinned?1:0)}).filter(applyFilter);
+    if(!list.length){
+      var p2=el("p","mut small");p2.style.padding="6px 8px";p2.textContent="Nenhum contrato nesta etiqueta.";
+      box.appendChild(p2);return;
+    }
     list.forEach(function(c){
       var d=el("div","convo"+(c.id===current?" active":""));
       var dot=(c.label&&LABELS[c.label])?'<span class="cdot" style="background:'+LABELS[c.label].c+'" title="'+LABELS[c.label].t+'"></span>':'';
@@ -457,18 +487,29 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     var head='<div class="ava ai">'+aiScales()+'</div>';
     if(!found.length){
       var ativas=rules.filter(function(r){return r.on}).length;
+      var msg=(ativas===0)
+        ? "As regras de revisão não estão carregadas. Abra “Regras & modelos” e clique em “Restaurar regras padrão”, depois envie o contrato novamente."
+        : "Revisei o documento e não encontrei pontos de atenção com as regras atuais. Pode ser que esteja tudo tranquilo — ou que o texto use termos diferentes dos que as regras procuram. Você pode ajustar as regras em “Regras & modelos”.";
       ma.innerHTML=head+'<div class="mbody"><div class="mname">Clausa</div><p class="mut" id="typ"></p></div>';
       inner.appendChild(ma);
-      typeWords(byId("typ"),"Revisei o contrato, mas nenhuma das "+ativas+" regras ativas encontrou correspondência. Se este número for 0, as regras não carregaram — abra Regras & modelos e clique em Restaurar regras padrão. Caso contrário, o texto pode usar termos diferentes.",typeIt,null);
+      typeWords(byId("typ"),msg,typeIt,null);
       return;
     }
     var cnt={alto:0,medio:0,ok:0};found.forEach(function(f){cnt[f.sev]++});
     var rest='<div class="aireveal" id="rest"><div class="sumbar"><div class="stat alto"><b>'+cnt.alto+'</b><span>Risco alto</span></div><div class="stat medio"><b>'+cnt.medio+'</b><span>Atenção</span></div><div class="stat ok"><b>'+cnt.ok+'</b><span>Sem alerta</span></div><div class="stat apr"><b id="aprn">0</b><span>Aprovadas</span></div></div>';
     found.forEach(function(f,i){
       var dec=c.decisions[i];
-      rest+='<div class="find '+f.sev+(dec==="rej"?" rej":"")+'" id="find'+i+'"><div class="fh"><span class="sev '+f.sev+'">'+LB[f.sev]+'</span><span class="ft">'+esc(f.name)+'</span></div>'+
-        '<q>'+esc(f.s.length>260?f.s.slice(0,260)+"…":f.s)+'</q><div class="why">'+esc(f.reason)+'</div>'+
-        (f.sugg?'<div class="sugg"><span class="sl">Sugestão de melhoria</span><p>'+esc(f.sugg)+'</p><div class="sa"><button class="btn sm" data-apr="'+i+'">Aprovar</button><button class="btn ghost sm" data-rej="'+i+'">Rejeitar</button><span class="state '+(dec||"")+'" data-st="'+i+'" '+(dec?"":"hidden")+'>'+(dec==="apr"?"✓ Aprovada":dec==="rej"?"✕ Rejeitada":"")+'</span></div></div>':'')+'</div>';
+      var block='<div class="find '+f.sev+(dec==="rej"?" rej":"")+'" id="find'+i+'"><div class="fh"><span class="sev '+f.sev+'">'+LB[f.sev]+'</span><span class="ft">'+esc(f.name)+'</span></div>'+
+        '<q>'+esc(f.s.length>260?f.s.slice(0,260)+"…":f.s)+'</q><div class="why">'+esc(f.reason)+'</div>';
+      if(f.sugg){
+        if(f.sev==="ok"){
+          block+='<div class="sugg note-ok"><span class="sl">Observação</span><p>'+esc(f.sugg)+'</p></div>';
+        }else{
+          block+='<div class="sugg"><span class="sl">Sugestão de melhoria</span><p>'+esc(f.sugg)+'</p><div class="sa"><button class="btn sm" data-apr="'+i+'">Aprovar</button><button class="btn ghost sm" data-rej="'+i+'">Rejeitar</button><span class="state '+(dec||"")+'" data-st="'+i+'" '+(dec?"":"hidden")+'>'+(dec==="apr"?"✓ Aprovada":dec==="rej"?"✕ Rejeitada":"")+'</span></div></div>';
+        }
+      }
+      block+='</div>';
+      rest+=block;
     });
     rest+='<div class="reprow" style="margin-top:4px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" id="rep">Copiar relatório</button><button class="btn ghost sm" id="dl">Baixar relatório (.txt)</button></div></div>';
     ma.innerHTML=head+'<div class="mbody"><div class="mname">Clausa</div><p id="typ" style="margin:0 0 12px"></p>'+rest+'</div>';
