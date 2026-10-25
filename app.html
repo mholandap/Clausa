@@ -54,7 +54,9 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .side-foot button,.side-foot a{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:0;color:var(--gray);font:500 13px "Inter";cursor:pointer;text-decoration:none;padding:8px 10px;border-radius:8px}
 .side-foot button:hover,.side-foot a:hover{background:var(--card);color:var(--ink)}
 .side-acct{display:flex;align-items:center;gap:8px;padding:6px 10px 10px;margin-bottom:4px;border-bottom:1px solid var(--line)}
-.side-acct .acct-em{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:500 12.5px "Inter";color:var(--ink)}
+.side-acct .acct-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.side-acct .acct-nm{font:600 13px "Inter";color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.side-acct .acct-em{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:400 11px "Inter";color:var(--gray)}
 .side-acct .acct-out{flex:none;background:none;border:1px solid var(--line);color:var(--gray);font:600 11.5px "Inter";cursor:pointer;padding:5px 10px;border-radius:7px;width:auto}
 .side-acct .acct-out:hover{background:var(--card);color:var(--ink)}
 .side-acct .acct-login{display:flex;align-items:center;gap:8px;width:100%;color:var(--orange);font:600 12.5px "Inter";text-decoration:none;padding:4px 0}
@@ -215,14 +217,14 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 
 <script>
 (function(){
-  var NAME="Pedro"; // nome exibido na saudação
+  var NAME=""; // nome exibido na saudação (preenchido quando o usuário está logado)
   var $=function(s,c){return [].slice.call((c||document).querySelectorAll(s))};
   var byId=function(i){return document.getElementById(i)};
   var LB={alto:"Risco alto",medio:"Atenção",ok:"Sem alerta"};
   var SCALES='<svg class="scales" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>';
   var DOC='<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
   var QUILL='<svg class="quill" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/></svg>';
-  var GREET=["O que temos hoje, "+NAME+"?","Qual o novo contrato, "+NAME+"?","Vamos revisar algo, "+NAME+"?","Por onde começamos, "+NAME+"?"];
+  function greetings(){var n=NAME?(", "+NAME):"";return ["O que temos hoje"+n+"?","Qual o novo contrato"+n+"?","Vamos revisar algo"+n+"?","Por onde começamos"+n+"?"];}
 
   var DEFAULTS=[
     {id:"r1",on:true,sev:"alto",name:"Multa e cláusula penal",pat:"multa|penalidade|cl[áa]usula penal",reason:"Penalidades podem ser elevadas; confira o percentual, a base de cálculo e a proporcionalidade.",sugg:"Rever o valor da multa e vinculá-la à gravidade do descumprimento, evitando percentuais sobre o saldo total."},
@@ -266,6 +268,12 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 
   // ---------- Conta / nuvem (Supabase) ----------
   function uid(){try{return crypto.randomUUID()}catch(e){return "c"+Date.now()+Math.random().toString(16).slice(2)}}
+  function firstName(u){
+    var n=(u&&u.user_metadata&&u.user_metadata.nome)||"";
+    n=(n+"").trim().split(/\s+/)[0]||"";
+    if(!n&&u&&u.email)n=u.email.split("@")[0];
+    return n?(n.charAt(0).toUpperCase()+n.slice(1)):"";
+  }
   var cfg=window.CLAUSA_CONFIG||{};
   var sbReady=cfg.SUPABASE_URL && cfg.SUPABASE_URL.indexOf("COLE_")<0 && window.supabase;
   var sb=sbReady ? window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY) : null;
@@ -300,7 +308,8 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   function renderAccount(){
     var a=byId("account");if(!a)return;
     if(user){
-      a.innerHTML='<span class="acct-em" title="'+esc(user.email)+'">'+esc(user.email)+'</span><button class="acct-out" id="sair" type="button">Sair</button>';
+      var nm=firstName(user);
+      a.innerHTML='<div class="acct-info">'+(nm?'<span class="acct-nm">'+esc(nm)+'</span>':'')+'<span class="acct-em" title="'+esc(user.email)+'">'+esc(user.email)+'</span></div><button class="acct-out" id="sair" type="button">Sair</button>';
       var s=byId("sair");if(s)s.onclick=function(){sb.auth.signOut().then(function(){location.href="entrar.html"})};
     }else{
       a.innerHTML='<a class="acct-login" href="entrar.html">☁ Entrar para salvar na nuvem</a>';
@@ -359,7 +368,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     byId("mtitle").textContent=c&&c.text?c.title:"Clausa";
     inner.innerHTML="";
     if(!c||!c.text){
-      var g=GREET[Math.floor(Math.random()*GREET.length)];
+      var gg=greetings();var g=gg[Math.floor(Math.random()*gg.length)];
       var w=el("div","greet");
       w.innerHTML=SCALES.replace('class="scales"','class="scales" style="width:46px;height:46px"')+
         '<h1>'+esc(g)+'</h1>'+
@@ -525,7 +534,9 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   if(sb){
     sb.auth.getSession().then(function(r){
       user=(r.data&&r.data.session)?r.data.session.user:null;
+      if(user)NAME=firstName(user);
       renderAccount();
+      renderMain();
       if(user)loadCloud();
     });
   }else{
