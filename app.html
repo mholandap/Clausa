@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Clausa — App</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.95.0/dist/umd/supabase.js"></script>
+<script src="js/clausa-config.js"></script>
 <style>
 :root{
   --paper:#0B0B0C;--panel:#0E0E0F;--card:#161617;--card2:#1D1D1F;--ink:#FAFAFA;--gray:#9B9B9E;--line:#2A2A2D;
@@ -51,6 +53,12 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .side-foot{border-top:1px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:6px}
 .side-foot button,.side-foot a{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:0;color:var(--gray);font:500 13px "Inter";cursor:pointer;text-decoration:none;padding:8px 10px;border-radius:8px}
 .side-foot button:hover,.side-foot a:hover{background:var(--card);color:var(--ink)}
+.side-acct{display:flex;align-items:center;gap:8px;padding:6px 10px 10px;margin-bottom:4px;border-bottom:1px solid var(--line)}
+.side-acct .acct-em{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:500 12.5px "Inter";color:var(--ink)}
+.side-acct .acct-out{flex:none;background:none;border:1px solid var(--line);color:var(--gray);font:600 11.5px "Inter";cursor:pointer;padding:5px 10px;border-radius:7px;width:auto}
+.side-acct .acct-out:hover{background:var(--card);color:var(--ink)}
+.side-acct .acct-login{display:flex;align-items:center;gap:8px;width:100%;color:var(--orange);font:600 12.5px "Inter";text-decoration:none;padding:4px 0}
+.side-acct .acct-login:hover{text-decoration:underline;background:none}
 
 /* ---- Main ---- */
 .main{flex:1;display:flex;flex-direction:column;min-width:0;padding-top:env(safe-area-inset-top,0px)}
@@ -169,6 +177,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     </div>
     <div class="convos" id="convos"></div>
     <div class="side-foot">
+      <div class="side-acct" id="account"></div>
       <button id="openrules">⚙️ Regras & modelos</button>
       <a href="index.html">↗ Voltar ao site</a>
     </div>
@@ -255,7 +264,50 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   var convos=load("clausa-convos")||[];
   var current=null;
 
-  function persistConvos(){save("clausa-convos",convos)}
+  // ---------- Conta / nuvem (Supabase) ----------
+  function uid(){try{return crypto.randomUUID()}catch(e){return "c"+Date.now()+Math.random().toString(16).slice(2)}}
+  var cfg=window.CLAUSA_CONFIG||{};
+  var sbReady=cfg.SUPABASE_URL && cfg.SUPABASE_URL.indexOf("COLE_")<0 && window.supabase;
+  var sb=sbReady ? window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY) : null;
+  var user=null, syncTimer=null;
+
+  function toRow(c){return {id:c.id,user_id:user.id,titulo:c.title||"Contrato",texto:c.text||"",decisions:c.decisions||{},atualizado_em:new Date().toISOString()}}
+  function fromRow(r){return {id:r.id,title:r.titulo||"Contrato",text:r.texto||"",decisions:r.decisions||{},created:r.criado_em?Date.parse(r.criado_em):Date.now()}}
+
+  function cloudSync(){
+    if(!user||!sb||!convos.length)return;
+    clearTimeout(syncTimer);
+    syncTimer=setTimeout(function(){
+      sb.from("contracts").upsert(convos.map(toRow)).then(function(r){if(r.error)console.log("Sync (salvar) erro:",r.error)});
+    },500);
+  }
+  function cloudDelete(id){
+    if(!user||!sb)return;
+    sb.from("contracts").delete().eq("id",id).then(function(r){if(r.error)console.log("Sync (excluir) erro:",r.error)});
+  }
+  function loadCloud(){
+    if(!user||!sb)return;
+    sb.from("contracts").select("*").order("atualizado_em",{ascending:false}).then(function(r){
+      if(r.error){console.log("Sync (carregar) erro:",r.error);return}
+      if(Array.isArray(r.data)){
+        convos=r.data.map(fromRow);
+        save("clausa-convos",convos);
+        current=convos.length?convos[0].id:null;
+        renderSidebar();renderMain();
+      }
+    });
+  }
+  function renderAccount(){
+    var a=byId("account");if(!a)return;
+    if(user){
+      a.innerHTML='<span class="acct-em" title="'+esc(user.email)+'">'+esc(user.email)+'</span><button class="acct-out" id="sair" type="button">Sair</button>';
+      var s=byId("sair");if(s)s.onclick=function(){sb.auth.signOut().then(function(){location.href="entrar.html"})};
+    }else{
+      a.innerHTML='<a class="acct-login" href="entrar.html">☁ Entrar para salvar na nuvem</a>';
+    }
+  }
+
+  function persistConvos(){save("clausa-convos",convos);cloudSync()}
   function persistRules(){save("clausa-rules",rules)}
   function getConvo(id){for(var i=0;i<convos.length;i++)if(convos[i].id===id)return convos[i];return null}
 
@@ -290,7 +342,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   }
 
   function newConvo(){
-    var c={id:"c"+Date.now(),title:"Novo contrato",text:"",decisions:{},created:Date.now()};
+    var c={id:uid(),title:"Novo contrato",text:"",decisions:{},created:Date.now()};
     convos.unshift(c);current=c.id;persistConvos();renderSidebar();renderMain();closeNav();
     byId("input").focus();
   }
@@ -298,7 +350,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   function delConvo(id){
     convos=convos.filter(function(c){return c.id!==id});
     if(current===id)current=convos.length?convos[0].id:null;
-    persistConvos();renderSidebar();renderMain();
+    cloudDelete(id);persistConvos();renderSidebar();renderMain();
   }
 
   // ---------- Main ----------
@@ -408,7 +460,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   function send(){
     var v=byId("input").value.trim();if(v.length<10)return;
     var c=current?getConvo(current):null;
-    if(!c){c={id:"c"+Date.now(),title:"",text:"",decisions:{},created:Date.now()};convos.unshift(c);current=c.id}
+    if(!c){c={id:uid(),title:"",text:"",decisions:{},created:Date.now()};convos.unshift(c);current=c.id}
     c.text=v;c.decisions={};
     var first=(v.split("\n")[0]||"").trim();c.title=(first.length>42?first.slice(0,42)+"…":first)||("Contrato "+new Date().toLocaleDateString("pt-BR"));
     byId("input").value="";sizeInput();persistConvos();renderSidebar();renderMain(true);
@@ -468,6 +520,17 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   // start
   if(convos.length){current=convos[0].id}
   renderSidebar();renderMain();sizeInput();
+
+  // conta / nuvem: se estiver logado, carrega os contratos da nuvem
+  if(sb){
+    sb.auth.getSession().then(function(r){
+      user=(r.data&&r.data.session)?r.data.session.user:null;
+      renderAccount();
+      if(user)loadCloud();
+    });
+  }else{
+    renderAccount();
+  }
 })();
 </script>
 </body>
