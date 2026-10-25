@@ -50,6 +50,18 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .convo .ct{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .convo .cx{opacity:0;border:0;background:none;color:var(--gray);cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;border-radius:5px}
 .convo:hover .cx{opacity:1}.convo .cx:hover{color:var(--alto);background:var(--paper)}
+.convo .cdot{width:8px;height:8px;border-radius:50%;flex:none}
+.convo .cpin{width:13px;height:13px;flex:none;color:var(--orange)}
+.convo .cmenu{opacity:0;border:0;background:none;color:var(--gray);cursor:pointer;font-size:17px;line-height:1;padding:2px 6px;border-radius:5px;flex:none}
+.convo:hover .cmenu,.convo.active .cmenu{opacity:1}
+.convo .cmenu:hover{color:var(--ink);background:var(--paper)}
+.cmenupop{position:fixed;z-index:200;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 34px rgba(0,0,0,.55);padding:6px;min-width:200px}
+.cmenupop button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:0;color:var(--ink);cursor:pointer;padding:8px 10px;border-radius:7px;font:500 13px "Inter"}
+.cmenupop button:hover{background:var(--paper)}
+.cmenupop .sep{height:1px;background:var(--line);margin:5px 4px}
+.cmenupop .lbl{font:600 10.5px "Inter";letter-spacing:.06em;text-transform:uppercase;color:var(--gray);padding:6px 10px 3px}
+.cmenupop .dot{width:9px;height:9px;border-radius:50%;flex:none}
+.cmenupop .del{color:var(--alto)}
 .side-foot{border-top:1px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:6px}
 .side-foot button,.side-foot a{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:0;color:var(--gray);font:500 13px "Inter";cursor:pointer;text-decoration:none;padding:8px 10px;border-radius:8px}
 .side-foot button:hover,.side-foot a:hover{background:var(--card);color:var(--ink)}
@@ -221,6 +233,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   var $=function(s,c){return [].slice.call((c||document).querySelectorAll(s))};
   var byId=function(i){return document.getElementById(i)};
   var LB={alto:"Risco alto",medio:"Atenção",ok:"Sem alerta"};
+  var LABELS={urgente:{t:"Urgente",c:"#F0625A"},importante:{t:"Importante",c:"#E0B65C"},tranquilo:{t:"Não se preocupe",c:"#5FB58C"}};
   var SCALES='<svg class="scales" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>';
   var DOC='<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
   var QUILL='<svg class="quill" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/></svg>';
@@ -279,14 +292,19 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   var sb=sbReady ? window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY) : null;
   var user=null, syncTimer=null;
 
-  function toRow(c){return {id:c.id,user_id:user.id,titulo:c.title||"Contrato",texto:c.text||"",decisions:c.decisions||{},atualizado_em:new Date().toISOString()}}
-  function fromRow(r){return {id:r.id,title:r.titulo||"Contrato",text:r.texto||"",decisions:r.decisions||{},created:r.criado_em?Date.parse(r.criado_em):Date.now()}}
+  function toRow(c){return {id:c.id,user_id:user.id,titulo:c.title||"Contrato",texto:c.text||"",decisions:c.decisions||{},pinned:!!c.pinned,label:c.label||null,atualizado_em:new Date().toISOString()}}
+  function toRowBasic(c){return {id:c.id,user_id:user.id,titulo:c.title||"Contrato",texto:c.text||"",decisions:c.decisions||{},atualizado_em:new Date().toISOString()}}
+  function fromRow(r){return {id:r.id,title:r.titulo||"Contrato",text:r.texto||"",decisions:r.decisions||{},pinned:!!r.pinned,label:r.label||null,created:r.criado_em?Date.parse(r.criado_em):Date.now()}}
 
   function cloudSync(){
     if(!user||!sb||!convos.length)return;
     clearTimeout(syncTimer);
     syncTimer=setTimeout(function(){
-      sb.from("contracts").upsert(convos.map(toRow)).then(function(r){if(r.error)console.log("Sync (salvar) erro:",r.error)});
+      sb.from("contracts").upsert(convos.map(toRow)).then(function(r){
+        if(r.error){ // colunas novas talvez ainda não existam — salva o básico
+          sb.from("contracts").upsert(convos.map(toRowBasic)).then(function(r2){if(r2.error)console.log("Sync (salvar) erro:",r2.error)});
+        }
+      });
     },500);
   }
   function cloudDelete(id){
@@ -341,17 +359,57 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     var box=byId("convos");box.innerHTML="";
     if(!convos.length){box.innerHTML='<div class="clabel">Conversas</div><p class="mut small" style="padding:0 8px">Nenhum contrato ainda. Clique em “+ Novo contrato”.</p>';return}
     box.appendChild(el("div","clabel","Conversas"));
-    convos.forEach(function(c){
+    var list=convos.slice().sort(function(a,b){return (b.pinned?1:0)-(a.pinned?1:0)});
+    list.forEach(function(c){
       var d=el("div","convo"+(c.id===current?" active":""));
-      d.innerHTML=DOC+'<span class="ct">'+esc(c.title||"Sem título")+'</span><button class="cx" title="Excluir">×</button>';
-      d.onclick=function(e){if(e.target.classList.contains("cx"))return;openConvo(c.id)};
-      d.querySelector(".cx").onclick=function(e){e.stopPropagation();delConvo(c.id)};
+      var dot=(c.label&&LABELS[c.label])?'<span class="cdot" style="background:'+LABELS[c.label].c+'" title="'+LABELS[c.label].t+'"></span>':'';
+      var pin=c.pinned?'<svg class="cpin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>':'';
+      d.innerHTML=DOC+dot+'<span class="ct">'+esc(c.title||"Sem título")+'</span>'+pin+'<button class="cmenu" title="Opções">⋯</button>';
+      d.onclick=function(e){if(e.target.closest(".cmenu"))return;openConvo(c.id)};
+      d.querySelector(".cmenu").onclick=function(e){e.stopPropagation();openMenu(c,e.currentTarget)};
       box.appendChild(d);
     });
   }
 
+  // ---------- Menu do contrato (renomear / fixar / etiqueta / excluir) ----------
+  function closeMenu(){var m=document.querySelector(".cmenupop");if(m)m.remove()}
+  function renameConvo(c){
+    var nv=prompt("Novo nome do contrato:",c.title||"");
+    if(nv===null)return;nv=nv.trim();if(!nv)return;
+    c.title=nv;persistConvos();renderSidebar();
+    if(c.id===current)byId("mtitle").textContent=c.text?c.title:"Clausa";
+  }
+  function openMenu(c,btn){
+    closeMenu();
+    var m=el("div","cmenupop");
+    var html='<button data-a="rename">✏️ Renomear</button>'+
+      '<button data-a="pin">📌 '+(c.pinned?"Desafixar":"Fixar no topo")+'</button>'+
+      '<div class="sep"></div><div class="lbl">Etiqueta</div>';
+    for(var k in LABELS){html+='<button data-a="lbl" data-k="'+k+'"><span class="dot" style="background:'+LABELS[k].c+'"></span>'+LABELS[k].t+(c.label===k?" ✓":"")+'</button>'}
+    html+='<button data-a="lbl" data-k=""><span class="dot" style="background:var(--line)"></span>Sem etiqueta'+(!c.label?" ✓":"")+'</button>';
+    html+='<div class="sep"></div><button class="del" data-a="del">🗑️ Excluir</button>';
+    m.innerHTML=html;
+    document.body.appendChild(m);
+    var r=btn.getBoundingClientRect(),mw=210;
+    m.style.left=Math.max(8,Math.min(r.left,window.innerWidth-mw-8))+"px";
+    m.style.top=(r.bottom+4)+"px";
+    var mh=m.getBoundingClientRect().height;
+    if(r.bottom+4+mh>window.innerHeight)m.style.top=Math.max(8,r.top-mh-4)+"px";
+    m.onclick=function(e){
+      var b=e.target.closest("button");if(!b)return;
+      var a=b.dataset.a;
+      if(a==="rename")renameConvo(c);
+      else if(a==="pin"){c.pinned=!c.pinned;persistConvos();renderSidebar()}
+      else if(a==="lbl"){c.label=b.dataset.k||null;persistConvos();renderSidebar()}
+      else if(a==="del")delConvo(c.id);
+      closeMenu();
+    };
+  }
+  document.addEventListener("click",function(e){var m=document.querySelector(".cmenupop");if(m&&!m.contains(e.target)&&!e.target.closest(".cmenu"))closeMenu()});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")closeMenu()});
+
   function newConvo(){
-    var c={id:uid(),title:"Novo contrato",text:"",decisions:{},created:Date.now()};
+    var c={id:uid(),title:"Novo contrato",text:"",decisions:{},pinned:false,label:null,created:Date.now()};
     convos.unshift(c);current=c.id;persistConvos();renderSidebar();renderMain();closeNav();
     byId("input").focus();
   }
@@ -469,7 +527,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   function send(){
     var v=byId("input").value.trim();if(v.length<10)return;
     var c=current?getConvo(current):null;
-    if(!c){c={id:uid(),title:"",text:"",decisions:{},created:Date.now()};convos.unshift(c);current=c.id}
+    if(!c){c={id:uid(),title:"",text:"",decisions:{},pinned:false,label:null,created:Date.now()};convos.unshift(c);current=c.id}
     c.text=v;c.decisions={};
     var first=(v.split("\n")[0]||"").trim();c.title=(first.length>42?first.slice(0,42)+"…":first)||("Contrato "+new Date().toLocaleDateString("pt-BR"));
     byId("input").value="";sizeInput();persistConvos();renderSidebar();renderMain(true);
