@@ -13,6 +13,7 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 :root[data-theme="light"]{--ink:#1A1A1A;--paper:#EAEAEE;--card:#FFFFFF;--seal:#E2590B;--teal:#C2560A;--gray:#565659;--line:#DBDBE1;--hi-high:#F3DCD8;--hi-mid:#F4EBCF;--hi-ok:#D7E7E0;--text:#1A1A1A;--bb:#E4E4EA;--bf:#1A1A1A;--nav:rgba(234,234,238,.88);--shadow:0 1px 2px rgba(20,20,20,.06),0 10px 30px rgba(20,20,20,.10);--shadow-lg:0 2px 6px rgba(20,20,20,.07),0 18px 44px rgba(20,20,20,.14);--glow-a:rgba(255,122,26,.38);--glow-b:rgba(226,89,11,.26);--band:rgba(224,224,230,.45);color-scheme:light}
 html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
 *{box-sizing:border-box}
+select,input,textarea{max-width:100%}
 body{margin:0;position:relative;z-index:0;background:var(--paper);color:var(--text);font:400 16px/1.65 "Inter",system-ui,sans-serif}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--nav);z-index:30}
 /* luz ambiente suave atrás do conteúdo */
@@ -112,7 +113,7 @@ form input[type=text],form select{flex:1 1 240px;padding:12px 14px;border:1px so
 .problem>div:nth-child(2),.cards>div:nth-child(2){transition-delay:.08s}
 .problem>div:nth-child(3),.cards>div:nth-child(3){transition-delay:.16s}
 .sec>div:nth-child(2){transition-delay:.06s}.sec>div:nth-child(3){transition-delay:.12s}.sec>div:nth-child(4){transition-delay:.18s}
-@media (max-width:700px){#theme,#navapp{display:none}}
+@media (max-width:700px){#theme{display:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -122,7 +123,7 @@ form input[type=text],form select{flex:1 1 240px;padding:12px 14px;border:1px so
 <nav class="nav"><div class="wrap">
   <a class="logo" href="#topo" aria-label="Clausa — voltar ao início">Clausa<svg class="scales" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="6.4" r="1.9" fill="currentColor" stroke="none"/><path d="M24 7.5 V37.5"/><path d="M9.5 14 H38.5"/><path d="M9.5 14 V17"/><path d="M4.8 17 Q9.5 23.6 14.2 17"/><path d="M38.5 14 V17"/><path d="M33.8 17 Q38.5 23.6 43.2 17"/><path d="M17.5 37.5 H30.5"/></svg></a>
   <div class="links"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#teste">Experimente</a><a href="#calc">Calculadora</a><a href="#seguranca">Segurança</a><a href="#piloto">Piloto</a><a href="https://clausa-fawn.vercel.app/" target="_blank" rel="noopener">Questionário ↗</a></div>
-  <div style="display:flex;gap:8px;align-items:center;margin-left:auto;flex:none"><button class="btn ghost" id="theme" type="button" aria-label="Alternar tema claro e escuro">Tema</button><a class="btn ghost sm" id="navapp" href="app.html" target="_blank" rel="noopener">Abrir o app</a><a class="btn sm" href="#lista">Lista de espera</a></div>
+  <div style="display:flex;gap:8px;align-items:center;margin-left:auto;flex:none"><button class="btn ghost" id="theme" type="button" aria-label="Alternar tema claro e escuro">Tema</button><a class="btn ghost sm" href="entrar.html">Entrar</a><a class="btn sm" href="#lista">Lista de espera</a></div>
 </div></nav>
 
 <div id="topo" class="wrap hero">
