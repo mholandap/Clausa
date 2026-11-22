@@ -3,204 +3,232 @@
 <head>
 <meta charset="utf-8">
 <title>Clausa — anúncio em vídeo</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Tinos:ital,wght@0,400;0,700;1,400&family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  :root{--paper:#0B0B0C;--card:#161617;--ink:#FAFAFA;--gray:#9B9B9E;--line:#2A2A2D;
-        --seal:#E2590B;--or:#FF8A33;--red:#F0625A;--redbg:#4A2B2B;--yel:#E0B65C;--yelbg:#4A4420}
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:1080px;height:1920px;overflow:hidden;background:var(--paper)}
-  body{font-family:Inter,system-ui,sans-serif;color:var(--ink);position:relative}
-  .serif{font-family:"Playfair Display",Georgia,serif}
-  #glowA,#glowB{position:absolute;border-radius:50%;filter:blur(40px);pointer-events:none}
-  #glowA{width:1300px;height:1300px;background:radial-gradient(circle,rgba(255,122,26,.30),transparent 62%)}
-  #glowB{width:1100px;height:1100px;background:radial-gradient(circle,rgba(226,89,11,.22),transparent 62%)}
-  #thread{position:absolute;left:0;top:0;height:6px;background:linear-gradient(90deg,var(--seal),var(--or),#FFC08A)}
-  .scene{position:absolute;inset:0}
-  .center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  html,body{width:1080px;height:1920px;overflow:hidden}
+  body{background:#D9D3C8;font-family:Inter,system-ui,sans-serif;position:relative}
+  /* mesa: leve vinheta + textura */
+  #desk{position:absolute;inset:0;background:
+      radial-gradient(ellipse at 50% 40%,#E6E1D7 0%,#D6CFC2 60%,#BFB6A6 100%)}
+  #grain{position:absolute;inset:-50px;opacity:.10;pointer-events:none;mix-blend-mode:multiply;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+  #cam{position:absolute;inset:0;overflow:hidden}
+  #world{position:absolute;left:0;top:0;width:1080px;transform-origin:0 0}
 
-  /* cena 1 */
-  #s1 h1{font-size:118px;line-height:1.08;font-weight:700;letter-spacing:-1px}
-  #s1 .l2{color:var(--or);font-style:italic;display:inline-block}
-  #s1 .kicker{font-size:34px;color:var(--gray);letter-spacing:6px;text-transform:uppercase;margin-bottom:46px;font-weight:600}
+  .sheet{position:absolute;left:80px;width:920px;height:1300px;background:#FCFBF7;border-radius:3px;
+      box-shadow:0 1px 2px rgba(60,45,30,.18),0 14px 40px rgba(60,45,30,.22);overflow:hidden;
+      font-family:Tinos,"Times New Roman",serif;color:#26231F}
+  .sheet::after{content:"";position:absolute;inset:0;opacity:.07;mix-blend-mode:multiply;pointer-events:none;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+  .sheet .in{padding:90px 84px 0 84px}
+  .sheet h2{font-size:34px;text-align:center;letter-spacing:1px;margin-bottom:10px}
+  .sheet .sub{text-align:center;font-size:24px;color:#6b665e;margin-bottom:46px}
+  .sheet p{font-size:29px;line-height:1.62;text-align:justify;margin-bottom:28px}
+  .sheet .num{position:absolute;bottom:44px;left:0;right:0;text-align:center;font-size:24px;color:#8a857c}
+  #s3 .in{padding-right:330px}
+  #s3 p{margin-bottom:58px;text-align:left}
 
-  /* cartão de contrato */
-  #cardWrap{position:absolute;left:110px;top:560px;width:860px;height:1060px}
-  #card{position:absolute;inset:0;background:var(--card);border:1px solid var(--line);border-radius:36px;
-        box-shadow:0 2px 8px rgba(0,0,0,.45),0 30px 80px rgba(0,0,0,.65);overflow:hidden}
-  #card .head{height:96px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 44px;gap:16px}
-  .dot{width:18px;height:18px;border-radius:50%;background:#333}
-  #card .head .ttl{margin-left:12px;font-size:26px;color:var(--gray);font-weight:600;letter-spacing:.5px}
-  #card .head .pg{margin-left:auto;font-size:26px;color:var(--gray);font-variant-numeric:tabular-nums}
-  .body{position:absolute;left:0;right:0;top:96px;bottom:0;overflow:hidden}
-  .doc{position:absolute;left:0;right:0;top:0;padding:40px 52px}
-  .doc h3{font-size:30px;letter-spacing:1px;margin-bottom:26px;font-weight:700;color:#e9e9ea}
-  .doc p{font-size:27px;line-height:1.55;color:#bdbdc0;margin-bottom:24px}
-  .doc p b{color:#e9e9ea}
-  .cl{position:relative;border-radius:16px;padding:34px 22px 20px;margin:0 -22px 46px;border-left:6px solid transparent}
-  .chip{position:absolute;right:-6px;top:-30px;font-size:25px;font-weight:700;padding:10px 20px;border-radius:999px;
-        white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.5)}
-  .chip.r{background:var(--red);color:#1b0b0a}
-  .chip.y{background:var(--yel);color:#1d1606}
-  #scan{position:absolute;left:0;right:0;height:180px;
-        background:linear-gradient(180deg,transparent,rgba(255,138,51,.10) 60%,rgba(255,138,51,.55) 97%,rgba(255,190,140,.9));pointer-events:none}
-  .caption{position:absolute;left:0;right:0;text-align:center;font-weight:700;font-size:66px;letter-spacing:-.5px}
-  .caption em{font-style:italic;color:var(--or)}
-  #sum{position:absolute;left:50%;top:1660px;transform:translateX(-50%);background:#1d1d1f;border:1px solid var(--line);
-       border-radius:999px;padding:22px 40px;font-size:34px;font-weight:600;white-space:nowrap;display:flex;gap:18px;align-items:center}
-  #sum .n{color:var(--or);font-weight:700}
+  .mk{position:relative;z-index:0;white-space:nowrap}
+  .mk .hl{position:absolute;left:-6px;top:6%;height:92%;width:0;z-index:-1;background:#FFE14D;opacity:.9;
+      mix-blend-mode:multiply;border-radius:6px 14px 8px 16px / 10px 6px 14px 8px;transform:rotate(-.8deg)}
+  .circ{position:relative;white-space:nowrap}
+  .circ svg{position:absolute;overflow:visible;pointer-events:none}
+  .note{position:absolute;font-family:Caveat,cursive;font-weight:700;color:#1F4AA8;font-size:52px;line-height:.95;
+      white-space:nowrap;transform-origin:0 50%}
+  .note.red{color:#C92F27}
 
-  /* cena 4 */
-  #s4 h2{font-size:132px;line-height:1.08;font-weight:700;letter-spacing:-1px}
-  #s4 .b{color:var(--or);font-style:italic}
-  #s4 p{margin-top:56px;font-size:38px;color:var(--gray);max-width:820px;line-height:1.4}
+  #postit{position:absolute;width:430px;height:400px;background:linear-gradient(170deg,#FFEF8A,#FBE36A);
+      box-shadow:0 2px 3px rgba(80,60,0,.15),0 18px 34px rgba(80,60,0,.28);padding:46px 40px;
+      font-family:Caveat,cursive;color:#2A2416;transform-origin:50% 0}
+  #postit::before{content:"";position:absolute;left:0;right:0;top:0;height:58px;background:rgba(0,0,0,.04)}
+  #postit .a{font-size:46px;font-weight:700;line-height:1}
+  #postit .b{font-size:96px;font-weight:700;line-height:1;margin:14px 0 6px;color:#C92F27}
+  #postit .c{font-size:46px;font-weight:500;line-height:1.05}
+  .reveal{display:inline-block;clip-path:inset(0 100% 0 0)}
 
-  /* cena 5 */
-  #logo{width:260px;height:260px;border-radius:60px;box-shadow:0 20px 60px rgba(226,89,11,.35)}
-  #s5 .name{font-size:170px;font-weight:700;margin-top:40px;letter-spacing:-2px}
-  #s5 .tag{font-size:44px;color:var(--gray);margin-top:10px}
-  #cta{margin-top:90px;background:linear-gradient(90deg,var(--seal),var(--or));color:#1a0d04;font-weight:700;
-       font-size:46px;padding:34px 70px;border-radius:999px;box-shadow:0 14px 50px rgba(255,122,26,.4)}
-  #s5 .handle{margin-top:40px;font-size:36px;color:var(--gray)}
+  /* legendas estilo Reels */
+  .cap{position:absolute;left:0;right:0;top:250px;display:flex;justify-content:center;pointer-events:none}
+  .cap .box{background:#fff;border-radius:22px;padding:22px 34px;max-width:920px;text-align:center;
+      box-shadow:0 10px 30px rgba(40,30,20,.18);font-weight:800;font-size:64px;line-height:1.14;color:#141414;letter-spacing:-1.2px}
+  .cap .w{display:inline-block;margin:0 .13em;transform-origin:50% 80%}
+  .cap .w.k{background:linear-gradient(transparent 12%,#FFE14D 12%,#FFE14D 90%,transparent 90%) no-repeat 0 0/0% 100%;padding:0 .08em;border-radius:6px}
+
+  /* cartão final */
+  #end{position:absolute;left:0;right:0;top:0;height:2100px;background:#F5F2EB;
+      box-shadow:0 -20px 50px rgba(60,45,30,.25);display:flex;flex-direction:column;align-items:center;padding-top:560px}
+  #logo{width:190px;height:190px;border-radius:46px}
+  #end .name{font-size:156px;font-weight:900;letter-spacing:-6px;color:#141414;margin-top:34px;line-height:1}
+  #end .tag{font-family:Caveat,cursive;font-size:68px;color:#1F4AA8;margin-top:18px;font-weight:700}
+  #end .cta{margin-top:84px;background:#141414;color:#fff;font-weight:700;font-size:44px;padding:30px 60px;border-radius:999px}
+  #end .hd{margin-top:34px;font-size:34px;color:#6b665e;font-weight:600}
 </style>
 </head>
 <body>
-<div id="glowA"></div><div id="glowB"></div>
+<div id="desk"></div>
+<div id="cam"><div id="world">
 
-<!-- Cena 1 — gancho -->
-<div class="scene center" id="s1">
-  <div class="kicker" id="k1">Pergunta sincera</div>
-  <h1 class="serif"><span id="l1"></span><br><span class="l2" id="l2">inteiro?</span></h1>
-</div>
+  <div class="sheet" id="s1" style="top:0;transform:rotate(-.6deg)"><div class="in">
+    <h2>CONTRATO DE PRESTAÇÃO DE SERVIÇOS</h2>
+    <div class="sub">Instrumento particular · 15 páginas</div>
+    <p><b>Cláusula 1ª.</b> O presente instrumento tem por objeto a prestação de serviços de consultoria empresarial, nos termos e condições aqui estabelecidos, obrigando as partes e seus sucessores a qualquer título.</p>
+    <p><b>Cláusula 2ª.</b> A CONTRATADA executará os serviços com zelo e diligência, observadas as normas técnicas aplicáveis e as especificações constantes do Anexo I, que integra este contrato.</p>
+    <p><b>Cláusula 3ª.</b> Pelos serviços prestados, a CONTRATANTE pagará o valor mensal descrito no Anexo II, reajustado anualmente pelo índice ali indicado, independentemente de aviso.</p>
+    <p><b>Cláusula 4ª.</b> Os pagamentos serão efetuados até o décimo dia útil do mês subsequente, mediante apresentação da nota fiscal correspondente.</p>
+    <p><b>Cláusula 5ª.</b> As partes obrigam-se a manter sigilo sobre as informações confidenciais a que tiverem acesso em razão deste contrato.</p>
+  </div><div class="num">1</div></div>
 
-<!-- Cenas 2 e 3 — contrato + análise -->
-<div class="scene" id="s23">
-  <div class="caption" id="cap2" style="top:330px">15 páginas. <em>Letra miúda.</em></div>
-  <div class="caption" id="cap3" style="top:330px">A Clausa lê <em>em segundos.</em></div>
-  <div id="cardWrap"><div id="card">
-    <div class="head"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
-      <span class="ttl">contrato_prestacao.pdf</span><span class="pg" id="pg">pág. 1/15</span></div>
-    <div class="body">
-      <div class="doc" id="docA">
-        <h3>CONTRATO DE PRESTAÇÃO DE SERVIÇOS</h3>
-        <p><b>Cláusula 1ª.</b> O presente instrumento tem por objeto a prestação de serviços de consultoria, nos termos e condições aqui estabelecidos, obrigando as partes e seus sucessores a qualquer título.</p>
-        <p><b>Cláusula 2ª.</b> A CONTRATADA executará os serviços com zelo e diligência, observadas as normas técnicas aplicáveis e as especificações constantes do Anexo I.</p>
-        <p><b>Cláusula 3ª.</b> Pelos serviços prestados, a CONTRATANTE pagará o valor mensal descrito no Anexo II, reajustado anualmente pelo índice ali indicado.</p>
-        <p><b>Cláusula 4ª.</b> Os pagamentos serão efetuados até o 10º dia útil do mês subsequente, mediante apresentação de nota fiscal.</p>
-        <p><b>Cláusula 5ª.</b> As partes obrigam-se a manter sigilo sobre as informações confidenciais a que tiverem acesso em razão deste contrato.</p>
-        <p><b>Cláusula 6ª.</b> A CONTRATADA responderá pelos encargos trabalhistas, previdenciários e fiscais decorrentes da execução dos serviços.</p>
-        <p><b>Cláusula 7ª.</b> Nenhuma tolerância das partes importará novação ou renúncia de direitos, podendo ser exigidos a qualquer tempo.</p>
-        <p><b>Cláusula 8ª.</b> Eventuais alterações deste instrumento somente terão validade se formalizadas por termo aditivo assinado pelas partes.</p>
-        <p><b>Cláusula 9ª.</b> A CONTRATANTE fornecerá as informações e acessos necessários à execução dos serviços, sob pena de prorrogação dos prazos.</p>
-      </div>
-      <div class="doc" id="docB">
-        <h3>CLÁUSULAS 12ª A 14ª</h3>
-        <div class="cl" id="c1"><p style="margin:0"><b>Cláusula 12ª.</b> A rescisão antecipada sujeitará a parte que lhe der causa a multa equivalente a <b>100% do valor remanescente</b> do contrato.</p><span class="chip r" id="h1">● Multa de 100%</span></div>
-        <div class="cl" id="c2"><p style="margin:0"><b>Cláusula 13ª.</b> O contrato será <b>renovado automaticamente</b> por iguais períodos de 12 meses, salvo aviso com 90 dias de antecedência.</p><span class="chip y" id="h2">● Renovação automática</span></div>
-        <div class="cl" id="c3"><p style="margin:0"><b>Cláusula 14ª.</b> Fica eleito o <b>foro da Comarca de Manaus/AM</b>, com renúncia a qualquer outro, por mais privilegiado que seja.</p><span class="chip r" id="h3">● Foro em outra cidade</span></div>
-        <p style="opacity:.55"><b>Cláusula 15ª.</b> E, por estarem justas e contratadas, as partes assinam o presente em duas vias de igual teor.</p>
-      </div>
-      <div id="scan"></div>
-    </div>
-  </div></div>
-  <div id="sum"><span class="n">3</span> pontos de atenção <span style="color:var(--gray)">·</span> <span>4 segundos</span></div>
-</div>
+  <div class="sheet" id="s2" style="top:1360px;transform:rotate(.7deg)"><div class="in">
+    <p><b>Cláusula 6ª.</b> A CONTRATADA responderá pelos encargos trabalhistas, previdenciários e fiscais decorrentes da execução dos serviços, isentando a CONTRATANTE de qualquer responsabilidade.</p>
+    <p><b>Cláusula 7ª.</b> Nenhuma tolerância das partes importará novação ou renúncia de direitos, os quais poderão ser exigidos a qualquer tempo.</p>
+    <p><b>Cláusula 8ª.</b> Eventuais alterações deste instrumento somente terão validade se formalizadas por termo aditivo assinado pelas partes.</p>
+    <p><b>Cláusula 9ª.</b> A CONTRATANTE fornecerá as informações e os acessos necessários à execução dos serviços, sob pena de prorrogação dos prazos ajustados.</p>
+    <p><b>Cláusula 10ª.</b> As obrigações aqui previstas estendem-se a empregados, prepostos e subcontratados das partes, que por elas responderão solidariamente.</p>
+  </div><div class="num">7</div></div>
 
-<!-- Cena 4 — mensagem -->
-<div class="scene center" id="s4">
-  <h2 class="serif"><span id="m1">A Clausa aponta.</span><br><span class="b" id="m2">Você decide.</span></h2>
-  <p id="m3">Revisão de contratos assistida por IA — a decisão final é sempre sua.</p>
-</div>
+  <div class="sheet" id="s3" style="top:2720px;transform:rotate(-.4deg)"><div class="in">
+    <p id="c1"><b>Cláusula 12ª.</b> A rescisão antecipada sujeitará a parte que lhe der causa a multa equivalente a <span class="mk" id="mk1"><span class="hl"></span>100% do valor</span> remanescente do contrato.</p>
+    <p id="c2"><b>Cláusula 13ª.</b> O contrato será <span class="mk" id="mk2"><span class="hl"></span>renovado automaticamente</span> por iguais períodos de 12 meses, salvo aviso com 90 dias.</p>
+    <p id="c3"><b>Cláusula 14ª.</b> Fica eleito o foro da <span class="circ" id="ci">Comarca de Manaus/AM</span>, com renúncia a qualquer outro, por mais privilegiado que seja.</p>
+    <p style="color:#8a857c"><b>Cláusula 15ª.</b> E, por estarem justas e contratadas, as partes assinam o presente.</p>
+  </div><div class="num">12</div>
+    <div class="note" id="n1"><span class="reveal">multa de</span><br><span class="reveal">100%?!</span></div>
+    <div class="note" id="n2"><span class="reveal">renova</span><br><span class="reveal">sozinho</span></div>
+    <div class="note red" id="n3"><span class="reveal">foro longe</span><br><span class="reveal">de casa!</span></div>
+  </div>
 
-<!-- Cena 5 — marca + CTA -->
-<div class="scene center" id="s5">
+  <div id="postit"><div class="a reveal">a Clausa achou</div><div class="b reveal">3 riscos</div><div class="c reveal">antes de você<br>assinar ✓</div></div>
+</div></div>
+
+<div class="cap" id="capA"><div class="box"></div></div>
+<div class="cap" id="capB"><div class="box"></div></div>
+<div class="cap" id="capC"><div class="box"></div></div>
+<div class="cap" id="capD"><div class="box"></div></div>
+
+<div id="end">
   <img id="logo" src="logo.png" alt="">
-  <div class="name serif" id="nm">Clausa</div>
-  <div class="tag" id="tg">Revisão de contratos com IA</div>
-  <div id="cta">Teste grátis · link na bio</div>
-  <div class="handle" id="hd">@pedrom.holanda</div>
+  <div class="name" id="nm">Clausa</div>
+  <div class="tag" id="tg">leia antes de assinar.</div>
+  <div class="cta" id="cta">teste grátis · link na bio</div>
+  <div class="hd" id="hd">@pedrom.holanda</div>
 </div>
-
-<div id="thread"></div>
+<div id="grain"></div>
 
 <script>
 const $=id=>document.getElementById(id);
 const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
 const seg=(t,a,b)=>clamp((t-a)/(b-a));
-const eo=x=>1-Math.pow(1-x,3);              // ease-out cúbico
+const eo=x=>1-Math.pow(1-x,3);
 const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
-const back=x=>{const c=1.7;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)}; // leve "pulo"
-function vis(el,o,y=0,s=1){el.style.opacity=o;el.style.transform=`translateY(${y}px) scale(${s})`}
-function inOut(t,a,b,c,d){return Math.min(eo(seg(t,a,b)),1-eo(seg(t,c,d)))}
+// mola amortecida: chega a 1 com pequeno balanço
+const spring=x=>x<=0?0:x>=1?1:1-Math.exp(-6*x)*Math.cos(9*x);
+const DUR=17;
 
-const L1="Você leu o contrato";
-const DUR=18;
+// ---------- legendas ----------
+const CAPS={
+  capA:{at:.25,step:.2,  show:[.15,2.75], words:["POV:","você","assinou","sem","ler","a",{k:"página 12."}]},
+  capB:{at:2.95,step:.2, show:[2.85,5.15],words:["ninguém","lê",{k:"15 páginas"},"de","contrato."]},
+  capC:{at:5.35,step:.18,show:[5.25,10.45],words:["a",{k:"Clausa"},"lê","por","você."]},
+  capD:{at:10.7,step:.17,show:[10.6,12.75],words:["e","acha","os","riscos","em",{k:"segundos."}]},
+};
+for(const id in CAPS){
+  const box=$(id).querySelector('.box');
+  CAPS[id].words.forEach(w=>{const s=document.createElement('span');s.className='w'+(typeof w==='object'?' k':'');s.textContent=typeof w==='object'?w.k:w;box.appendChild(s)});
+}
+
+// ---------- círculo de caneta desenhado à mão ----------
+function rnd(seed){return()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646}}
+let circLen=0;
+function buildCircle(){
+  const el=$('ci'), w=el.offsetWidth, h=el.offsetHeight, r=rnd(11);
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('width',w+60);svg.setAttribute('height',h+40);svg.style.left='-30px';svg.style.top='-20px';
+  const cx=(w+60)/2, cy=(h+40)/2, rx=w/2+22, ry=h/2+14; let d='';
+  for(let i=0;i<=64;i++){ // ~1.15 voltas, raio oscilante: traço humano
+    const a=-2.6+i/64*Math.PI*2*1.15, k=1+(r()-.5)*.05+.04*Math.sin(i/9);
+    d+=(i?'L':'M')+(cx+Math.cos(a)*rx*k).toFixed(1)+' '+(cy+Math.sin(a)*ry*k*(1+i/64*.08)).toFixed(1);
+  }
+  const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d',d);p.setAttribute('fill','none');p.setAttribute('stroke','#C92F27');p.setAttribute('stroke-width','5.5');
+  p.setAttribute('stroke-linecap','round');p.setAttribute('stroke-linejoin','round');p.id='cpath';
+  svg.appendChild(p);el.appendChild(svg);circLen=p.getTotalLength();
+  p.style.strokeDasharray=circLen;p.style.strokeDashoffset=circLen;
+}
+
+// ---------- posições (para a câmera e anotações) ----------
+let K=null, P={};
+function worldPos(el){let x=0,y=0;while(el&&el.id!=='world'){x+=el.offsetLeft;y+=el.offsetTop;el=el.offsetParent}return{x,y}}
+function init(){
+  if(!$('cpath'))buildCircle();
+  const s1=$('s1').offsetTop, s3=$('s3').offsetTop;
+  const c=id=>{const p=worldPos($(id));return p.y+$(id).offsetHeight/2};
+  P.c1=c('c1');P.c2=c('c2');P.c3=c('c3');
+  // anotações na margem direita da folha 3
+  [['n1','c1',-2.5],['n2','c2',2],['n3','c3',-3]].forEach(([n,cl,rot])=>{
+    const el=$(n);el.style.left='640px';el.style.top=($(cl).offsetTop+18)+'px';el.dataset.rot=rot});
+  const pi=$('postit'); pi.style.left='520px'; pi.style.top=(s3+880)+'px';
+  // quadros-chave da câmera: [tempo, centroX, centroY, zoom]
+  K=[[0,555,s1+330,1.32],[2.7,540,s1+760,1.12],[5.2,540,s3+430,1.0],[6.1,560,P.c1,1.16],
+     [7.7,560,P.c2,1.16],[9.4,580,P.c3,1.14],[10.9,600,s3+760,.97],[12.9,600,s3+820,.94],[17,600,s3+820,.94]];
+}
+function cam(t){
+  let i=0;while(i<K.length-2&&t>K[i+1][0])i++;
+  const a=K[i],b=K[i+1],dt=b[0]-a[0],u=clamp((t-a[0])/dt);
+  const tan=j=>{const p=K[Math.max(0,j-1)],n=K[Math.min(K.length-1,j+1)];if(j===0||j===K.length-1)return[0,0,0];
+    return[1,2,3].map(c=>(n[c]-p[c])/(n[0]-p[0]))};
+  const ma=tan(i),mb=tan(i+1),u2=u*u,u3=u2*u;
+  const h00=2*u3-3*u2+1,h10=u3-2*u2+u,h01=-2*u3+3*u2,h11=u3-u2;
+  return[1,2,3].map((c,j)=>h00*a[c]+h10*dt*ma[j]+h01*b[c]+h11*dt*mb[j]);
+}
 
 function render(t){
-  // fundo vivo
-  $('glowA').style.left=(-260+Math.sin(t*.35)*80)+'px'; $('glowA').style.top=(-380+Math.cos(t*.3)*60)+'px';
-  $('glowB').style.left=(260+Math.cos(t*.28)*90)+'px';  $('glowB').style.top=(1100+Math.sin(t*.33)*70)+'px';
-  $('thread').style.width=(t/DUR*100)+'%';
+  if(!K)init();
+  // câmera contínua + leve balanço de mão
+  let [cx,cy,s]=cam(t);
+  cx+=Math.sin(t*1.1)*5+Math.sin(t*2.3+1)*2.5; cy+=Math.cos(t*.9)*6+Math.sin(t*1.9)*3;
+  const rot=Math.sin(t*.7)*.35;
+  $('world').style.transform=`translate(540px,960px) rotate(${rot}deg) scale(${s}) translate(${-cx}px,${-cy}px)`;
+  $('world').style.filter=t<1?`blur(${(7*(1-eo(seg(t,0,.85)))).toFixed(2)}px)`:'none';
 
-  // Cena 1 — 0 a 3.3s
-  const s1=1-eo(seg(t,2.9,3.3)); $('s1').style.opacity=s1;
-  vis($('k1'),eo(seg(t,.1,.6)),(1-eo(seg(t,.1,.6)))*20);
-  const n=Math.round(L1.length*seg(t,.35,1.45));
-  $('l1').textContent=L1.slice(0,n)+(t<1.6&&Math.floor(t*3)%2===0?'|':'');
-  const p2=seg(t,1.55,2.05); vis($('l2'),eo(p2),0,.7+.3*back(p2));
+  // legendas palavra a palavra
+  for(const id in CAPS){
+    const C=CAPS[id], [a,b]=C.show, box=$(id).querySelector('.box');
+    const o=Math.min(eo(seg(t,a,a+.15)),1-eo(seg(t,b-.15,b)));
+    $(id).style.opacity=o; box.style.transform=`scale(${.92+.08*spring(seg(t,a,a+.5))})`;
+    box.querySelectorAll('.w').forEach((w,i)=>{const p=seg(t,C.at+i*C.step,C.at+i*C.step+.3);
+      w.style.opacity=(.22+.78*eo(p)).toFixed(3);
+      w.style.transform=`translateY(${(-6*Math.sin(Math.PI*p)).toFixed(2)}px) scale(${(1+.09*Math.sin(Math.PI*p)).toFixed(3)})`;
+      if(w.classList.contains('k'))w.style.backgroundSize=`${(eio(seg(t,C.at+i*C.step+.1,C.at+i*C.step+.45))*100).toFixed(1)}% 100%`});
+  }
 
-  // Cenas 2 e 3 — 3.2 a 12.6s
-  const s23=Math.min(eo(seg(t,3.2,3.6)),1-eo(seg(t,12.3,12.7)));
-  $('s23').style.opacity=s23;
-  const up=eo(seg(t,3.2,3.9)), out=eio(seg(t,12.3,12.7));
-  $('cardWrap').style.transform=`translateY(${(1-up)*500 - out*80}px) scale(${1-out*.06})`;
-  vis($('cap2'),inOut(t,3.6,4.0,6.3,6.6),(1-eo(seg(t,3.6,4.0)))*20);
-  vis($('cap3'),inOut(t,6.6,7.0,12.2,12.5),(1-eo(seg(t,6.6,7.0)))*20);
-  // rolagem do contrato
-  const sc=eio(seg(t,3.9,6.5));
-  $('docA').style.transform=`translateY(${-sc*620}px)`;
-  $('pg').textContent='pág. '+(t<6.6?Math.max(1,Math.round(1+sc*10)):12)+'/15';
-  const sw=eo(seg(t,6.35,6.75));
-  $('docA').style.opacity=1-sw; $('docB').style.opacity=sw;
-  // varredura
-  const sp=seg(t,6.9,8.3);
-  $('scan').style.opacity=(t>6.9&&t<8.45)?Math.min(1,(8.45-t)*4):0;
-  $('scan').style.top=(-180+sp*1100)+'px';
-  // destaques
-  [['c1','h1',8.4,'rgba(240,98,90,1)','#4A2B2B'],['c2','h2',9.3,'rgba(224,182,92,1)','#4A4420'],['c3','h3',10.2,'rgba(240,98,90,1)','#4A2B2B']]
-  .forEach(([c,h,at,bd,bg])=>{
-    const p=seg(t,at,at+.35);
-    $(c).style.background=p>0?bg:'transparent';
-    $(c).style.borderLeftColor=p>0?bd:'transparent';
-    $(c).style.opacity=.55+.45*Math.max(p,t<8.4?1:0);
-    $(c).style.transform=`scale(${1+.03*Math.sin(Math.PI*p)})`;
-    const q=seg(t,at+.1,at+.5); $(h).style.opacity=q; $(h).style.transform=`scale(${.4+.6*back(q)})`;
-  });
-  // antes da varredura, todas as cláusulas com mesma opacidade
-  if(t<8.4){['c1','c2','c3'].forEach(c=>$(c).style.opacity=1)}
-  const sm=inOut(t,11.0,11.4,12.3,12.6);
-  $('sum').style.opacity=sm; $('sum').style.transform=`translateX(-50%) translateY(${(1-eo(seg(t,11,11.4)))*30}px) scale(${.85+.15*back(seg(t,11,11.4))})`;
+  // marca-texto (traço da esquerda para a direita, com ritmo irregular)
+  [['mk1',6.15],['mk2',7.75]].forEach(([id,at])=>{const p=seg(t,at,at+.55);
+    const q=p<.5?p*1.25:.625+(p-.5)*.75; $(id).querySelector('.hl').style.width=`calc(${(eio(q)*100).toFixed(2)}% + 12px)`;
+    if(p===0)$(id).querySelector('.hl').style.width='0'});
+  // círculo vermelho
+  $('cpath').style.strokeDashoffset=circLen*(1-eio(seg(t,9.35,10.0)));
+  // anotações escritas (linha a linha)
+  [['n1',6.7],['n2',8.3],['n3',10.0]].forEach(([id,at])=>{const el=$(id);
+    el.style.transform=`rotate(${el.dataset.rot}deg)`;
+    el.querySelectorAll('.reveal').forEach((r,i)=>{const p=seg(t,at+i*.32,at+i*.32+.38);r.style.clipPath=`inset(-10px ${(100-p*100).toFixed(1)}% -10px -6px)`})});
+  // post-it
+  const pp=seg(t,10.75,11.15), pi=$('postit');
+  pi.style.opacity=pp>0?1:0;
+  pi.style.transform=`translateY(${(1-eo(pp))*-120}px) rotate(${5-3*spring(pp)+1}deg) scale(${1.25-.25*spring(pp)})`;
+  pi.querySelectorAll('.reveal').forEach((r,i)=>{const p=seg(t,11.2+i*.35,11.2+i*.35+.4);r.style.clipPath=`inset(-10px ${(100-p*100).toFixed(1)}% -10px -6px)`});
 
-  // Cena 4 — 12.6 a 15.4s
-  $('s4').style.opacity=1-eo(seg(t,15.0,15.4));
-  vis($('m1'),eo(seg(t,12.7,13.2)),(1-eo(seg(t,12.7,13.2)))*40);
-  vis($('m2'),eo(seg(t,13.3,13.8)),(1-eo(seg(t,13.3,13.8)))*40);
-  vis($('m3'),eo(seg(t,13.9,14.4)),(1-eo(seg(t,13.9,14.4)))*20);
-  if(t<12.6){$('s4').style.opacity=0}
-
-  // Cena 5 — 15.3 a 18s
-  const s5=eo(seg(t,15.3,15.6)); $('s5').style.opacity=s5;
-  const lg=seg(t,15.4,15.9); vis($('logo'),eo(lg),0,.5+.5*back(lg));
-  vis($('nm'),eo(seg(t,15.7,16.1)),(1-eo(seg(t,15.7,16.1)))*30);
-  vis($('tg'),eo(seg(t,15.95,16.3)),(1-eo(seg(t,15.95,16.3)))*20);
-  const ct=seg(t,16.3,16.7);
-  $('cta').style.opacity=eo(ct);
-  $('cta').style.transform=`scale(${(.7+.3*back(ct))*(1+.025*Math.sin(Math.max(0,t-16.7)*5))})`;
-  vis($('hd'),eo(seg(t,16.6,17)));
+  // cartão final sobe como uma folha
+  const e=eio(seg(t,12.75,13.45)), end=$('end');
+  end.style.transform=`translateY(${(1-e)*1960}px)`;
+  const z=seg(t,13.3,17); end.querySelector('#logo').style.transform=`scale(${.6+.4*spring(seg(t,13.35,13.9))})`;
+  [['nm',13.5],['tg',13.8],['cta',14.15],['hd',14.4]].forEach(([id,at])=>{const p=seg(t,at,at+.45);
+    $(id).style.opacity=eo(p);$(id).style.transform=`translateY(${(1-spring(p))*26}px) scale(${1+.006*Math.sin(z*9)})`});
+  // leve "respiração" no cartão final
+  end.style.scale=String(1+.012*eo(z));
 }
-window.render=render; window.DUR=DUR;
-render(0);
-// prévia: se aberto no navegador sem ?frame, toca em loop
-if(!location.search.includes('frame')){const st=performance.now();(function loop(){render(((performance.now()-st)/1000)%DUR);requestAnimationFrame(loop)})()}
+window.render=render; window.init=init; window.DUR=DUR;
+document.fonts.ready.then(()=>{K=null;init();render(0);
+  if(!location.search.includes('frame')){const st=performance.now();(function loop(){render(((performance.now()-st)/1000)%DUR);requestAnimationFrame(loop)})()}});
 </script>
 </body>
 </html>
