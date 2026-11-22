@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Clausa — anúncio em vídeo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#0B0B0C;--card:#161617;--ink:#FAFAFA;--gray:#9B9B9E;--line:#2A2A2D;
+        --seal:#E2590B;--or:#FF8A33;--red:#F0625A;--redbg:#4A2B2B;--yel:#E0B65C;--yelbg:#4A4420}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1080px;height:1920px;overflow:hidden;background:var(--paper)}
+  body{font-family:Inter,system-ui,sans-serif;color:var(--ink);position:relative}
+  .serif{font-family:"Playfair Display",Georgia,serif}
+  #glowA,#glowB{position:absolute;border-radius:50%;filter:blur(40px);pointer-events:none}
+  #glowA{width:1300px;height:1300px;background:radial-gradient(circle,rgba(255,122,26,.30),transparent 62%)}
+  #glowB{width:1100px;height:1100px;background:radial-gradient(circle,rgba(226,89,11,.22),transparent 62%)}
+  #thread{position:absolute;left:0;top:0;height:6px;background:linear-gradient(90deg,var(--seal),var(--or),#FFC08A)}
+  .scene{position:absolute;inset:0}
+  .center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+
+  /* cena 1 */
+  #s1 h1{font-size:118px;line-height:1.08;font-weight:700;letter-spacing:-1px}
+  #s1 .l2{color:var(--or);font-style:italic;display:inline-block}
+  #s1 .kicker{font-size:34px;color:var(--gray);letter-spacing:6px;text-transform:uppercase;margin-bottom:46px;font-weight:600}
+
+  /* cartão de contrato */
+  #cardWrap{position:absolute;left:110px;top:560px;width:860px;height:1060px}
+  #card{position:absolute;inset:0;background:var(--card);border:1px solid var(--line);border-radius:36px;
+        box-shadow:0 2px 8px rgba(0,0,0,.45),0 30px 80px rgba(0,0,0,.65);overflow:hidden}
+  #card .head{height:96px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 44px;gap:16px}
+  .dot{width:18px;height:18px;border-radius:50%;background:#333}
+  #card .head .ttl{margin-left:12px;font-size:26px;color:var(--gray);font-weight:600;letter-spacing:.5px}
+  #card .head .pg{margin-left:auto;font-size:26px;color:var(--gray);font-variant-numeric:tabular-nums}
+  .body{position:absolute;left:0;right:0;top:96px;bottom:0;overflow:hidden}
+  .doc{position:absolute;left:0;right:0;top:0;padding:40px 52px}
+  .doc h3{font-size:30px;letter-spacing:1px;margin-bottom:26px;font-weight:700;color:#e9e9ea}
+  .doc p{font-size:27px;line-height:1.55;color:#bdbdc0;margin-bottom:24px}
+  .doc p b{color:#e9e9ea}
+  .cl{position:relative;border-radius:16px;padding:34px 22px 20px;margin:0 -22px 46px;border-left:6px solid transparent}
+  .chip{position:absolute;right:-6px;top:-30px;font-size:25px;font-weight:700;padding:10px 20px;border-radius:999px;
+        white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+  .chip.r{background:var(--red);color:#1b0b0a}
+  .chip.y{background:var(--yel);color:#1d1606}
+  #scan{position:absolute;left:0;right:0;height:180px;
+        background:linear-gradient(180deg,transparent,rgba(255,138,51,.10) 60%,rgba(255,138,51,.55) 97%,rgba(255,190,140,.9));pointer-events:none}
+  .caption{position:absolute;left:0;right:0;text-align:center;font-weight:700;font-size:66px;letter-spacing:-.5px}
+  .caption em{font-style:italic;color:var(--or)}
+  #sum{position:absolute;left:50%;top:1660px;transform:translateX(-50%);background:#1d1d1f;border:1px solid var(--line);
+       border-radius:999px;padding:22px 40px;font-size:34px;font-weight:600;white-space:nowrap;display:flex;gap:18px;align-items:center}
+  #sum .n{color:var(--or);font-weight:700}
+
+  /* cena 4 */
+  #s4 h2{font-size:132px;line-height:1.08;font-weight:700;letter-spacing:-1px}
+  #s4 .b{color:var(--or);font-style:italic}
+  #s4 p{margin-top:56px;font-size:38px;color:var(--gray);max-width:820px;line-height:1.4}
+
+  /* cena 5 */
+  #logo{width:260px;height:260px;border-radius:60px;box-shadow:0 20px 60px rgba(226,89,11,.35)}
+  #s5 .name{font-size:170px;font-weight:700;margin-top:40px;letter-spacing:-2px}
+  #s5 .tag{font-size:44px;color:var(--gray);margin-top:10px}
+  #cta{margin-top:90px;background:linear-gradient(90deg,var(--seal),var(--or));color:#1a0d04;font-weight:700;
+       font-size:46px;padding:34px 70px;border-radius:999px;box-shadow:0 14px 50px rgba(255,122,26,.4)}
+  #s5 .handle{margin-top:40px;font-size:36px;color:var(--gray)}
+</style>
+</head>
+<body>
+<div id="glowA"></div><div id="glowB"></div>
+
+<!-- Cena 1 — gancho -->
+<div class="scene center" id="s1">
+  <div class="kicker" id="k1">Pergunta sincera</div>
+  <h1 class="serif"><span id="l1"></span><br><span class="l2" id="l2">inteiro?</span></h1>
+</div>
+
+<!-- Cenas 2 e 3 — contrato + análise -->
+<div class="scene" id="s23">
+  <div class="caption" id="cap2" style="top:330px">15 páginas. <em>Letra miúda.</em></div>
+  <div class="caption" id="cap3" style="top:330px">A Clausa lê <em>em segundos.</em></div>
+  <div id="cardWrap"><div id="card">
+    <div class="head"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <span class="ttl">contrato_prestacao.pdf</span><span class="pg" id="pg">pág. 1/15</span></div>
+    <div class="body">
+      <div class="doc" id="docA">
+        <h3>CONTRATO DE PRESTAÇÃO DE SERVIÇOS</h3>
+        <p><b>Cláusula 1ª.</b> O presente instrumento tem por objeto a prestação de serviços de consultoria, nos termos e condições aqui estabelecidos, obrigando as partes e seus sucessores a qualquer título.</p>
+        <p><b>Cláusula 2ª.</b> A CONTRATADA executará os serviços com zelo e diligência, observadas as normas técnicas aplicáveis e as especificações constantes do Anexo I.</p>
+        <p><b>Cláusula 3ª.</b> Pelos serviços prestados, a CONTRATANTE pagará o valor mensal descrito no Anexo II, reajustado anualmente pelo índice ali indicado.</p>
+        <p><b>Cláusula 4ª.</b> Os pagamentos serão efetuados até o 10º dia útil do mês subsequente, mediante apresentação de nota fiscal.</p>
+        <p><b>Cláusula 5ª.</b> As partes obrigam-se a manter sigilo sobre as informações confidenciais a que tiverem acesso em razão deste contrato.</p>
+        <p><b>Cláusula 6ª.</b> A CONTRATADA responderá pelos encargos trabalhistas, previdenciários e fiscais decorrentes da execução dos serviços.</p>
+        <p><b>Cláusula 7ª.</b> Nenhuma tolerância das partes importará novação ou renúncia de direitos, podendo ser exigidos a qualquer tempo.</p>
+        <p><b>Cláusula 8ª.</b> Eventuais alterações deste instrumento somente terão validade se formalizadas por termo aditivo assinado pelas partes.</p>
+        <p><b>Cláusula 9ª.</b> A CONTRATANTE fornecerá as informações e acessos necessários à execução dos serviços, sob pena de prorrogação dos prazos.</p>
+      </div>
+      <div class="doc" id="docB">
+        <h3>CLÁUSULAS 12ª A 14ª</h3>
+        <div class="cl" id="c1"><p style="margin:0"><b>Cláusula 12ª.</b> A rescisão antecipada sujeitará a parte que lhe der causa a multa equivalente a <b>100% do valor remanescente</b> do contrato.</p><span class="chip r" id="h1">● Multa de 100%</span></div>
+        <div class="cl" id="c2"><p style="margin:0"><b>Cláusula 13ª.</b> O contrato será <b>renovado automaticamente</b> por iguais períodos de 12 meses, salvo aviso com 90 dias de antecedência.</p><span class="chip y" id="h2">● Renovação automática</span></div>
+        <div class="cl" id="c3"><p style="margin:0"><b>Cláusula 14ª.</b> Fica eleito o <b>foro da Comarca de Manaus/AM</b>, com renúncia a qualquer outro, por mais privilegiado que seja.</p><span class="chip r" id="h3">● Foro em outra cidade</span></div>
+        <p style="opacity:.55"><b>Cláusula 15ª.</b> E, por estarem justas e contratadas, as partes assinam o presente em duas vias de igual teor.</p>
+      </div>
+      <div id="scan"></div>
+    </div>
+  </div></div>
+  <div id="sum"><span class="n">3</span> pontos de atenção <span style="color:var(--gray)">·</span> <span>4 segundos</span></div>
+</div>
+
+<!-- Cena 4 — mensagem -->
+<div class="scene center" id="s4">
+  <h2 class="serif"><span id="m1">A Clausa aponta.</span><br><span class="b" id="m2">Você decide.</span></h2>
+  <p id="m3">Revisão de contratos assistida por IA — a decisão final é sempre sua.</p>
+</div>
+
+<!-- Cena 5 — marca + CTA -->
+<div class="scene center" id="s5">
+  <img id="logo" src="logo.png" alt="">
+  <div class="name serif" id="nm">Clausa</div>
+  <div class="tag" id="tg">Revisão de contratos com IA</div>
+  <div id="cta">Teste grátis · link na bio</div>
+  <div class="handle" id="hd">@pedrom.holanda</div>
+</div>
+
+<div id="thread"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const seg=(t,a,b)=>clamp((t-a)/(b-a));
+const eo=x=>1-Math.pow(1-x,3);              // ease-out cúbico
+const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const back=x=>{const c=1.7;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)}; // leve "pulo"
+function vis(el,o,y=0,s=1){el.style.opacity=o;el.style.transform=`translateY(${y}px) scale(${s})`}
+function inOut(t,a,b,c,d){return Math.min(eo(seg(t,a,b)),1-eo(seg(t,c,d)))}
+
+const L1="Você leu o contrato";
+const DUR=18;
+
+function render(t){
+  // fundo vivo
+  $('glowA').style.left=(-260+Math.sin(t*.35)*80)+'px'; $('glowA').style.top=(-380+Math.cos(t*.3)*60)+'px';
+  $('glowB').style.left=(260+Math.cos(t*.28)*90)+'px';  $('glowB').style.top=(1100+Math.sin(t*.33)*70)+'px';
+  $('thread').style.width=(t/DUR*100)+'%';
+
+  // Cena 1 — 0 a 3.3s
+  const s1=1-eo(seg(t,2.9,3.3)); $('s1').style.opacity=s1;
+  vis($('k1'),eo(seg(t,.1,.6)),(1-eo(seg(t,.1,.6)))*20);
+  const n=Math.round(L1.length*seg(t,.35,1.45));
+  $('l1').textContent=L1.slice(0,n)+(t<1.6&&Math.floor(t*3)%2===0?'|':'');
+  const p2=seg(t,1.55,2.05); vis($('l2'),eo(p2),0,.7+.3*back(p2));
+
+  // Cenas 2 e 3 — 3.2 a 12.6s
+  const s23=Math.min(eo(seg(t,3.2,3.6)),1-eo(seg(t,12.3,12.7)));
+  $('s23').style.opacity=s23;
+  const up=eo(seg(t,3.2,3.9)), out=eio(seg(t,12.3,12.7));
+  $('cardWrap').style.transform=`translateY(${(1-up)*500 - out*80}px) scale(${1-out*.06})`;
+  vis($('cap2'),inOut(t,3.6,4.0,6.3,6.6),(1-eo(seg(t,3.6,4.0)))*20);
+  vis($('cap3'),inOut(t,6.6,7.0,12.2,12.5),(1-eo(seg(t,6.6,7.0)))*20);
+  // rolagem do contrato
+  const sc=eio(seg(t,3.9,6.5));
+  $('docA').style.transform=`translateY(${-sc*620}px)`;
+  $('pg').textContent='pág. '+(t<6.6?Math.max(1,Math.round(1+sc*10)):12)+'/15';
+  const sw=eo(seg(t,6.35,6.75));
+  $('docA').style.opacity=1-sw; $('docB').style.opacity=sw;
+  // varredura
+  const sp=seg(t,6.9,8.3);
+  $('scan').style.opacity=(t>6.9&&t<8.45)?Math.min(1,(8.45-t)*4):0;
+  $('scan').style.top=(-180+sp*1100)+'px';
+  // destaques
+  [['c1','h1',8.4,'rgba(240,98,90,1)','#4A2B2B'],['c2','h2',9.3,'rgba(224,182,92,1)','#4A4420'],['c3','h3',10.2,'rgba(240,98,90,1)','#4A2B2B']]
+  .forEach(([c,h,at,bd,bg])=>{
+    const p=seg(t,at,at+.35);
+    $(c).style.background=p>0?bg:'transparent';
+    $(c).style.borderLeftColor=p>0?bd:'transparent';
+    $(c).style.opacity=.55+.45*Math.max(p,t<8.4?1:0);
+    $(c).style.transform=`scale(${1+.03*Math.sin(Math.PI*p)})`;
+    const q=seg(t,at+.1,at+.5); $(h).style.opacity=q; $(h).style.transform=`scale(${.4+.6*back(q)})`;
+  });
+  // antes da varredura, todas as cláusulas com mesma opacidade
+  if(t<8.4){['c1','c2','c3'].forEach(c=>$(c).style.opacity=1)}
+  const sm=inOut(t,11.0,11.4,12.3,12.6);
+  $('sum').style.opacity=sm; $('sum').style.transform=`translateX(-50%) translateY(${(1-eo(seg(t,11,11.4)))*30}px) scale(${.85+.15*back(seg(t,11,11.4))})`;
+
+  // Cena 4 — 12.6 a 15.4s
+  $('s4').style.opacity=1-eo(seg(t,15.0,15.4));
+  vis($('m1'),eo(seg(t,12.7,13.2)),(1-eo(seg(t,12.7,13.2)))*40);
+  vis($('m2'),eo(seg(t,13.3,13.8)),(1-eo(seg(t,13.3,13.8)))*40);
+  vis($('m3'),eo(seg(t,13.9,14.4)),(1-eo(seg(t,13.9,14.4)))*20);
+  if(t<12.6){$('s4').style.opacity=0}
+
+  // Cena 5 — 15.3 a 18s
+  const s5=eo(seg(t,15.3,15.6)); $('s5').style.opacity=s5;
+  const lg=seg(t,15.4,15.9); vis($('logo'),eo(lg),0,.5+.5*back(lg));
+  vis($('nm'),eo(seg(t,15.7,16.1)),(1-eo(seg(t,15.7,16.1)))*30);
+  vis($('tg'),eo(seg(t,15.95,16.3)),(1-eo(seg(t,15.95,16.3)))*20);
+  const ct=seg(t,16.3,16.7);
+  $('cta').style.opacity=eo(ct);
+  $('cta').style.transform=`scale(${(.7+.3*back(ct))*(1+.025*Math.sin(Math.max(0,t-16.7)*5))})`;
+  vis($('hd'),eo(seg(t,16.6,17)));
+}
+window.render=render; window.DUR=DUR;
+render(0);
+// prévia: se aberto no navegador sem ?frame, toca em loop
+if(!location.search.includes('frame')){const st=performance.now();(function loop(){render(((performance.now()-st)/1000)%DUR);requestAnimationFrame(loop)})()}
+</script>
+</body>
+</html>
