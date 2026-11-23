@@ -250,6 +250,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     {id:"r2",on:true,sev:"medio",name:"Rescisão",pat:"rescis|resili|distrat",reason:"Verifique as hipóteses de rescisão, prazos de aviso e consequências para cada parte.",sugg:"Equilibrar as hipóteses de rescisão entre as partes e prever prazo de aviso razoável."},
     {id:"r3",on:true,sev:"alto",name:"Exclusividade",pat:"exclusiv",reason:"Restringe a atuação de uma das partes; confira duração, alcance e exceções.",sugg:"Delimitar a exclusividade por território, segmento e prazo, com exceções previstas."},
     {id:"r4",on:true,sev:"medio",name:"Renovação / prorrogação",pat:"renov|prorrog",reason:"Renovação automática faz o contrato se estender sozinho; controle a data de aviso.",sugg:"Registrar a data-limite de aviso e avaliar um prazo de renovação mais curto."},
+    {id:"r22",on:true,sev:"medio",name:"Irrevogável e irretratável",pat:"irrevog|irretrat",reason:"Impede que as partes desistam ou voltem atrás por conta própria. O descumprimento ainda permite rescindir, mas a saída fica mais difícil.",sugg:"Avaliar se a irrevogabilidade é necessária para este negócio e prever hipóteses claras de saída."},
     {id:"r5",on:true,sev:"medio",name:"Limitação de responsabilidade",pat:"limita[^.;]{0,50}responsab|responsab[^.;]{0,60}limitad|isen[çc][ãa]o de responsab",reason:"Define o teto de indenização; confira se é compatível com o risco.",sugg:"Rever o teto e excluir dolo, culpa grave e violação de sigilo do limite."},
     {id:"r6",on:true,sev:"medio",name:"Reajuste de preço",pat:"reajust|corre[çc][ãa]o monet|[íi]ndice",reason:"Confirme o índice, a periodicidade e se há teto ou piso.",sugg:"Fixar índice claro (ex.: IPCA), periodicidade anual e, se possível, um teto."},
     {id:"r7",on:true,sev:"medio",name:"Aviso prévio",pat:"aviso pr[ée]vio|notifica[çc][ãa]o pr[ée]via",reason:"Prazo que deve ser controlado em calendário para não perder direitos.",sugg:"Registrar o prazo de aviso prévio no calendário de obrigações."},
@@ -259,7 +260,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     {id:"r11",on:true,sev:"ok",name:"Pagamento",pat:"pagamento|remunera[çc][ãa]o|valor mensal|fatura|boleto|vencimento",reason:"Verifique valores, datas de vencimento e forma de pagamento.",sugg:"Confirmar vencimentos, forma de pagamento e encargos por atraso."},
     {id:"r12",on:true,sev:"ok",name:"Confidencialidade",pat:"sigilo|confidencial|n[ãa]o divulga",reason:"Cláusula usual; confira prazo de duração e exceções.",sugg:"Confirmar o prazo de sigilo após o término e as exceções legais."},
     {id:"r13",on:true,sev:"ok",name:"Força maior / caso fortuito",pat:"for[çc]a maior|caso fortuito",reason:"Define o que ocorre em eventos imprevisíveis fora do controle das partes.",sugg:"Delimitar os eventos de força maior e seus efeitos sobre as obrigações."},
-    {id:"r14",on:true,sev:"ok",name:"Foro de eleição",pat:"foro|comarca|jurisdi[çc][ãa]o",reason:"Define onde eventuais disputas serão resolvidas.",sugg:"Verificar se o foro eleito é conveniente para o cliente."},
+    {id:"r14",on:true,sev:"medio",name:"Foro de eleição",pat:"foro|comarca|jurisdi[çc][ãa]o",reason:"Define onde eventuais disputas serão resolvidas. Um foro em outra cidade encarece e dificulta a defesa.",sugg:"Verificar se o foro eleito é conveniente para o cliente."},
     {id:"r15",on:true,sev:"ok",name:"Objeto do contrato",pat:"objeto do (contrato|presente)|objeto desta|tem por objeto|presente instrumento",reason:"Define o que está sendo contratado.",sugg:"Confirmar se o objeto está descrito de forma clara e completa."},
     {id:"r16",on:true,sev:"ok",name:"Obrigações das partes",pat:"obriga[çc][õo]es|obriga-se|compromete-se|dever[áa]|incumb",reason:"Descreve os deveres de cada parte.",sugg:"Verificar se as obrigações estão equilibradas entre as partes."},
     {id:"r17",on:true,sev:"medio",name:"Garantia",pat:"garantia|garant[ie]",reason:"Verifique o prazo, a cobertura e as condições da garantia.",sugg:"Confirmar o prazo e o escopo da garantia oferecida."},
@@ -276,9 +277,19 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   function esc(s){return (s+"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
   function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
 
-  var RULES_VERSION=5;
+  var RULES_VERSION=6;
   var rules;
-  if(load("clausa-rules-v")===RULES_VERSION){rules=load("clausa-rules")||clone(DEFAULTS)}
+  var savedV=load("clausa-rules-v"), savedRules=load("clausa-rules");
+  if(savedV===RULES_VERSION){rules=savedRules||clone(DEFAULTS)}
+  else if(savedV>=5&&Array.isArray(savedRules)&&savedRules.length){
+    // atualização sem apagar regras personalizadas: acrescenta as regras novas
+    // e atualiza o foro só se a pessoa nunca tiver mexido nele
+    rules=savedRules;
+    var r14=rules.filter(function(r){return r.id==="r14"})[0];
+    if(r14&&r14.sev==="ok"&&r14.reason==="Define onde eventuais disputas serão resolvidas."){
+      var d14=DEFAULTS.filter(function(d){return d.id==="r14"})[0];r14.sev=d14.sev;r14.reason=d14.reason}
+    DEFAULTS.forEach(function(d){if(!rules.some(function(r){return r.id===d.id}))rules.push(clone(d))});
+    save("clausa-rules",rules);save("clausa-rules-v",RULES_VERSION)}
   else{rules=clone(DEFAULTS);save("clausa-rules",rules);save("clausa-rules-v",RULES_VERSION)}
   if(!Array.isArray(rules)||!rules.length){rules=clone(DEFAULTS);save("clausa-rules",rules)}
   var templates=load("clausa-templates")||{};
