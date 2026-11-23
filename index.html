@@ -342,7 +342,8 @@ form input[type=text],form select{flex:1 1 240px;padding:12px 14px;border:1px so
   function analyze(){
     var t=document.getElementById("ct").value.trim(),rs=document.getElementById("rs");rs.textContent="";
     if(t.length<30){rs.appendChild(el("p","mut","Cole um trecho maior de contrato ou use o exemplo."));return}
-    var sents=t.match(/[^.;\n]+[.;]?/g)||[],done=[],found=[],cnt={alto:0,medio:0,ok:0};
+    // só corta em ponto/ponto e vírgula seguido de espaço, para não partir valores como "R$ 12.500,00"
+    var sents=t.replace(/([.;])\s+/g,"$1\n").split(/\n+/),done=[],found=[],cnt={alto:0,medio:0,ok:0};
     sents.forEach(function(s){s=s.trim();if(s.length<12)return;RULES.forEach(function(r,i){if(!done[i]&&r.re.test(s)){done[i]=1;found.push({r:r,s:s});cnt[r.r]++}})});
     if(!found.length){rs.appendChild(el("p","mut","Nenhuma cláusula conhecida foi encontrada neste trecho."));return}
     found.sort(function(a,b){var o={alto:0,medio:1,ok:2};return o[a.r.r]-o[b.r.r]});

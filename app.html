@@ -33,10 +33,10 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .btn.tiny{padding:5px 10px;font-size:12px;border-radius:8px}
 .mut{color:var(--gray)}.small{font-size:13px}
 
-.app{display:flex;height:100%;overflow:hidden}
+.app{display:flex;height:100%;height:100dvh;overflow:hidden}
 
 /* ---- Sidebar ---- */
-.side{width:286px;flex:none;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.side{position:relative;width:286px;flex:none;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
 .side-top{padding:16px 16px 10px}
 .logo{display:flex;align-items:center;gap:9px;font-family:"Playfair Display",Georgia,serif;font-weight:600;font-size:23px;color:var(--ink);text-decoration:none;margin-bottom:14px}
 .logo .scales{width:23px;height:23px}
@@ -60,6 +60,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .convo .cmenu{opacity:0;border:0;background:none;color:var(--gray);cursor:pointer;font-size:17px;line-height:1;padding:2px 6px;border-radius:5px;flex:none}
 .convo:hover .cmenu,.convo.active .cmenu{opacity:1}
 .convo .cmenu:hover{color:var(--ink);background:var(--paper)}
+@media (hover:none){.convo .cmenu{opacity:1}}
 .cmenupop{position:fixed;z-index:200;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 34px rgba(0,0,0,.55);padding:6px;min-width:200px}
 .cmenupop button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:0;color:var(--ink);cursor:pointer;padding:8px 10px;border-radius:7px;font:500 13px "Inter"}
 .cmenupop button:hover{background:var(--paper)}
@@ -144,7 +145,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .find.rej{opacity:.6}
 
 /* composer */
-.composer{border-top:1px solid var(--line);padding:14px 20px calc(16px + env(safe-area-inset-bottom,0px));padding-bottom:16px}
+.composer{border-top:1px solid var(--line);padding:14px 20px calc(16px + env(safe-area-inset-bottom,0px))}
 .cwrap{max-width:760px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 10px 10px 16px;display:flex;align-items:flex-end;gap:10px;transition:border-color .2s}
 .cwrap:focus-within{border-color:var(--orange)}
 #input{flex:1;min-width:0;border:0;background:none;color:var(--ink);font:400 14.5px/1.5 "Inter";resize:none;max-height:180px;padding:7px 0}
@@ -180,10 +181,18 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .tpl select,.tpl input{flex:1 1 130px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font:400 13px "Inter"}
 .sec-ttl{font:600 12px "Inter";letter-spacing:.06em;text-transform:uppercase;color:var(--gray);margin:18px 0 8px}
 
+.navshade{display:none}
+/* ✕ para fechar o menu lateral: escondido por padrão, aparece só no celular (regra da media query abaixo) */
+.navclose{display:none;position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:10px;width:36px;height:36px;align-items:center;justify-content:center;background:none;border:0;border-radius:9px;color:var(--gray);font-size:20px;cursor:pointer}
+.navclose:hover{background:var(--card);color:var(--ink)}
 @media (max-width:760px){
   .side{position:fixed;z-index:65;height:100%;transform:translateX(-100%);transition:.25s}
   .app.nav-open .side{transform:none}
   .menu-btn{display:flex}
+  /* fundo escurecido atrás do menu lateral: tocar nele fecha o menu */
+  .navshade{position:fixed;inset:0;z-index:64;background:rgba(0,0,0,.55)}
+  .app.nav-open .navshade{display:block}
+  .navclose{display:flex}
 }
 </style>
 </head>
@@ -191,6 +200,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 
 <div class="app" id="app">
   <aside class="side" id="side">
+    <button class="navclose" id="navclose" aria-label="Fechar menu">✕</button>
     <div class="side-top">
       <a class="logo" href="index.html">Clausa<svg class="scales" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></a>
       <button class="btn" id="new">+ Novo contrato</button>
@@ -202,6 +212,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
       <a href="index.html">↗ Voltar ao site</a>
     </div>
   </aside>
+  <div class="navshade" id="navshade"></div>
 
   <main class="main">
     <div class="main-top">
@@ -239,7 +250,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   var $=function(s,c){return [].slice.call((c||document).querySelectorAll(s))};
   var byId=function(i){return document.getElementById(i)};
   var LB={alto:"Risco alto",medio:"Atenção",ok:"Sem alerta"};
-  var LABELS={urgente:{t:"Urgente",c:"#F0625A"},importante:{t:"Importante",c:"#E0B65C"},tranquilo:{t:"Não se preocupe",c:"#5FB58C"}};
+  var LABELS={urgente:{t:"Urgente",c:"#F0625A"},importante:{t:"Importante",c:"#E0B65C"},tranquilo:{t:"Tranquilo",c:"#5FB58C"}};
   var SCALES='<svg class="scales" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>';
   var DOC='<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
   var QUILL='<svg class="quill" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/></svg>';
@@ -280,7 +291,9 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   function clone(o){return JSON.parse(JSON.stringify(o))}
   function load(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null}catch(e){return null}}
   function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-  function esc(s){return (s+"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+  function esc(s){return (s+"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
+  // separa em frases sem cortar números como "R$ 12.500,00" (só corta em ponto/ponto e vírgula seguido de espaço)
+  function splitSents(t){return t.replace(/([.;])\s+/g,"$1\n").split(/\n+/)}
   function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
 
   var RULES_VERSION=7;
@@ -317,7 +330,8 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 
   function toRow(c){return {id:c.id,user_id:user.id,titulo:c.title||"Contrato",texto:c.text||"",decisions:c.decisions||{},pinned:!!c.pinned,label:c.label||null,atualizado_em:new Date().toISOString()}}
   function toRowBasic(c){return {id:c.id,user_id:user.id,titulo:c.title||"Contrato",texto:c.text||"",decisions:c.decisions||{},atualizado_em:new Date().toISOString()}}
-  function fromRow(r){return {id:r.id,title:r.titulo||"Contrato",text:r.texto||"",decisions:r.decisions||{},pinned:!!r.pinned,label:r.label||null,created:r.criado_em?Date.parse(r.criado_em):Date.now()}}
+  function fromRow(r){return {id:r.id,title:r.titulo||"Contrato",text:r.texto||"",decisions:r.decisions||{},pinned:!!r.pinned,label:r.label||null,created:r.criado_em?Date.parse(r.criado_em):Date.now(),synced:true}}
+  function markSynced(){convos.forEach(function(c){c.synced=true});save("clausa-convos",convos)}
 
   function cloudSync(){
     if(!user||!sb||!convos.length)return;
@@ -325,8 +339,8 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     syncTimer=setTimeout(function(){
       sb.from("contracts").upsert(convos.map(toRow)).then(function(r){
         if(r.error){ // colunas novas talvez ainda não existam — salva o básico
-          sb.from("contracts").upsert(convos.map(toRowBasic)).then(function(r2){if(r2.error)console.log("Sync (salvar) erro:",r2.error)});
-        }
+          sb.from("contracts").upsert(convos.map(toRowBasic)).then(function(r2){if(r2.error)console.log("Sync (salvar) erro:",r2.error);else markSynced()});
+        }else markSynced();
       });
     },500);
   }
@@ -339,10 +353,16 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     sb.from("contracts").select("*").order("atualizado_em",{ascending:false}).then(function(r){
       if(r.error){console.log("Sync (carregar) erro:",r.error);return}
       if(Array.isArray(r.data)){
-        convos=r.data.map(fromRow);
+        // não descarta o que foi feito como visitante: contratos locais que nunca subiram
+        // para a nuvem são mantidos e enviados para a conta
+        var cloud=r.data.map(fromRow),ids={};
+        cloud.forEach(function(c){ids[c.id]=1});
+        var soLocal=convos.filter(function(c){return !c.synced&&!ids[c.id]&&c.text});
+        convos=soLocal.concat(cloud);
         save("clausa-convos",convos);
         current=convos.length?convos[0].id:null;
         renderSidebar();renderMain();
+        if(soLocal.length)cloudSync();
       }
     });
   }
@@ -351,7 +371,13 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     if(user){
       var nm=firstName(user);
       a.innerHTML='<div class="acct-info">'+(nm?'<span class="acct-nm">'+esc(nm)+'</span>':'')+'<span class="acct-em" title="'+esc(user.email)+'">'+esc(user.email)+'</span></div><button class="acct-out" id="sair" type="button">Sair</button>';
-      var s=byId("sair");if(s)s.onclick=function(){sb.auth.signOut().then(function(){location.href="entrar.html"})};
+      var s=byId("sair");if(s)s.onclick=function(){
+        // ao sair, apaga a cópia local dos contratos: num computador compartilhado,
+        // a próxima pessoa não pode ver os contratos da conta (eles continuam salvos na nuvem)
+        try{localStorage.removeItem("clausa-convos")}catch(e){}
+        convos=[];
+        sb.auth.signOut().then(function(){location.href="entrar.html"});
+      };
     }else{
       a.innerHTML='<a class="acct-login" href="entrar.html">☁ Entrar para salvar na nuvem</a>';
     }
@@ -363,7 +389,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 
   // ---------- Análise ----------
   function computeFindings(text){
-    var sents=text.match(/[^.;\n]+[.;]?/g)||[],found=[];
+    var sents=splitSents(text),found=[];
     rules.forEach(function(r){
       if(!r.on||!r.pat)return;
       var re;try{re=new RegExp(r.pat,"i")}catch(e){return}
@@ -371,7 +397,8 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
       var hit="";
       for(var i=0;i<sents.length;i++){var s=sents[i].trim();if(s.length>=8&&re.test(s)){hit=s;break}}
       if(!hit){var idx=text.search(re);hit=text.slice(Math.max(0,idx-30),idx+140).replace(/\s+/g," ").trim()}
-      found.push({sev:r.sev,name:r.name,reason:r.reason,sugg:r.sugg,s:hit});
+      // id da regra identifica o apontamento: aprovações não "pulam" de cláusula quando a lista de regras muda
+      found.push({id:r.id||r.name,sev:r.sev,name:r.name,reason:r.reason,sugg:r.sugg,s:hit});
     });
     found.sort(function(a,b){var o={alto:0,medio:1,ok:2};return o[a.sev]-o[b.sev]});
     return found;
@@ -413,7 +440,12 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
       var pin=c.pinned?'<svg class="cpin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>':'';
       d.innerHTML=DOC+dot+'<span class="ct">'+esc(c.title||"Sem título")+'</span>'+pin+'<button class="cmenu" title="Opções">⋯</button>';
       d.onclick=function(e){if(e.target.closest(".cmenu"))return;openConvo(c.id)};
-      d.querySelector(".cmenu").onclick=function(e){e.stopPropagation();openMenu(c,e.currentTarget)};
+      d.querySelector(".cmenu").onclick=function(e){
+        e.stopPropagation();
+        var open=document.querySelector(".cmenupop");
+        if(open&&open.dataset.cid===c.id){closeMenu();return}  // segundo clique no ⋯ fecha
+        openMenu(c,e.currentTarget);
+      };
       box.appendChild(d);
     });
   }
@@ -428,7 +460,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   }
   function openMenu(c,btn){
     closeMenu();
-    var m=el("div","cmenupop");
+    var m=el("div","cmenupop");m.dataset.cid=c.id;
     var html='<button data-a="rename">✏️ Renomear</button>'+
       '<button data-a="pin">📌 '+(c.pinned?"Desafixar":"Fixar no topo")+'</button>'+
       '<div class="sep"></div><div class="lbl">Etiqueta</div>';
@@ -453,22 +485,42 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     };
   }
   document.addEventListener("click",function(e){var m=document.querySelector(".cmenupop");if(m&&!m.contains(e.target)&&!e.target.closest(".cmenu"))closeMenu()});
-  document.addEventListener("keydown",function(e){if(e.key==="Escape")closeMenu()});
+  // o menu ⋯ fica preso na tela (position:fixed): se a lista rolar ou a janela mudar, ele ficaria solto
+  byId("convos").addEventListener("scroll",closeMenu,{passive:true});
+  window.addEventListener("resize",closeMenu);
+  // Esc fecha o que estiver aberto, do mais recente para o mais antigo
+  document.addEventListener("keydown",function(e){
+    if(e.key!=="Escape")return;
+    if(document.querySelector(".cmenupop")){closeMenu();return}
+    if(byId("drawer").classList.contains("open")){closeDrawer();return}
+    closeNav();
+  });
 
   function newConvo(){
-    var c={id:uid(),title:"Novo contrato",text:"",decisions:{},pinned:false,label:null,created:Date.now()};
-    convos.unshift(c);current=c.id;persistConvos();renderSidebar();renderMain();closeNav();
+    // reaproveita um contrato vazio em vez de acumular vários "Novo contrato" sem texto
+    var empty=convos.filter(function(x){return !x.text})[0];
+    if(empty){current=empty.id}
+    else{
+      var c={id:uid(),title:"Novo contrato",text:"",decisions:{},pinned:false,label:null,created:Date.now()};
+      convos.unshift(c);current=c.id;persistConvos();
+    }
+    renderSidebar();renderMain();closeNav();
     byId("input").focus();
   }
   function openConvo(id){current=id;renderSidebar();renderMain();closeNav()}
   function delConvo(id){
+    var c=getConvo(id);
+    if(!confirm("Excluir “"+((c&&c.title)||"este contrato")+"”? Essa ação não pode ser desfeita."))return;
     convos=convos.filter(function(c){return c.id!==id});
     if(current===id)current=convos.length?convos[0].id:null;
     cloudDelete(id);persistConvos();renderSidebar();renderMain();
   }
 
   // ---------- Main ----------
+  var renderSeq=0, typeTimer=null;
   function renderMain(animate){
+    var seq=++renderSeq;            // cada desenho da tela tem um número; tarefas atrasadas de um desenho antigo são descartadas
+    clearInterval(typeTimer);       // para o "digitando" da conversa anterior
     var inner=byId("inner"),c=current?getConvo(current):null;
     byId("mtitle").textContent=c&&c.text?c.title:"Clausa";
     inner.innerHTML="";
@@ -494,7 +546,10 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
       var tb=el("div","msg");tb.id="thinking";
       tb.innerHTML='<div class="ava ai">'+aiScales()+'</div><div class="mbody"><div class="mname">Clausa</div><div class="thinking"><span>Analisando o contrato</span><span class="dots"><i></i><i></i><i></i></span></div></div>';
       inner.appendChild(tb);byId("scroll").scrollTop=byId("scroll").scrollHeight;
-      setTimeout(function(){var th=byId("thinking");if(th)th.remove();appendAssistant(inner,c,true);byId("scroll").scrollTop=byId("scroll").scrollHeight},Math.min(1500,600+c.text.length*0.3));
+      setTimeout(function(){
+        if(seq!==renderSeq)return;  // o usuário trocou de conversa durante a análise
+        var th=byId("thinking");if(th)th.remove();appendAssistant(inner,c,true);byId("scroll").scrollTop=byId("scroll").scrollHeight
+      },Math.min(1500,600+c.text.length*0.3));
     }else{appendAssistant(inner,c,false);byId("scroll").scrollTop=byId("scroll").scrollHeight}
   }
   function aiScales(){return SCALES.replace('class="scales"','class="scales" style="width:18px;height:18px"')}
@@ -515,7 +570,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     var cnt={alto:0,medio:0,ok:0};found.forEach(function(f){cnt[f.sev]++});
     var rest='<div class="aireveal" id="rest"><div class="sumbar"><div class="stat alto"><b>'+cnt.alto+'</b><span>Risco alto</span></div><div class="stat medio"><b>'+cnt.medio+'</b><span>Atenção</span></div><div class="stat ok"><b>'+cnt.ok+'</b><span>Sem alerta</span></div><div class="stat apr"><b id="aprn">0</b><span>Aprovadas</span></div></div>';
     found.forEach(function(f,i){
-      var dec=c.decisions[i];
+      var dec=c.decisions[f.id];
       var block='<div class="find '+f.sev+(dec==="rej"?" rej":"")+'" id="find'+i+'"><div class="fh"><span class="sev '+f.sev+'">'+LB[f.sev]+'</span><span class="ft">'+esc(f.name)+'</span></div>'+
         '<q>'+esc(f.s.length>260?f.s.slice(0,260)+"…":f.s)+'</q><div class="why">'+esc(f.reason)+'</div>';
       if(f.sugg){
@@ -535,29 +590,36 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     $("[data-rej]",inner).forEach(function(b){b.onclick=function(){decide(found,+b.dataset.rej,"rej")}});
     byId("rep").onclick=function(){copyReport(c,found)};
     var dlb=byId("dl");if(dlb)dlb.onclick=function(){downloadReport(c,found)};
-    updateApr(c);
+    updateApr(c,found);
     typeWords(byId("typ"),"Revisei o contrato e encontrei "+found.length+" ponto(s) para a sua atenção:",typeIt,function(){var r=byId("rest");if(r)r.classList.add("show");byId("scroll").scrollTop=byId("scroll").scrollHeight});
   }
   function typeWords(elm,text,typeIt,done){
     if(!elm){if(done)done();return}
     if(!typeIt||!matchMedia("(prefers-reduced-motion: no-preference)").matches){elm.textContent=text;if(done)done();return}
     var words=text.split(" "),i=0;elm.textContent="";
-    var timer=setInterval(function(){elm.textContent+=(i?" ":"")+words[i];i++;byId("scroll").scrollTop=byId("scroll").scrollHeight;if(i>=words.length){clearInterval(timer);if(done)done()}},42);
+    clearInterval(typeTimer);
+    typeTimer=setInterval(function(){
+      if(!elm.isConnected){clearInterval(typeTimer);return}
+      elm.textContent+=(i?" ":"")+words[i];i++;byId("scroll").scrollTop=byId("scroll").scrollHeight;
+      if(i>=words.length){clearInterval(typeTimer);if(done)done()}
+    },42);
   }
   function decide(found,i,v){
-    var c=getConvo(current);c.decisions[i]=v;persistConvos();
+    var c=getConvo(current);if(!c||!found[i])return;
+    c.decisions[found[i].id]=v;persistConvos();
     var st=document.querySelector('[data-st="'+i+'"]');st.hidden=false;st.className="state "+v;st.textContent=v==="apr"?"✓ Aprovada":"✕ Rejeitada";
     byId("find"+i).classList.toggle("rej",v==="rej");
-    updateApr(c);
+    updateApr(c,found);
   }
-  function updateApr(c){var n=0;for(var k in c.decisions)if(c.decisions[k]==="apr")n++;var e=byId("aprn");if(e)e.textContent=n}
+  // conta só as aprovações dos apontamentos que estão na tela
+  function updateApr(c,found){var n=0;found.forEach(function(f){if(c.decisions[f.id]==="apr")n++});var e=byId("aprn");if(e)e.textContent=n}
 
   function buildReport(c,found){
-    var cnt={alto:0,medio:0,ok:0},apr=0;found.forEach(function(f,i){cnt[f.sev]++;if(c.decisions[i]==="apr")apr++});
+    var cnt={alto:0,medio:0,ok:0},apr=0;found.forEach(function(f){cnt[f.sev]++;if(c.decisions[f.id]==="apr")apr++});
     var lines=["RELATÓRIO DE REVISÃO — CLAUSA","Contrato: "+(c.title||""),"Gerado em "+new Date().toLocaleString("pt-BR"),"",
       "RESUMO: "+cnt.alto+" risco(s) alto(s) · "+cnt.medio+" ponto(s) de atenção · "+cnt.ok+" sem alerta · "+apr+" sugestão(ões) aprovada(s)",
       "----------------------------------------",""];
-    found.forEach(function(f,i){var d=c.decisions[i];
+    found.forEach(function(f){var d=c.decisions[f.id];
       lines.push("["+LB[f.sev].toUpperCase()+"] "+f.name);
       lines.push("Trecho: "+f.s.trim());lines.push("Motivo: "+f.reason);
       if(f.sugg)lines.push("Sugestão: "+f.sugg+"  ->  "+(d==="apr"?"APROVADA":d==="rej"?"REJEITADA":"pendente"));
@@ -610,7 +672,9 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   function sel(a,b){return a===b?" selected":""}
   function editRule(i){
     var isNew=(i<0),r=isNew?{id:"r"+Date.now(),on:true,sev:"medio",name:"",pat:"",reason:"",sugg:""}:rules[i];
-    var box=byId("rules"),f=el("div","rule open");
+    var box=byId("rules");
+    var aberto=byId("f-name");if(aberto)aberto.closest(".rule").remove();  // só um formulário de edição por vez
+    var f=el("div","rule open");
     f.innerHTML='<div class="field"><label>Nome</label><input id="f-name" value="'+esc(r.name)+'"></div>'+
       '<div class="field"><label>Nível</label><select id="f-sev"><option value="alto"'+sel(r.sev,"alto")+'>Risco alto</option><option value="medio"'+sel(r.sev,"medio")+'>Atenção</option><option value="ok"'+sel(r.sev,"ok")+'>Sem alerta</option></select></div>'+
       '<div class="field"><label>Palavras-chave (separe por | )</label><input id="f-pat" value="'+esc(r.pat)+'"></div>'+
@@ -618,7 +682,11 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
       '<div class="field"><label>Sugestão de melhoria</label><textarea id="f-sugg">'+esc(r.sugg)+'</textarea></div>'+
       '<div style="display:flex;gap:8px"><button class="btn sm" id="f-save">Salvar</button><button class="btn ghost sm" id="f-cancel">Cancelar</button></div>';
     box.insertBefore(f,box.firstChild);
-    byId("f-save").onclick=function(){r.name=byId("f-name").value.trim()||"Regra";r.sev=byId("f-sev").value;r.pat=byId("f-pat").value.trim();r.reason=byId("f-reason").value.trim();r.sugg=byId("f-sugg").value.trim();if(isNew)rules.push(r);persistRules();renderRules();if(current)renderMain()};
+    byId("f-save").onclick=function(){
+      var pat=byId("f-pat").value.trim();
+      // padrão inválido (ex.: parêntese sem fechar) faria a regra ser ignorada sem aviso
+      try{new RegExp(pat,"i")}catch(e){alert("As palavras-chave têm um caractere que a busca não entende (por exemplo, um parêntese ou colchete sem fechar). Corrija e salve de novo.");byId("f-pat").focus();return}
+      r.name=byId("f-name").value.trim()||"Regra";r.sev=byId("f-sev").value;r.pat=pat;r.reason=byId("f-reason").value.trim();r.sugg=byId("f-sugg").value.trim();if(isNew)rules.push(r);persistRules();renderRules();if(current)renderMain()};
     byId("f-cancel").onclick=renderRules;
   }
   function renderTpls(){var s=byId("tpls");s.innerHTML='<option value="">— modelos salvos —</option>';Object.keys(templates).forEach(function(n){var o=el("option",null,n);o.value=n;s.appendChild(o)})}
@@ -628,10 +696,23 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   byId("send").onclick=send;
   byId("input").addEventListener("input",sizeInput);
   byId("input").addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}});
-  document.addEventListener("change",function(e){if(e.target&&e.target.id==="file"){var f=e.target.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){byId("input").value=rd.result;sizeInput();send()};rd.readAsText(f)}});
+  document.addEventListener("change",function(e){
+    if(!e.target||e.target.id!=="file")return;
+    var inp=e.target,f=inp.files[0];if(!f)return;
+    var rd=new FileReader();
+    rd.onload=function(){
+      // .txt salvo no Bloco de Notas antigo vem em Windows-1252: em UTF-8 os acentos viram "�"
+      if(rd.result.indexOf("�")>=0&&!rd.retried){rd.retried=true;rd.readAsText(f,"windows-1252");return}
+      byId("input").value=rd.result;sizeInput();send();
+      inp.value="";  // permite carregar o mesmo arquivo de novo
+    };
+    rd.readAsText(f);
+  });
   byId("menu").onclick=function(){byId("app").classList.toggle("nav-open")};
   function closeNav(){byId("app").classList.remove("nav-open")}
-  byId("openrules").onclick=function(){byId("drawer").classList.add("open");byId("overlay").classList.add("open");renderRules();renderTpls()};
+  byId("navshade").onclick=closeNav;  // tocar fora do menu lateral fecha
+  byId("navclose").onclick=closeNav;  // ✕ dentro do menu (o painel cobre o ☰ no celular)
+  byId("openrules").onclick=function(){closeNav();byId("drawer").classList.add("open");byId("overlay").classList.add("open");renderRules();renderTpls()};
   function closeDrawer(){byId("drawer").classList.remove("open");byId("overlay").classList.remove("open")}
   byId("closedrawer").onclick=closeDrawer;byId("overlay").onclick=closeDrawer;
   byId("savetpl").onclick=function(){var n=byId("tplname").value.trim();if(!n)return;templates[n]=clone(rules);save("clausa-templates",templates);byId("tplname").value="";renderTpls()};
