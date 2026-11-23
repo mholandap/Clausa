@@ -1,6 +1,7 @@
 # Trilha do anúncio: narração (já tratada, 44.1k) + música com ducking + efeitos sincronizados ao timing.js
 import json, re, sys, wave, numpy as np
 voice_path, timing_js, out = sys.argv[1:4]
+PROFILE=sys.argv[4] if len(sys.argv)>4 else 'anuncio'
 TM=json.loads(re.search(r'window\.TIMING=(.*);',open(timing_js).read()).group(1)); L=TM['lines']; D=TM['dur']
 SR=44100; N=int(D*SR); rng=np.random.default_rng(5)
 w=wave.open(voice_path); vx=np.frombuffer(w.readframes(w.getnframes()),dtype='<i2').astype(float)/32767
@@ -15,6 +16,7 @@ def put(buf,sig,t,g=1.,pan=0.):
 def band(x,lo,hi):
     X=np.fft.rfft(x); f=np.fft.rfftfreq(len(x),1/SR); X[(f<lo)|(f>hi)]=0; return np.fft.irfft(X,len(x))
 W=lambda l,k:L[l]['words'][k]['t0']; LS=lambda l:L[l]['start']; LE=lambda l:L[l]['end']
+END,KICK=(7,1) if PROFILE=='anuncio' else (8,2)
 
 # ---- música: pluck em Lá menor, 100 bpm ----
 B=60/100
@@ -26,7 +28,7 @@ def padc(fs,d):
     return s*np.minimum(1,t/.6)*np.minimum(1,(d-t)/.6)
 prog=[(220,[220,261.63,329.63],[110,164.81]),(174.61,[174.61,220,261.63],[87.31,130.81]),
       (261.63,[196,261.63,329.63],[130.81,196]),(196,[196,246.94,293.66],[98,146.83])]
-end_music=LS(7)-.15; t0=0; bar=0
+end_music=LS(END)-.15; t0=0; bar=0
 while t0<end_music:
     root,ch,pd=prog[bar%4]
     put(mus,padc([x for x in ch],4*B+.4),t0,.10)
@@ -37,14 +39,14 @@ while t0<end_music:
     tb=tt(4*B); put(mus,np.sin(2*np.pi*pd[0]/2*tb)*np.minimum(1,tb/.03)*np.exp(-tb*.5),t0,.20)
     for k in range(4):
         tk=t0+k*B
-        if tk>LS(1)-.3 and tk<end_music:
+        if tk>LS(KICK)-.3 and tk<end_music:
             t=tt(.3); put(mus,np.sin(2*np.pi*np.cumsum(50+70*np.exp(-t*35))/SR)*np.exp(-t*10),tk,.32)
             if k%2: t=tt(.18); put(mus,band(rng.standard_normal(len(t)),1200,7000)*np.exp(-t*28),tk,.07)
         t=tt(.05); put(mus,band(rng.standard_normal(len(t)),8000,15000)*np.exp(-t*80),tk+B/2,.035,.3)
     t0+=4*B; bar+=1
 # acorde final da marca
 t=tt(3.2); fin=sum(np.sin(2*np.pi*f*t)*np.exp(-t*1.1) for f in [220,277.18,329.63,440,554.37])/5
-put(mus,fin,LS(7)-.1,.30)
+put(mus,fin,LS(END)-.1,.30)
 
 # ---- ducking: música baixa quando a voz fala ----
 hop=441; env=np.array([np.sqrt(np.mean(voice[k:k+hop]**2)) for k in range(0,N,hop)])
@@ -58,13 +60,17 @@ def pop(f=900):
     t=tt(.35); return (np.sin(2*np.pi*f*t*(1+.6*np.exp(-t*40)))*np.exp(-t*18))
 def tick():
     t=tt(.03); return band(rng.standard_normal(len(t)),2000,9000)*np.exp(-t*160)
-for tw in [LS(1)-.32,LS(2)-.3,LS(6)-.45,LS(7)-.4]: put(sfx,whoosh(),tw,.16)
-for k in range(15): put(sfx,tick(),W(1,0)+.55*(1-(1-k/15)**(1/3)),.12,(-.2,.2)[k%2])
-t=tt(LE(2)-W(2,5)+.3); f=280+900*(t/t[-1])**2
-put(sfx,np.sin(2*np.pi*np.cumsum(f)/SR)*np.sin(np.pi*t/t[-1])*.6+band(rng.standard_normal(len(t)),3000,9000)*.15*(t/t[-1]),W(2,5)-.25,.08)
-for (l,k),f in zip([(3,2),(4,0),(5,0)],[880,740,880]): put(sfx,pop(f),W(l,k)+.05,.22)
-t=tt(.9); put(sfx,(np.sin(2*np.pi*1318.5*t)+.6*np.sin(2*np.pi*1975.5*t))*np.exp(-t*6),LE(5)+.42,.12)
-t=tt(.25); put(sfx,np.sin(2*np.pi*np.cumsum(90+120*np.exp(-t*30))/SR)*np.exp(-t*14),LS(7)-.1,.35)
+if PROFILE=='anuncio':
+    for tw in [LS(1)-.32,LS(2)-.3,LS(6)-.45,LS(7)-.4]: put(sfx,whoosh(),tw,.16)
+    for k in range(15): put(sfx,tick(),W(1,0)+.55*(1-(1-k/15)**(1/3)),.12,(-.2,.2)[k%2])
+    t=tt(LE(2)-W(2,5)+.3); f=280+900*(t/t[-1])**2
+    put(sfx,np.sin(2*np.pi*np.cumsum(f)/SR)*np.sin(np.pi*t/t[-1])*.6+band(rng.standard_normal(len(t)),3000,9000)*.15*(t/t[-1]),W(2,5)-.25,.08)
+    for (l,k),f in zip([(3,2),(4,0),(5,0)],[880,740,880]): put(sfx,pop(f),W(l,k)+.05,.22)
+    t=tt(.9); put(sfx,(np.sin(2*np.pi*1318.5*t)+.6*np.sin(2*np.pi*1975.5*t))*np.exp(-t*6),LE(5)+.42,.12)
+else:  # reel 3 palavras
+    for tw in [LS(1)-.3,LS(2)-.4,LS(4)-.3,LS(6)-.3,LS(8)-.45]: put(sfx,whoosh(),tw,.14)
+    for (l,k),f in zip([(0,5),(2,0),(4,0),(6,0)],[660,880,740,880]): put(sfx,pop(f),W(l,k)+.05,.2)
+t=tt(.25); put(sfx,np.sin(2*np.pi*np.cumsum(90+120*np.exp(-t*30))/SR)*np.exp(-t*14),LS(END)-.1,.35)
 
 # ---- master ----
 mix=mus+sfx+np.stack([voice,voice],1)*1.0

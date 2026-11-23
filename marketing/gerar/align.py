@@ -3,15 +3,20 @@ import json, sys, re, subprocess, wave, numpy as np
 src, out_wav, out_js, cfgp = sys.argv[1:5]
 cfg=json.load(open(cfgp))
 w=wave.open(src); SR=w.getframerate(); x=np.frombuffer(w.readframes(w.getnframes()),dtype='<i2').astype(float)/32767
-hop=SR//100; e=np.array([np.sqrt(np.mean(x[k:k+hop]**2)) for k in range(0,len(x)-hop,hop)])
+BR=cfg.get('bridge',12); hop=SR//100; e=np.array([np.sqrt(np.mean(x[k:k+hop]**2)) for k in range(0,len(x)-hop,hop)])
 th=max(.01,np.percentile(e,95)*.08); v=e>th; segs=[]; k=0
 while k<len(v):
     if v[k]:
         j=k
-        while j<len(v) and (v[j] or (j+12<len(v) and v[j:j+12].any())): j+=1
+        while j<len(v) and (v[j] or (j+BR<len(v) and v[j:j+BR].any())): j+=1
         segs.append([k/100,j/100]); k=j
     else: k+=1
-sents=[s for line in cfg['lines'] for s in re.split(r'(?<=[.?!])\s+',line.strip()) if s]
+if 'segments' in cfg:   # modo explícito: um texto por trecho de fala detectado; linhas = listas de índices
+    sents=cfg['segments']; groups=cfg['lines']
+else:
+    groups=[]; sents=[]
+    for line in cfg['lines']:
+        ss=[s for s in re.split(r'(?<=[.?!])\s+',line.strip()) if s]; groups.append(list(range(len(sents),len(sents)+len(ss)))); sents+=ss
 assert len(segs)==len(sents), f'{len(segs)} trechos de fala para {len(sents)} frases'
 # insere silêncio depois de certas frases (índice da frase -> segundos)
 ins={int(k):v for k,v in cfg.get('insert_after',{}).items()}
@@ -25,11 +30,11 @@ lead=cfg.get('lead',0.3); y=np.concatenate([np.zeros(int(lead*SR)),y]); S=[(a+le
 def plen(word):
     ps=subprocess.run(['espeak-ng','-q','-v','pt-br','--ipa',re.sub(r'[^\wÀ-ú%]','',word)],capture_output=True,text=True).stdout
     return max(1,len(re.sub(r'[ˈˌ\s‍]','',ps)))
-lines=[]; si=0
-for line in cfg['lines']:
-    ss=[s for s in re.split(r'(?<=[.?!])\s+',line.strip()) if s]; words=[]
-    for s in ss:
-        a,b=S[si]; si+=1; ws=s.split(); L=[plen(t)+(2 if re.search(r'[,;]$',t) else 0) for t in ws]; tot=sum(L); c=0
+lines=[]
+for g in groups:
+    words=[]
+    for si in g:
+        s=sents[si]; a,b=S[si]; ws=s.split(); L=[plen(t)+(2 if re.search(r'[,;]$',t) else 0) for t in ws]; tot=sum(L); c=0
         for t,l in zip(ws,L): words.append({'w':t,'t0':round(a+(b-a)*c/tot,3),'t1':round(a+(b-a)*(c+l)/tot,3)}); c+=l
     lines.append({'start':words[0]['t0'],'end':words[-1]['t1'],'words':words})
 dur=round(lines[-1]['end']+cfg.get('tail',1.3),2); y=y[:int(dur*SR)]

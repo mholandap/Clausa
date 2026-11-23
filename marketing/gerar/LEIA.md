@@ -42,3 +42,16 @@ node render.js full frames 120
 ffmpeg -framerate 120 -i frames/f%04d.jpg -i trilha.wav -filter_complex "[0:v]tmix=frames=2:weights='1 1',fps=60,format=yuv420p[v];[1:a]loudnorm=I=-14:TP=-1.5:LRA=11[a]" -map "[v]" -map "[a]" -c:v libx264 -crf 20 -c:a aac -b:a 192k -shortest -movflags +faststart ../clausa-anuncio.mp4
 ```
 Para prévia rápida, abra `../anuncio.html` no navegador (toca em loop, sem som).
+
+## Reel "3 palavras perigosas"
+Mesmo processo, com outros arquivos:
+```
+ffmpeg -i locucao-3palavras.mp3 -ar 44100 -ac 1 loc3p.wav
+python3 align.py loc3p.wav voz3p.wav ../timing-3palavras.js alinhamento-3palavras.json
+ffmpeg -i voz3p.wav -af "highpass=f=80,acompressor=threshold=-18dB:ratio=2:attack=8:release=120:makeup=2,alimiter=limit=0.89" voz3p44.wav
+python3 mix.py voz3p44.wav ../timing-3palavras.js trilha3p.wav 3p
+PAGE=../reel-3-palavras.html node render.js full frames3p 120
+```
+O encode é igual ao do anúncio, trocando `frames/` por `frames3p/`, a trilha e o arquivo de saída (`../reel-3-palavras.mp4`).
+Aqui `alinhamento-3palavras.json` usa o modo `segments`: um texto para cada trecho de fala que o alinhador detecta
+(a locução pausa também em vírgulas e dois-pontos), e `lines` agrupa esses trechos nas falas que a animação usa.
