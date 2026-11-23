@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Clausa — textos do vídeo "Uma tarde construindo o Clausa" (v4: Limelight/Federo atrás, Poiret One na frente)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@800;900&family=Limelight&family=Federo&family=Poiret+One&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
+  body{font-family:"Inter Tight",Inter,sans-serif;position:relative}
+  /* palavra gigante que fica ATRÁS da pessoa */
+  .big{position:absolute;left:0;right:0;text-align:center;color:#FF8A33;font-weight:900;letter-spacing:-.045em;line-height:.82;
+       -webkit-text-stroke:7px #FF8A33;paint-order:stroke fill;white-space:nowrap;opacity:0;
+       text-shadow:0 14px 40px rgba(0,0,0,.30)}
+  /* legenda da FRENTE: laranja, bem grossa, com sombra para ler sobre qualquer fundo */
+  .cap{position:absolute;left:60px;right:60px;bottom:430px;color:#FF8A33;font-family:"Poiret One",sans-serif;font-weight:400;font-size:80px;line-height:1.08;letter-spacing:-.01em;
+       -webkit-text-stroke:2px #FF8A33;opacity:0;
+       text-shadow:0 0 3px #140A05,0 0 3px #140A05,0 2px 4px rgba(0,0,0,.95),0 0 14px rgba(0,0,0,.75),0 8px 28px rgba(0,0,0,.6)}
+  .cap .w{display:inline-block;margin-right:.18em}
+  .pill{position:absolute;left:64px;bottom:560px;display:inline-flex;align-items:center;gap:14px;background:rgba(11,11,12,.72);
+        border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:14px 26px 14px 20px;font:800 38px/1 "Inter Tight";color:#FAFAFA;
+        font-variant-numeric:tabular-nums;opacity:0}
+  .pill i{width:16px;height:16px;border-radius:50%;background:#FF8A33;box-shadow:0 0 14px #FF8A33}
+  .cta{position:absolute;left:64px;bottom:330px;background:#FF8A33;color:#140a05;font:900 44px/1 "Inter Tight";padding:20px 28px;border-radius:16px;opacity:0}
+  #bar{position:absolute;left:0;top:0;height:8px;background:linear-gradient(90deg,#E2590B,#FF8A33)}
+</style>
+</head>
+<body>
+<div id="bar" data-layer="front"></div>
+<div id="L"></div>
+<script>
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), seg=(t,a,b)=>clamp((t-a)/(b-a));
+const eo=x=>1-Math.pow(1-x,3), spring=x=>x<=0?0:x>=1?1:1-Math.exp(-6.5*x)*Math.cos(10*x);
+const DUR=25.133;
+// camada: "behind" (atrás da pessoa) ou "front" (na frente). y = topo do texto em px; s = tamanho da fonte
+const E=[
+  // 17:20 — planos abertos: palavra no meio da sala, você passa na frente
+  {k:'pill',txt:'17:20', a:0.03, b:4.70},
+  {k:'big', txt:'TRAVOU.', a:0.06, b:1.40, y:450, s:200, f:"'Limelight',serif", sw:2},
+  {k:'cap', txt:'O Instagram travou o link do meu site.', a:0.06, b:1.40},
+  {k:'big', txt:'QUARTA.', a:1.42, b:4.70, y:440, s:225, f:"'Federo',serif", sw:6},
+  {k:'cap', txt:'E meu primeiro Reel sai quarta.', a:1.42, b:4.70},
+  // 17:21 — closes: palavra no alto, o topo da cabeça cobre a base das letras
+  {k:'pill',txt:'17:21', a:4.767, b:11.50},
+  {k:'big', txt:'COMPUTADOR', a:4.80, b:7.48, y:120, s:150, f:"'Federo',serif", sw:6},
+  {k:'cap', txt:'Tentando pelo computador.', a:4.83, b:7.48},
+  {k:'big', txt:'PACIÊNCIA', a:7.52, b:11.50, y:140, s:150, f:"'Limelight',serif", sw:2},
+  // 17:29 — cabeça alta demais: só legenda da frente
+  {k:'pill',txt:'17:29', a:11.567, b:16.27},
+  {k:'cap', txt:'Mensagens pra advogados.', a:11.63, b:16.27},
+  // 17:32
+  {k:'pill',txt:'17:32', a:16.333, b:20.37},
+  {k:'big', txt:'17', a:16.36, b:20.37, y:30, s:300, f:"'Limelight',serif", sw:2},
+  {k:'cap', txt:'Conferindo as 17 correções de hoje.', a:16.40, b:20.37},
+  // 17:34 e fecho (plano aberto)
+  {k:'pill',txt:'17:34', a:20.40, b:22.20},
+  {k:'big', txt:'FIM DE TARDE', a:20.43, b:22.20, y:440, s:150, f:"'Federo',serif", sw:6},
+  {k:'big', txt:'AMANHÃ, 8H', a:22.25, b:DUR+1, y:430, s:128, f:"'Limelight',serif", sw:2},
+  {k:'cap', txt:'Meu primeiro post no LinkedIn.', a:22.30, b:DUR+1},
+  {k:'cta', txt:'Segue pra acompanhar →', a:22.60, b:DUR+1},
+];
+const layer=(new URLSearchParams(location.search)).get('layer')||'all';
+const L=document.getElementById('L');
+E.forEach(e=>{
+  const d=document.createElement('div'); d.className=e.k;
+  e.layer=e.k==='big'?'behind':'front';
+  if(e.k==='pill')d.innerHTML='<i></i>'+e.txt;
+  else if(e.k==='cap')d.innerHTML=e.txt.split(' ').map(w=>`<span class="w">${w}</span>`).join('');
+  else d.textContent=e.txt;
+  if(e.k==='big'){d.style.top=e.y+'px';d.style.fontSize=e.s+'px';d.style.fontFamily=e.f;d.style.letterSpacing=e.ls||'0';d.style.webkitTextStroke=(e.sw||3)+'px #FF8A33'}
+  if(layer!=='all'&&layer!==e.layer)d.style.display='none';
+  L.appendChild(d); e.el=d; e.ws=[...d.querySelectorAll('.w')];
+});
+if(layer==='behind')document.getElementById('bar').style.display='none';
+function render(t){
+  document.getElementById('bar').style.width=(t/DUR*100)+'%';
+  E.forEach(e=>{
+    const on=t>=e.a&&t<e.b, out=seg(t,e.b-.16,e.b), p=seg(t,e.a,e.a+.45);
+    e.el.style.opacity=on?(e.k==='cap'?1:eo(p))*(1-out):0;
+    if(e.k==='big') e.el.style.transform=`translateY(${(1-spring(p))*60-out*30}px) scale(${.86+.14*spring(p)+.03*seg(t,e.a,e.b)})`;
+    if(e.k==='pill'){ e.el.style.transform=`translateX(${(1-spring(p))*-40}px)`;
+      // a hora fica sempre logo acima da legenda ativa (1 ou 2 linhas)
+      const cap=E.find(c=>c.k==='cap'&&t>=c.a&&t<c.b); e.el.style.bottom=(430+(cap?cap.el.offsetHeight:0)+18)+'px'; }
+    if(e.k==='cta') e.el.style.transform=`scale(${.7+.3*spring(p)})`;
+    if(e.k==='cap') e.ws.forEach((w,i)=>{const q=seg(t,e.a+i*.06,e.a+i*.06+.28);w.style.opacity=eo(q);w.style.transform=`translateY(${(1-spring(q))*16}px)`});
+  });
+}
+window.render=render; window.DUR=DUR; render(0);
+</script>
+</body>
+</html>
