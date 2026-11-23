@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Clausa — Reel 3 palavras perigosas</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="timing-3palavras.js"></script>
+<style>
+  :root{--bg:#0B0B0C;--card:#141415;--line:#29292C;--ink:#FAFAFA;--gray:#9B9B9E;
+        --or:#FF8A33;--seal:#E2590B;--red:#F0625A;--yel:#E0B65C}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg)}
+  body{font-family:Inter,system-ui,sans-serif;color:var(--ink);position:relative}
+  #grain{position:absolute;inset:0;opacity:.09;pointer-events:none;mix-blend-mode:screen;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+  #vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 55%,rgba(0,0,0,.55) 100%)}
+  #stage{position:absolute;inset:0;transform-origin:540px 960px}
+
+  /* manchetes cinéticas */
+  .hd{position:absolute;left:60px;right:60px;text-align:center;font-family:"Inter Tight",Inter,sans-serif;font-weight:900;
+      letter-spacing:-.045em;line-height:.98;color:var(--ink)}
+  .hd.center{top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;font-size:150px}
+  .hd.top{top:210px;font-size:96px;line-height:1.02}
+  .hd .row{display:block}
+  .tok{display:inline-block;position:relative;margin:0 .1em;transform-origin:50% 90%;white-space:nowrap}
+  .tok .bg{position:absolute;left:-.12em;right:-.12em;top:.06em;bottom:-.02em;background:var(--or);transform-origin:0 50%;transform:scaleX(0);z-index:-1}
+  .tok .tx{position:relative}
+  .hdwrap{position:absolute;inset:0;isolation:isolate}
+
+  /* contrato */
+  #cardWrap{position:absolute;left:90px;top:560px;width:900px;height:1000px;transform-origin:450px 0}
+  #card{position:absolute;inset:0;background:var(--card);border:1px solid var(--line);border-radius:28px;overflow:hidden;
+        box-shadow:0 30px 90px rgba(0,0,0,.7)}
+  #card .head{height:92px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 46px;
+        font-size:22px;font-weight:700;letter-spacing:2.5px;color:var(--gray);text-transform:uppercase}
+  #card .head b{margin-left:auto;color:var(--ink);letter-spacing:1px;font-variant-numeric:tabular-nums}
+  #card .head b span{color:var(--or)}
+  .body{position:absolute;left:0;right:0;top:92px;bottom:0;overflow:hidden}
+  .doc{position:absolute;left:0;right:0;top:0;padding:44px 52px}
+  .doc p{font-size:28px;line-height:1.6;color:#b6b6b9;margin-bottom:26px}
+  .doc p b{color:#ededee;font-weight:700}
+  .cl{position:relative;margin:0 0 58px;padding-top:6px}
+  .ph{position:relative;color:#ededee;font-weight:600;background:linear-gradient(rgba(255,138,51,.28),rgba(255,138,51,.28)) no-repeat 0 100%/0% 100%;
+      box-shadow:inset 0 -5px 0 0 transparent;border-radius:3px;padding:0 3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+  .tag{position:absolute;right:-8px;top:-46px;font:800 23px/1 Inter;letter-spacing:1.5px;text-transform:uppercase;
+       padding:13px 18px;border-radius:10px;color:#140a05;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.5);transform-origin:100% 100%}
+  .tag.r{background:var(--red)} .tag.y{background:var(--yel)}
+  #beam{position:absolute;left:0;right:0;height:4px;background:var(--or);box-shadow:0 0 24px 6px rgba(255,138,51,.55)}
+  #beamTrail{position:absolute;left:0;right:0;height:240px;background:linear-gradient(180deg,transparent,rgba(255,138,51,.12))}
+  #pill{position:absolute;left:50%;top:1630px;background:var(--or);color:#140a05;border-radius:16px;padding:24px 40px;
+        font:800 38px/1 "Inter Tight",Inter;letter-spacing:-.5px;white-space:nowrap;transform-origin:50% 50%}
+
+  /* final */
+  #end{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:120px}
+  #logo{width:230px;height:230px;border-radius:52px}
+  #end .nm{font:900 190px/1 "Inter Tight",Inter;letter-spacing:-.055em;margin-top:44px}
+  #end .tg{font-size:42px;color:var(--gray);margin-top:16px;font-weight:500}
+  #cta{margin-top:90px;background:var(--or);color:#140a05;font:800 50px/1 "Inter Tight",Inter;letter-spacing:-.5px;
+       padding:36px 66px;border-radius:20px}
+  #arrow{margin-top:34px;font:800 56px/1 Inter;color:var(--or)}
+  #end .hdl{margin-top:18px;font-size:34px;color:var(--gray);font-weight:600}
+
+  .hd.sub{top:0;font-size:60px;line-height:1.08;font-weight:800;letter-spacing:-.03em;color:#d9d9db}
+  .hd.big{font-size:132px}
+  .doc .dim{opacity:.45}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="cardWrap" style="top:680px;height:940px"><div id="card">
+    <div class="head">Contrato de prestação de serviços<b>trechos</b></div>
+    <div class="body">
+      <div class="doc" id="docB" style="padding-top:84px">
+        <div class="cl" id="c1"><p style="margin:0"><b>Cláusula 3ª.</b> O presente contrato é celebrado em caráter <span class="ph" id="p1">irrevogável e irretratável</span>, obrigando as partes e seus sucessores a qualquer título.</p><span class="tag r" id="t1">1 · Irrevogável</span></div>
+        <p class="dim"><b>Cláusula 4ª.</b> Os pagamentos serão efetuados até o décimo dia útil do mês subsequente, mediante nota fiscal.</p>
+        <div class="cl" id="c2" style="margin-top:62px"><p style="margin:0"><b>Cláusula 9ª.</b> Fica eleito o <span class="ph" id="p2">foro da Comarca de Manaus/AM</span>, com renúncia a qualquer outro, por mais privilegiado que seja.</p><span class="tag r" id="t2">2 · Foro distante</span></div>
+        <div class="cl" id="c3"><p style="margin:0"><b>Cláusula 11ª.</b> O contrato será <span class="ph" id="p3">renovado automaticamente</span> por iguais períodos de 12 meses, salvo aviso com 90 dias de antecedência.</p><span class="tag y" id="t3">3 · Renovação automática</span></div>
+      </div>
+    </div>
+  </div></div>
+  <div class="hdwrap" id="H"></div>
+
+  <div id="end">
+    <img id="logo" src="logo.png" alt="">
+    <div class="nm" id="nm">Clausa</div>
+    <div class="tg" id="tg">Revise antes de assinar.</div>
+    <div id="cta">Teste grátis</div>
+    <div id="arrow">link na bio ↓</div>
+    <div class="hdl" id="hdl">@pedrom.holanda</div>
+  </div>
+</div>
+<div id="vig"></div><div id="grain"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const seg=(t,a,b)=>clamp((t-a)/(b-a));
+const eo=x=>1-Math.pow(1-x,3);
+const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const spring=x=>x<=0?0:x>=1?1:1-Math.exp(-6.5*x)*Math.cos(10*x);
+const TL=window.TIMING.lines, DUR=window.TIMING.dur;
+const W=(l,w)=>TL[l].words[w].t0, LS=l=>TL[l].start, LE=l=>TL[l].end;
+const CARD_TOP=680;
+
+// [texto, linha, palavra, destaque?]
+const HEADS=[
+  {cls:'center big', from:0, to:()=>LS(1)-.1, toks:[['Se',0,0],['você',0,1],['viu',0,2],'|',['uma',0,3],['dessas',0,4],'|',['3 palavras',0,5,1],'|',['no',0,7],['seu',0,8],['contrato?',0,9]]},
+  {cls:'center', from:()=>LS(1)-.06, to:()=>LS(2)-.12, toks:[['Para',1,0,1],['e',1,1],'|',['lê',1,2],['de',1,3],['novo.',1,4]]},
+  {cls:'top', top:200, from:()=>LS(2)-.06, to:()=>LS(4)-.1, toks:[['Irrevogável',2,0,1],'|',['e',2,1],['irretratável',2,2]]},
+  {cls:'sub', top:430, from:()=>LS(3)-.06, to:()=>LS(4)-.1, toks:[['você',3,0],['não',3,1],['pode',3,2],'|',['voltar',3,3],['atrás.',3,4]]},
+  {cls:'top', top:230, from:()=>LS(4)-.06, to:()=>LS(6)-.1, toks:[['Foro',4,0,1],['distante',4,4,1]]},
+  {cls:'sub', top:380, from:()=>LS(5)-.06, to:()=>LS(6)-.1, toks:[['se',5,0],['der',5,1],['briga,',5,2],['o',5,3],['processo',5,4],'|',['corre',5,5],['lá,',5,6],['não',5,7],['aqui.',5,8]]},
+  {cls:'top', top:200, from:()=>LS(6)-.06, to:()=>LS(8)-.25, toks:[['Renovação',6,0,1],'|',['automática',6,1,1]]},
+  {cls:'sub', top:430, from:()=>LS(7)-.06, to:()=>LS(8)-.25, toks:[['renova',7,1],['sozinho',7,2],'|',['se',7,3],['você',7,4],['não',7,5],['avisar',7,6],['antes.',7,7]]},
+];
+const F=v=>typeof v==='function'?v():v;
+HEADS.forEach((h,i)=>{
+  const el=document.createElement('div'); el.className='hd '+h.cls; el.id='hd'+i;
+  if(h.top!==undefined) el.style.top=h.top+'px';
+  let row=document.createElement('span'); row.className='row'; el.appendChild(row); h.els=[];
+  h.toks.forEach(tk=>{
+    if(tk==='|'){row=document.createElement('span');row.className='row';el.appendChild(row);return}
+    const s=document.createElement('span'); s.className='tok';
+    s.innerHTML=`<span class="bg"></span><span class="tx">${tk[0]}</span>`; row.appendChild(s);
+    h.els.push({el:s,tx:s.querySelector('.tx'),bg:s.querySelector('.bg'),at:W(tk[1],tk[2]),hl:tk[3]});
+  });
+  $('H').appendChild(el); h.el=el;
+});
+
+let K=null,P={};
+function init(){
+  const off=id=>$('docB').offsetTop+$(id).offsetTop+$(id).offsetHeight/2+92;
+  P.c1=off('c1');P.c2=off('c2');P.c3=off('c3');
+  const Z=1.14, base=[1,470,CARD_TOP+470];
+  const tgt=fy=>Math.max(1120,CARD_TOP-20+Z*fy);
+  K=[[0,...base],[LS(2)-.05,...base],[LS(2)+.35,Z,P.c1,tgt(P.c1)],[LS(4)-.1,Z,P.c1,tgt(P.c1)],[LS(4)+.25,Z,P.c2,tgt(P.c2)],
+     [LS(6)-.1,Z,P.c2,tgt(P.c2)],[LS(6)+.25,Z,P.c3,tgt(P.c3)],[LE(7)+.1,Z,P.c3,tgt(P.c3)],[LE(7)+.4,.96,470,CARD_TOP+470],[DUR,.96,470,CARD_TOP+470]];
+}
+function herm(t){
+  let i=0;while(i<K.length-2&&t>K[i+1][0])i++;
+  const a=K[i],b=K[i+1],dt=Math.max(1e-3,b[0]-a[0]),e=eio(clamp((t-a[0])/dt));
+  return [1,2,3].map(c=>a[c]+(b[c]-a[c])*e);
+}
+function render(t){
+  if(!K)init();
+  const br=1+.018*Math.sin(t*.6)+.012*t/DUR;
+  $('stage').style.transform=`scale(${br}) translate(${Math.sin(t*.8)*4}px,${Math.cos(t*.7)*5}px)`;
+  HEADS.forEach(h=>{
+    const a=F(h.from),b=F(h.to),out=seg(t,b-.14,b);
+    h.el.style.opacity=t<a||t>b?0:1-out;
+    h.el.style.transform=`translateY(${-out*40}px) scale(${1+.04*seg(t,a,b)})`;
+    h.els.forEach(k=>{
+      const p=seg(t,k.at-.04,k.at+.26);
+      k.el.style.opacity=p>0?1:0;
+      k.el.style.transform=`translateY(${(1-spring(p))*30}px) scale(${.82+.18*spring(p)})`;
+      if(k.hl){const q=eo(seg(t,k.at+.02,k.at+.24));k.bg.style.transform=`scaleX(${q})`;k.tx.style.color=q>.5?'#140a05':''}
+    });
+  });
+  const cin=eo(seg(t,LS(2)-.35,LS(2)+.2)), cout=eio(seg(t,LS(8)-.5,LS(8)-.1));
+  const [s,fy,ty]=herm(t), tyy=ty-CARD_TOP-s*fy;
+  $('cardWrap').style.opacity=Math.min(cin,1-cout);
+  $('cardWrap').style.transform=`translateY(${(1-cin)*420+tyy-cout*120}px) scale(${s*(1-.08*cout)})`;
+  [['p1','t1',2,0],['p2','t2',4,0],['p3','t3',6,0]].forEach(([p,tg,l,w])=>{
+    const at=W(l,w), q=eio(seg(t,at-.05,at+.4));
+    $(p).style.backgroundSize=`${(q*100).toFixed(1)}% 100%`;
+    $(p).style.boxShadow=`inset 0 -5px 0 0 rgba(255,138,51,${q})`;
+    const g=seg(t,at+.05,at+.4); $(tg).style.opacity=g>0?1:0; $(tg).style.transform=`scale(${.5+.5*spring(g)}) rotate(${(1-spring(g))*-6}deg)`;
+  });
+  const e0=LS(8)-.12;
+  $('end').style.opacity=t<e0?0:1;
+  const lg=seg(t,e0,e0+.45); $('logo').style.opacity=eo(lg); $('logo').style.transform=`scale(${.4+.6*spring(lg)}) rotate(${(1-spring(lg))*-10}deg)`;
+  const nm=seg(t,e0+.06,e0+.4); $('nm').style.opacity=eo(nm); $('nm').style.transform=`translateY(${(1-spring(nm))*40}px)`;
+  const tg=seg(t,W(8,0)-.05,W(8,0)+.35); $('tg').style.opacity=eo(tg); $('tg').style.transform=`translateY(${(1-spring(tg))*16}px)`;
+  const ct=seg(t,W(9,0)-.05,W(9,0)+.3); $('cta').style.opacity=eo(ct);
+  $('cta').style.transform=`scale(${(.7+.3*spring(ct))*(1+.02*Math.sin(Math.max(0,t-W(9,0))*6))})`;
+  const ar=seg(t,W(9,2)-.05,W(9,2)+.3); $('arrow').style.opacity=eo(ar);
+  $('arrow').style.transform=`translateY(${(1-spring(ar))*20+Math.abs(Math.sin(Math.max(0,t-W(9,2))*5))*-8}px)`;
+  $('hdl').style.opacity=eo(seg(t,W(9,3),W(9,3)+.4));
+}
+window.render=render; window.init=init; window.DUR=DUR;
+document.fonts.ready.then(()=>{K=null;init();render(0);
+  if(!location.search.includes('frame')){const st=performance.now();(function loop(){render(((performance.now()-st)/1000)%DUR);requestAnimationFrame(loop)})()}});
+</script>
+</body>
+</html>

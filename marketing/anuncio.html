@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Clausa — anúncio em vídeo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="timing.js"></script>
+<style>
+  :root{--bg:#0B0B0C;--card:#141415;--line:#29292C;--ink:#FAFAFA;--gray:#9B9B9E;
+        --or:#FF8A33;--seal:#E2590B;--red:#F0625A;--yel:#E0B65C}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg)}
+  body{font-family:Inter,system-ui,sans-serif;color:var(--ink);position:relative}
+  #grain{position:absolute;inset:0;opacity:.09;pointer-events:none;mix-blend-mode:screen;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+  #vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 55%,rgba(0,0,0,.55) 100%)}
+  #stage{position:absolute;inset:0;transform-origin:540px 960px}
+
+  /* manchetes cinéticas */
+  .hd{position:absolute;left:60px;right:60px;text-align:center;font-family:"Inter Tight",Inter,sans-serif;font-weight:900;
+      letter-spacing:-.045em;line-height:.98;color:var(--ink)}
+  .hd.center{top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;font-size:150px}
+  .hd.top{top:210px;font-size:96px;line-height:1.02}
+  .hd .row{display:block}
+  .tok{display:inline-block;position:relative;margin:0 .1em;transform-origin:50% 90%;white-space:nowrap}
+  .tok .bg{position:absolute;left:-.12em;right:-.12em;top:.06em;bottom:-.02em;background:var(--or);transform-origin:0 50%;transform:scaleX(0);z-index:-1}
+  .tok .tx{position:relative}
+  .hdwrap{position:absolute;inset:0;isolation:isolate}
+
+  /* contrato */
+  #cardWrap{position:absolute;left:90px;top:560px;width:900px;height:1000px;transform-origin:450px 0}
+  #card{position:absolute;inset:0;background:var(--card);border:1px solid var(--line);border-radius:28px;overflow:hidden;
+        box-shadow:0 30px 90px rgba(0,0,0,.7)}
+  #card .head{height:92px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 46px;
+        font-size:22px;font-weight:700;letter-spacing:2.5px;color:var(--gray);text-transform:uppercase}
+  #card .head b{margin-left:auto;color:var(--ink);letter-spacing:1px;font-variant-numeric:tabular-nums}
+  #card .head b span{color:var(--or)}
+  .body{position:absolute;left:0;right:0;top:92px;bottom:0;overflow:hidden}
+  .doc{position:absolute;left:0;right:0;top:0;padding:44px 52px}
+  .doc p{font-size:28px;line-height:1.6;color:#b6b6b9;margin-bottom:26px}
+  .doc p b{color:#ededee;font-weight:700}
+  .cl{position:relative;margin:0 0 58px;padding-top:6px}
+  .ph{position:relative;color:#ededee;font-weight:600;background:linear-gradient(rgba(255,138,51,.28),rgba(255,138,51,.28)) no-repeat 0 100%/0% 100%;
+      box-shadow:inset 0 -5px 0 0 transparent;border-radius:3px;padding:0 3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+  .tag{position:absolute;right:-8px;top:-46px;font:800 23px/1 Inter;letter-spacing:1.5px;text-transform:uppercase;
+       padding:13px 18px;border-radius:10px;color:#140a05;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.5);transform-origin:100% 100%}
+  .tag.r{background:var(--red)} .tag.y{background:var(--yel)}
+  #beam{position:absolute;left:0;right:0;height:4px;background:var(--or);box-shadow:0 0 24px 6px rgba(255,138,51,.55)}
+  #beamTrail{position:absolute;left:0;right:0;height:240px;background:linear-gradient(180deg,transparent,rgba(255,138,51,.12))}
+  #pill{position:absolute;left:50%;top:1630px;background:var(--or);color:#140a05;border-radius:16px;padding:24px 40px;
+        font:800 38px/1 "Inter Tight",Inter;letter-spacing:-.5px;white-space:nowrap;transform-origin:50% 50%}
+
+  /* final */
+  #end{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:120px}
+  #logo{width:230px;height:230px;border-radius:52px}
+  #end .nm{font:900 190px/1 "Inter Tight",Inter;letter-spacing:-.055em;margin-top:44px}
+  #end .tg{font-size:42px;color:var(--gray);margin-top:16px;font-weight:500}
+  #cta{margin-top:90px;background:var(--or);color:#140a05;font:800 50px/1 "Inter Tight",Inter;letter-spacing:-.5px;
+       padding:36px 66px;border-radius:20px}
+  #arrow{margin-top:34px;font:800 56px/1 Inter;color:var(--or)}
+  #end .hdl{margin-top:18px;font-size:34px;color:var(--gray);font-weight:600}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="cardWrap"><div id="card">
+    <div class="head">Contrato de prestação de serviços<b>pág. <span id="pg">01</span>/15</b></div>
+    <div class="body">
+      <div class="doc" id="docA">
+        <p><b>Cláusula 1ª.</b> O presente instrumento tem por objeto a prestação de serviços de consultoria empresarial, nos termos e condições aqui estabelecidos, obrigando as partes e seus sucessores.</p>
+        <p><b>Cláusula 2ª.</b> A CONTRATADA executará os serviços com zelo e diligência, observadas as normas técnicas aplicáveis e as especificações do Anexo I.</p>
+        <p><b>Cláusula 3ª.</b> Pelos serviços prestados, a CONTRATANTE pagará o valor mensal descrito no Anexo II, reajustado anualmente pelo índice ali indicado.</p>
+        <p><b>Cláusula 4ª.</b> Os pagamentos serão efetuados até o décimo dia útil do mês subsequente, mediante apresentação de nota fiscal.</p>
+        <p><b>Cláusula 5ª.</b> As partes obrigam-se a manter sigilo sobre as informações confidenciais a que tiverem acesso em razão deste contrato.</p>
+        <p><b>Cláusula 6ª.</b> A CONTRATADA responderá pelos encargos trabalhistas, previdenciários e fiscais decorrentes da execução dos serviços.</p>
+        <p><b>Cláusula 7ª.</b> Nenhuma tolerância das partes importará novação ou renúncia de direitos, que poderão ser exigidos a qualquer tempo.</p>
+        <p><b>Cláusula 8ª.</b> Eventuais alterações somente terão validade se formalizadas por termo aditivo assinado pelas partes.</p>
+        <p><b>Cláusula 9ª.</b> A CONTRATANTE fornecerá as informações e acessos necessários, sob pena de prorrogação dos prazos.</p>
+        <p><b>Cláusula 10ª.</b> As obrigações estendem-se a empregados, prepostos e subcontratados, que por elas responderão solidariamente.</p>
+      </div>
+      <div class="doc" id="docB" style="padding-top:78px">
+        <div class="cl" id="c1"><p style="margin:0"><b>Cláusula 12ª.</b> A rescisão antecipada sujeitará a parte que lhe der causa a multa equivalente a <span class="ph" id="p1">100% do valor remanescente</span> do contrato.</p><span class="tag r" id="t1">Multa de 100%</span></div>
+        <div class="cl" id="c2"><p style="margin:0"><b>Cláusula 13ª.</b> O contrato será <span class="ph" id="p2">renovado automaticamente</span> por iguais períodos de 12 meses, salvo aviso com 90 dias de antecedência.</p><span class="tag y" id="t2">Renovação automática</span></div>
+        <div class="cl" id="c3"><p style="margin:0"><b>Cláusula 14ª.</b> Fica eleito o <span class="ph" id="p3">foro da Comarca de Manaus/AM</span>, com renúncia a qualquer outro, por mais privilegiado que seja.</p><span class="tag r" id="t3">Foro em outra cidade</span></div>
+        <p style="opacity:.5"><b>Cláusula 15ª.</b> E, por estarem justas e contratadas, as partes assinam o presente.</p>
+      </div>
+      <div id="beamTrail"></div><div id="beam"></div>
+    </div>
+  </div></div>
+  <div id="pill">3 riscos encontrados · 4 s</div>
+  <div class="hdwrap" id="H"></div>
+
+  <div id="end">
+    <img id="logo" src="logo.png" alt="">
+    <div class="nm" id="nm">Clausa</div>
+    <div class="tg" id="tg">Revise antes de assinar.</div>
+    <div id="cta">Teste grátis</div>
+    <div id="arrow">link na bio ↓</div>
+    <div class="hdl" id="hdl">@pedrom.holanda</div>
+  </div>
+</div>
+<div id="vig"></div><div id="grain"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const seg=(t,a,b)=>clamp((t-a)/(b-a));
+const eo=x=>1-Math.pow(1-x,3);
+const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const spring=x=>x<=0?0:x>=1?1:1-Math.exp(-6.5*x)*Math.cos(10*x);
+const TL=window.TIMING.lines, DUR=window.TIMING.dur;
+const W=(l,w)=>TL[l].words[w].t0, LS=l=>TL[l].start, LE=l=>TL[l].end;
+
+// manchetes: [texto, palavra da narração que dispara, destaque?] ; '|' = quebra de linha
+const HEADS=[
+  {cls:'center', from:0, to:()=>LS(1)-.12, toks:[['Você',0,0],['leu',0,1],'|',['o',0,2],['contrato',0,3],'|',['inteiro?',0,4,1]]},
+  {cls:'top', from:()=>W(1,0)-.06, to:()=>W(1,2)-.04, toks:[['15',1,0,0,'count'],['páginas.',1,1]]},
+  {cls:'top', from:()=>W(1,2)-.04, to:()=>W(1,4)-.04, toks:[['Letra',1,2],['miúda.',1,3,1]]},
+  {cls:'top', from:()=>W(1,4)-.04, to:()=>LS(2)-.1, toks:[['Quase',1,4],['ninguém',1,5,1],'|',['lê.',1,6]]},
+  {cls:'top', from:()=>LS(2)-.06, to:()=>LS(3)-.08, toks:[['A',2,0],['Clausa',2,1],['lê',2,2],'|',['pra',2,3],['você,',2,4],'|',['em',2,5,1],['segundos.',2,6,1]]},
+  {cls:'top', from:()=>LS(3)-.06, to:()=>LS(4)-.08, toks:[['Multa',3,0],['de',3,1],['100%.',3,2,1]]},
+  {cls:'top', from:()=>LS(4)-.06, to:()=>LS(5)-.08, toks:[['Renovação',4,0],'|',['automática.',4,1,1]]},
+  {cls:'top', from:()=>LS(5)-.06, to:()=>LE(5)+.55, toks:[['Foro',5,0],['em',5,1],'|',['outra',5,2],['cidade.',5,3,1]]},
+  {cls:'center', from:()=>LS(6)-.1, to:()=>LS(7)-.12, toks:[['Ela',6,0],['aponta',6,1],'|',['o',6,2],['risco.',6,3],'|',['Você',6,4,1],['decide.',6,5,1]]},
+];
+const F=v=>typeof v==='function'?v():v;
+HEADS.forEach((h,i)=>{
+  const el=document.createElement('div'); el.className='hd '+h.cls; el.id='hd'+i;
+  let row=document.createElement('span'); row.className='row'; el.appendChild(row);
+  h.els=[];
+  h.toks.forEach(tk=>{
+    if(tk==='|'){row=document.createElement('span');row.className='row';el.appendChild(row);return}
+    const s=document.createElement('span'); s.className='tok';
+    s.innerHTML=`<span class="bg"></span><span class="tx">${tk[0]}</span>`; row.appendChild(s);
+    h.els.push({el:s,tx:s.querySelector('.tx'),bg:s.querySelector('.bg'),at:W(tk[1],tk[2]),hl:tk[3],count:tk[4]});
+  });
+  $('H').appendChild(el); h.el=el;
+});
+
+// câmera do contrato: [tempo, zoom, pontoY no cartão, alvoY na tela]
+let K=null, P={};
+function init(){
+  const off=id=>$('docB').offsetTop+$(id).offsetTop+$(id).offsetHeight/2+92;
+  P.c1=off('c1');P.c2=off('c2');P.c3=off('c3');
+  const base=[1,500,1060], Z=1.16;
+  // alvo: cláusula perto de y=900, mas o topo do cartão nunca acima de y=500 (abaixo da manchete)
+  const tgt=fy=>Math.max(900,500+Z*fy);
+  K=[[0,...base],[LS(3)-.3,...base],[LS(3)+.15,Z,P.c1,tgt(P.c1)],[LS(4)-.05,Z,P.c1,tgt(P.c1)],[LS(4)+.3,Z,P.c2,tgt(P.c2)],
+     [LS(5)-.05,Z,P.c2,tgt(P.c2)],[LS(5)+.3,Z,P.c3,tgt(P.c3)],[LE(5)+.1,Z,P.c3,tgt(P.c3)],[LE(5)+.5,.94,500,1040],[DUR,.94,500,1040]];
+}
+function herm(t){
+  let i=0;while(i<K.length-2&&t>K[i+1][0])i++;
+  const a=K[i],b=K[i+1],dt=Math.max(1e-3,b[0]-a[0]),u=clamp((t-a[0])/dt),e=eio(u);
+  return [1,2,3].map(c=>a[c]+(b[c]-a[c])*e);
+}
+
+function render(t){
+  if(!K)init();
+  // respiração contínua do quadro todo (nunca fica parado)
+  const br=1+.018*Math.sin(t*.6)+.012*t/DUR;
+  $('stage').style.transform=`scale(${br}) translate(${Math.sin(t*.8)*4}px,${Math.cos(t*.7)*5}px)`;
+
+  // manchetes
+  HEADS.forEach((h,i)=>{
+    const a=F(h.from), b=F(h.to);
+    const inn=seg(t,a,a+.12), out=seg(t,b-.14,b);
+    h.el.style.opacity=t<a||t>b?0:Math.min(1,1-out);
+    h.el.style.transform=`translateY(${-out*40}px) scale(${1+.04*seg(t,a,b)})`;
+    h.els.forEach(k=>{
+      const p=seg(t,k.at-.04,k.at+.26);
+      k.el.style.opacity=p>0?1:0;
+      k.el.style.transform=`translateY(${(1-spring(p))*30}px) scale(${.82+.18*spring(p)})`;
+      if(k.hl){const q=eo(seg(t,k.at+.02,k.at+.24));k.bg.style.transform=`scaleX(${q})`;k.tx.style.color=q>.5?'#140a05':''}
+      if(k.count){k.tx.textContent=String(Math.max(1,Math.round(15*eo(seg(t,k.at,k.at+.55)))))}
+    });
+  });
+
+  // contrato: entra, rola, troca para pág. 12, escaneia, destaca, sai
+  const cin=eo(seg(t,LS(1)-.25,LS(1)+.3)), cout=eio(seg(t,LS(6)-.45,LS(6)-.05));
+  const [s,fy,ty]=herm(t);
+  const tyy=ty-560-s*fy;  // mantém o ponto fy do cartão na altura ty
+  $('cardWrap').style.opacity=Math.min(cin,1-cout);
+  $('cardWrap').style.transform=`translateY(${(1-cin)*420+tyy-cout*120}px) scale(${s*(1-.08*cout)})`;
+  const sc=eio(seg(t,LS(1),LS(2)-.15));
+  $('docA').style.transform=`translateY(${-sc*820}px)`;
+  const sw=eo(seg(t,LS(2)-.2,LS(2)+.1));
+  $('docA').style.opacity=1-sw;$('docB').style.opacity=sw;
+  $('pg').textContent=sw>.5?'12':String(Math.max(1,Math.round(1+sc*10))).padStart(2,'0');
+  const bp=seg(t,W(2,5)-.25,LE(2)+.05);
+  const by=-40+eio(bp)*960; const bv=bp>0&&bp<1?1:0;
+  $('beam').style.top=by+'px';$('beam').style.opacity=bv;
+  $('beamTrail').style.top=(by-240)+'px';$('beamTrail').style.opacity=bv;
+  [['p1','t1',3,2],['p2','t2',4,0],['p3','t3',5,0]].forEach(([p,tg,l,w])=>{
+    const at=W(l,w), q=eio(seg(t,at-.05,at+.4));
+    $(p).style.backgroundSize=`${(q*100).toFixed(1)}% 100%`;
+    $(p).style.boxShadow=`inset 0 -5px 0 0 rgba(255,138,51,${q})`;
+    const g=seg(t,at+.05,at+.4); $(tg).style.opacity=g>0?1:0; $(tg).style.transform=`scale(${.5+.5*spring(g)}) rotate(${(1-spring(g))*-6}deg)`;
+  });
+  const pa=LE(5)+.4, pb=LS(6)-.3, pp=seg(t,pa,pa+.35);
+  $('pill').style.opacity=t<pa||t>pb?0:1-seg(t,pb-.15,pb);
+  $('pill').style.transform=`translateX(-50%) scale(${.6+.4*spring(pp)})`;
+
+  // final
+  const e0=LS(7)-.12;
+  $('end').style.opacity=t<e0?0:1;
+  const lg=seg(t,e0,e0+.45); $('logo').style.opacity=eo(lg); $('logo').style.transform=`scale(${.4+.6*spring(lg)}) rotate(${(1-spring(lg))*-10}deg)`;
+  const nm=seg(t,e0+.06,e0+.4); $('nm').style.opacity=eo(nm); $('nm').style.transform=`translateY(${(1-spring(nm))*40}px)`;
+  const tg=seg(t,e0+.3,e0+.6); $('tg').style.opacity=eo(tg);
+  const ct=seg(t,W(7,1)-.05,W(7,1)+.3); $('cta').style.opacity=eo(ct);
+  $('cta').style.transform=`scale(${(.7+.3*spring(ct))*(1+.02*Math.sin(Math.max(0,t-W(7,1))*6))})`;
+  const ar=seg(t,W(7,3)-.05,W(7,3)+.3); $('arrow').style.opacity=eo(ar);
+  $('arrow').style.transform=`translateY(${(1-spring(ar))*20+Math.abs(Math.sin(Math.max(0,t-W(7,3))*5))*-8}px)`;
+  $('hdl').style.opacity=eo(seg(t,W(7,4),W(7,4)+.4));
+}
+window.render=render; window.init=init; window.DUR=DUR;
+document.fonts.ready.then(()=>{K=null;init();render(0);
+  if(!location.search.includes('frame')){const st=performance.now();(function loop(){render(((performance.now()-st)/1000)%DUR);requestAnimationFrame(loop)})()}});
+</script>
+</body>
+</html>

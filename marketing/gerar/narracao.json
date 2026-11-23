@@ -1,0 +1,30 @@
+{
+ "voice": "modelos/pf_dora.bin",
+ "model": "modelos/model_q8.onnx",
+ "speed": 1.08,
+ "pause": 0.24,
+ "dur": 19.4,
+ "lines": [
+  "Você leu o contrato inteiro?",
+  "Quinze páginas. Letra miúda. Quase ninguém lê.",
+  "A Clausa lê pra você, em segundos.",
+  "Multa de cem por cento.",
+  "Renovação automática.",
+  "Foro em outra cidade.",
+  "Ela aponta o risco. Você decide.",
+  "Clausa. Teste grátis, link na bio."
+ ],
+ "out_wav": "voz.wav",
+ "out_js": "../timing.js",
+ "gaps": [
+  0.35,
+  0.32,
+  0.32,
+  0.34,
+  0.26,
+  0.26,
+  1.25,
+  0.42
+ ],
+ "tail": 1.3
+}

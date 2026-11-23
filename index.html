@@ -333,7 +333,8 @@ form input[type=text],form select{flex:1 1 240px;padding:12px 14px;border:1px so
     {r:"medio",t:"Reajuste de preço",re:/reajust|corre[cç][aã]o monet/i,d:"Confirme o índice, a periodicidade e se há teto ou piso."},
     {r:"medio",t:"Aviso prévio",re:/aviso pr[eé]vio/i,d:"Prazo que deve ser controlado em calendário para evitar perda de direito."},
     {r:"ok",t:"Confidencialidade",re:/sigilo|confidencial/i,d:"Cláusula usual. Confira prazo de duração e exceções."},
-    {r:"ok",t:"Foro de eleição",re:/foro/i,d:"Cláusula usual, sem alerta. Fica registrada para consulta."}
+    {r:"medio",t:"Irrevogável e irretratável",re:/irrevog|irretrat/i,d:"Impede que as partes desistam por conta própria. Confira se faz sentido e se há hipóteses de saída."},
+    {r:"medio",t:"Foro de eleição",re:/foro/i,d:"Define onde as disputas serão resolvidas. Se for em outra cidade, encarece e dificulta a defesa."}
   ];
   var LB={alto:"Risco alto",medio:"Atenção",ok:"Sem alerta"};
   function el(tag,cls,txt){var x=document.createElement(tag);if(cls)x.className=cls;if(txt!==undefined)x.textContent=txt;return x}
