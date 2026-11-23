@@ -44,11 +44,12 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .convos{flex:1;overflow-y:auto;padding:6px 10px}
 .clabel{font:600 11px "Inter";letter-spacing:.08em;text-transform:uppercase;color:var(--gray);padding:12px 8px 6px}
 .cfilter{display:flex;flex-wrap:wrap;gap:5px;padding:0 2px 8px}
-.cfilter .fchip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:none;color:var(--gray);font:600 11px "Inter";padding:4px 9px;border-radius:20px;cursor:pointer}
+.cfilter .fchip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:none;color:var(--gray);font:600 11px "Inter";padding:4px 9px;border-radius:20px;cursor:pointer;transition:color .15s,border-color .15s,background .15s}
 .cfilter .fchip:hover{color:var(--ink)}
 .cfilter .fchip.on{background:var(--card);color:var(--ink);border-color:var(--orange)}
 .cfilter .fchip .fdot{width:7px;height:7px;border-radius:50%}
-.convo{display:flex;align-items:center;gap:8px;padding:10px 10px;border-radius:9px;cursor:pointer;color:var(--ink);font-size:14px;margin-bottom:2px}
+.convo{display:flex;align-items:center;gap:8px;padding:10px 10px;border-radius:9px;cursor:pointer;color:var(--ink);font-size:14px;margin-bottom:2px;transition:background .15s}
+.convo .cmenu{transition:opacity .15s,background .15s,color .15s}
 .convo:hover{background:var(--card)}
 .convo.active{background:var(--card);outline:1px solid var(--line)}
 .convo .ci{width:15px;height:15px;flex:none;color:var(--orange)}
@@ -61,8 +62,16 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .convo:hover .cmenu,.convo.active .cmenu{opacity:1}
 .convo .cmenu:hover{color:var(--ink);background:var(--paper)}
 @media (hover:none){.convo .cmenu{opacity:1}}
-.cmenupop{position:fixed;z-index:200;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 34px rgba(0,0,0,.55);padding:6px;min-width:200px}
-.cmenupop button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:0;color:var(--ink);cursor:pointer;padding:8px 10px;border-radius:7px;font:500 13px "Inter"}
+.cmenupop{position:fixed;z-index:200;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 34px rgba(0,0,0,.55);padding:6px;min-width:200px;
+  animation:menu-in .2s cubic-bezier(.2,.85,.25,1)}
+.cmenupop.closing{animation:menu-out .13s ease-in forwards;pointer-events:none}
+.cmenupop>*{animation:item-in .26s cubic-bezier(.2,.85,.25,1) both;animation-delay:calc(var(--i,0) * 16ms + 30ms)}
+@keyframes menu-in{from{opacity:0;transform:scale(.92) translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes menu-out{to{opacity:0;transform:scale(.96) translateY(-3px)}}
+@keyframes item-in{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.convo .cmenu.on{opacity:1;color:var(--ink);background:var(--paper)}
+.cmenupop button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:0;color:var(--ink);cursor:pointer;padding:8px 10px;border-radius:7px;font:500 13px "Inter";transition:background .15s,transform .15s}
+.cmenupop button:active{transform:scale(.98)}
 .cmenupop button:hover{background:var(--paper)}
 .cmenupop .sep{height:1px;background:var(--line);margin:5px 4px}
 .cmenupop .lbl{font:600 10.5px "Inter";letter-spacing:.06em;text-transform:uppercase;color:var(--gray);padding:6px 10px 3px}
@@ -155,10 +164,34 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .chint{max-width:760px;margin:8px auto 0;text-align:center;font-size:12px;color:var(--gray)}
 
 /* drawer regras */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:60;display:none}
-.overlay.open{display:block}
-.drawer{position:fixed;top:0;right:0;height:100%;width:min(440px,92vw);background:var(--panel);border-left:1px solid var(--line);z-index:70;transform:translateX(100%);transition:.25s;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
-.drawer.open{transform:none}
+/* fundos escurecidos: aparecem e somem com fade (display:none não anima) */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:60;opacity:0;visibility:hidden;transition:opacity .28s ease,visibility 0s linear .28s}
+.overlay.open{opacity:1;visibility:visible;transition:opacity .28s ease}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(440px,92vw);background:var(--panel);border-left:1px solid var(--line);z-index:70;transform:translateX(100%);transition:transform .34s cubic-bezier(.22,.85,.25,1),box-shadow .34s;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.drawer.open{transform:none;box-shadow:-24px 0 60px rgba(0,0,0,.45)}
+.rule.open .rdet{animation:fade-down .22s cubic-bezier(.2,.85,.25,1)}
+@keyframes fade-down{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+/* janela de confirmação do Clausa (no lugar das caixas do navegador) */
+.modal{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  opacity:0;visibility:hidden;transition:opacity .22s ease,visibility 0s linear .22s}
+.modal.open{opacity:1;visibility:visible;transition:opacity .22s ease}
+.mcard{position:relative;width:min(420px,100%);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 22px 18px;box-shadow:0 24px 70px rgba(0,0,0,.65);
+  transform:translateY(14px) scale(.96);opacity:.6;transition:transform .3s cubic-bezier(.2,.85,.25,1),opacity .2s}
+.mcard::before{content:"";position:absolute;left:18px;right:18px;top:0;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--orange),transparent)}
+.mcard.danger::before{background:linear-gradient(90deg,transparent,var(--alto),transparent)}
+.modal.open .mcard{transform:none;opacity:1}
+.mico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,138,51,.12);border:1px solid rgba(255,138,51,.32);color:var(--orange);margin-bottom:14px}
+.mico svg{width:20px;height:20px}
+.mcard.danger .mico{background:rgba(240,98,90,.12);border-color:rgba(240,98,90,.36);color:var(--alto)}
+.mcard h3{font-size:21px;margin:0 0 6px}
+.mcard p{color:var(--gray);font-size:14px;margin:0;line-height:1.5}
+.mcard p b{color:var(--ink);font-weight:600}
+.mcard input{width:100%;margin-top:14px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);font:400 14.5px "Inter";transition:border-color .15s}
+.mcard input:focus{outline:0;border-color:var(--orange)}
+.mact{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+.btn.danger{background:var(--alto);color:#1c0907}
+@media (max-width:520px){.modal{align-items:flex-end;padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px))}.mact .btn{flex:1}}
 .drawer .dh{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
 .drawer .dh h2{font-size:18px;flex:1}
 .drawer .db{flex:1;overflow-y:auto;padding:16px 18px}
@@ -183,16 +216,23 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 
 .navshade{display:none}
 /* ✕ para fechar o menu lateral: escondido por padrão, aparece só no celular (regra da media query abaixo) */
-.navclose{display:none;position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:10px;width:36px;height:36px;align-items:center;justify-content:center;background:none;border:0;border-radius:9px;color:var(--gray);font-size:20px;cursor:pointer}
+.navclose{display:none;position:absolute;z-index:3;top:calc(12px + env(safe-area-inset-top,0px));right:10px;width:36px;height:36px;align-items:center;justify-content:center;background:none;border:0;border-radius:9px;color:var(--gray);font-size:20px;cursor:pointer}
 .navclose:hover{background:var(--card);color:var(--ink)}
 @media (max-width:760px){
-  .side{position:fixed;z-index:65;height:100%;transform:translateX(-100%);transition:.25s}
-  .app.nav-open .side{transform:none}
+  .side{position:fixed;z-index:65;height:100%;transform:translateX(-100%);transition:transform .34s cubic-bezier(.22,.85,.25,1),box-shadow .34s}
+  .app.nav-open .side{transform:none;box-shadow:24px 0 60px rgba(0,0,0,.5)}
   .menu-btn{display:flex}
   /* fundo escurecido atrás do menu lateral: tocar nele fecha o menu */
-  .navshade{position:fixed;inset:0;z-index:64;background:rgba(0,0,0,.55)}
-  .app.nav-open .navshade{display:block}
+  .navshade{display:block;position:fixed;inset:0;z-index:64;background:rgba(0,0,0,.55);opacity:0;visibility:hidden;transition:opacity .28s ease,visibility 0s linear .28s}
+  .app.nav-open .navshade{opacity:1;visibility:visible;transition:opacity .28s ease}
   .navclose{display:flex}
+  /* itens do menu entram em cascata quando ele abre */
+  .app.nav-open .side-top,.app.nav-open .convos,.app.nav-open .side-foot{animation:item-in .4s cubic-bezier(.2,.85,.25,1) both}
+  .app.nav-open .convos{animation-delay:.05s}.app.nav-open .side-foot{animation-delay:.1s}
+}
+.menu-btn{transition:transform .2s}.menu-btn:active{transform:scale(.9)}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;transition-duration:.001ms!important;transition-delay:0s!important}
 }
 </style>
 </head>
@@ -243,6 +283,16 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     <button class="btn ghost tiny" id="resetrules" style="margin-top:12px">Restaurar regras padrão</button>
   </div>
 </aside>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="mcard" id="mcard" role="dialog" aria-modal="true" aria-labelledby="mttl">
+    <div class="mico" id="mico"></div>
+    <h3 id="mttl"></h3>
+    <p id="mtxt"></p>
+    <input id="minp" type="text" autocomplete="off" hidden>
+    <div class="mact"><button class="btn ghost sm" id="mcancel">Cancelar</button><button class="btn sm" id="mok">OK</button></div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -442,7 +492,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
       d.onclick=function(e){if(e.target.closest(".cmenu"))return;openConvo(c.id)};
       d.querySelector(".cmenu").onclick=function(e){
         e.stopPropagation();
-        var open=document.querySelector(".cmenupop");
+        var open=document.querySelector(".cmenupop:not(.closing)");
         if(open&&open.dataset.cid===c.id){closeMenu();return}  // segundo clique no ⋯ fecha
         openMenu(c,e.currentTarget);
       };
@@ -451,15 +501,70 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   }
 
   // ---------- Menu do contrato (renomear / fixar / etiqueta / excluir) ----------
-  function closeMenu(){var m=document.querySelector(".cmenupop");if(m)m.remove()}
+  // ---------- Janela do Clausa (substitui confirm/prompt/alert do navegador) ----------
+  var ICON={
+    trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>',
+    edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+    alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>',
+    reset:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>'
+  };
+  var modalResolve=null,modalPrev=null;
+  // abre a janela e devolve uma Promise: true (confirmou), texto (se tiver campo) ou null (cancelou)
+  function dialog(o){
+    return new Promise(function(res){
+      if(modalResolve)modalResolve(null);
+      var m=byId("modal"),inp=byId("minp"),ok=byId("mok"),cc=byId("mcancel"),hasInput=o.input!==undefined;
+      modalPrev=document.activeElement;
+      byId("mcard").className="mcard"+(o.danger?" danger":"");
+      byId("mico").innerHTML=o.icon||ICON.alert;
+      byId("mttl").textContent=o.title||"";
+      var p=byId("mtxt");if(o.html)p.innerHTML=o.html;else p.textContent=o.text||"";p.hidden=!(o.text||o.html);
+      inp.hidden=!hasInput;inp.value=hasInput?o.input:"";
+      ok.textContent=o.ok||"OK";ok.className="btn sm"+(o.danger?" danger":"");
+      cc.hidden=!!o.noCancel;cc.textContent=o.cancel||"Cancelar";
+      modalResolve=function(v){
+        modalResolve=null;m.classList.remove("open");m.setAttribute("aria-hidden","true");
+        try{if(modalPrev&&modalPrev.focus&&modalPrev.isConnected)modalPrev.focus()}catch(e){}
+        res(v);
+      };
+      m.classList.add("open");m.setAttribute("aria-hidden","false");
+      setTimeout(function(){if(hasInput){inp.focus();inp.select()}else ok.focus()},40);
+    });
+  }
+  function closeModal(v){if(modalResolve)modalResolve(v)}
+  byId("mok").onclick=function(){closeModal(byId("minp").hidden?true:byId("minp").value)};
+  byId("mcancel").onclick=function(){closeModal(null)};
+  byId("modal").addEventListener("mousedown",function(e){if(e.target===byId("modal"))closeModal(null)});  // clicar fora cancela
+  byId("minp").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();byId("mok").click()}});
+  // mantém o Tab dentro da janela enquanto ela está aberta
+  byId("modal").addEventListener("keydown",function(e){
+    if(e.key!=="Tab")return;
+    var f=[].filter.call(byId("mcard").querySelectorAll("button,input"),function(x){return !x.hidden});
+    if(!f.length)return;var first=f[0],last=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+  });
+
+  // ---------- Menu do contrato ----------
+  function closeMenu(){
+    var m=document.querySelector(".cmenupop:not(.closing)");
+    var on=document.querySelector(".cmenu.on");if(on)on.classList.remove("on");
+    if(!m)return;
+    m.classList.add("closing");  // anima a saída antes de remover
+    var done=function(){if(m.parentNode)m.remove()};
+    m.addEventListener("animationend",function(e){if(e.target===m)done()});
+    setTimeout(done,220);        // garantia, caso a animação não dispare
+  }
   function renameConvo(c){
-    var nv=prompt("Novo nome do contrato:",c.title||"");
-    if(nv===null)return;nv=nv.trim();if(!nv)return;
-    c.title=nv;persistConvos();renderSidebar();
-    if(c.id===current)byId("mtitle").textContent=c.text?c.title:"Clausa";
+    dialog({title:"Renomear contrato",text:"Dê um nome que ajude a encontrar este contrato depois.",input:c.title||"",ok:"Salvar",icon:ICON.edit}).then(function(nv){
+      if(nv===null)return;nv=nv.trim();if(!nv)return;
+      c.title=nv;persistConvos();renderSidebar();
+      if(c.id===current)byId("mtitle").textContent=c.text?c.title:"Clausa";
+    });
   }
   function openMenu(c,btn){
     closeMenu();
+    btn.classList.add("on");
     var m=el("div","cmenupop");m.dataset.cid=c.id;
     var html='<button data-a="rename">✏️ Renomear</button>'+
       '<button data-a="pin">📌 '+(c.pinned?"Desafixar":"Fixar no topo")+'</button>'+
@@ -468,12 +573,16 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     html+='<button data-a="lbl" data-k=""><span class="dot" style="background:var(--line)"></span>Sem etiqueta'+(!c.label?" ✓":"")+'</button>';
     html+='<div class="sep"></div><button class="del" data-a="del">🗑️ Excluir</button>';
     m.innerHTML=html;
+    [].forEach.call(m.children,function(ch,i){ch.style.setProperty("--i",i)});  // itens entram em cascata
     document.body.appendChild(m);
     var r=btn.getBoundingClientRect(),mw=210;
-    m.style.left=Math.max(8,Math.min(r.left,window.innerWidth-mw-8))+"px";
+    var left=Math.max(8,Math.min(r.left,window.innerWidth-mw-8));
+    m.style.left=left+"px";
     m.style.top=(r.bottom+4)+"px";
-    var mh=m.getBoundingClientRect().height;
-    if(r.bottom+4+mh>window.innerHeight)m.style.top=Math.max(8,r.top-mh-4)+"px";
+    var mh=m.getBoundingClientRect().height,up=r.bottom+4+mh>window.innerHeight;
+    if(up)m.style.top=Math.max(8,r.top-mh-4)+"px";
+    // o menu "cresce" a partir do botão ⋯ (para baixo ou para cima, conforme o espaço)
+    m.style.transformOrigin=(r.left+r.width/2-left)+"px "+(up?"100%":"0");
     m.onclick=function(e){
       var b=e.target.closest("button");if(!b)return;
       var a=b.dataset.a;
@@ -484,14 +593,15 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
       closeMenu();
     };
   }
-  document.addEventListener("click",function(e){var m=document.querySelector(".cmenupop");if(m&&!m.contains(e.target)&&!e.target.closest(".cmenu"))closeMenu()});
+  document.addEventListener("click",function(e){var m=document.querySelector(".cmenupop:not(.closing)");if(m&&!m.contains(e.target)&&!e.target.closest(".cmenu"))closeMenu()});
   // o menu ⋯ fica preso na tela (position:fixed): se a lista rolar ou a janela mudar, ele ficaria solto
   byId("convos").addEventListener("scroll",closeMenu,{passive:true});
   window.addEventListener("resize",closeMenu);
   // Esc fecha o que estiver aberto, do mais recente para o mais antigo
   document.addEventListener("keydown",function(e){
     if(e.key!=="Escape")return;
-    if(document.querySelector(".cmenupop")){closeMenu();return}
+    if(modalResolve){closeModal(null);return}
+    if(document.querySelector(".cmenupop:not(.closing)")){closeMenu();return}
     if(byId("drawer").classList.contains("open")){closeDrawer();return}
     closeNav();
   });
@@ -510,10 +620,14 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   function openConvo(id){current=id;renderSidebar();renderMain();closeNav()}
   function delConvo(id){
     var c=getConvo(id);
-    if(!confirm("Excluir “"+((c&&c.title)||"este contrato")+"”? Essa ação não pode ser desfeita."))return;
-    convos=convos.filter(function(c){return c.id!==id});
-    if(current===id)current=convos.length?convos[0].id:null;
-    cloudDelete(id);persistConvos();renderSidebar();renderMain();
+    dialog({title:"Excluir contrato?",danger:true,icon:ICON.trash,ok:"Excluir",
+      html:"<b>"+esc((c&&c.title)||"Este contrato")+"</b> será apagado"+(user?" deste aparelho e da sua conta":"")+", junto com as aprovações. Essa ação não pode ser desfeita."
+    }).then(function(ok){
+      if(!ok)return;
+      convos=convos.filter(function(x){return x.id!==id});
+      if(current===id)current=convos.length?convos[0].id:null;
+      cloudDelete(id);persistConvos();renderSidebar();renderMain();
+    });
   }
 
   // ---------- Main ----------
@@ -630,8 +744,9 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   }
   function copyReport(c,found){
     var txt=buildReport(c,found);
-    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(function(){toast("Relatório copiado!")},function(){alert(txt)});
-    else alert(txt);
+    var falhou=function(){dialog({title:"Não deu pra copiar",text:"O navegador bloqueou a cópia automática. Use “Baixar relatório (.txt)” para guardar o relatório.",ok:"Entendi",noCancel:true})};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(function(){toast("Relatório copiado!")},falhou);
+    else falhou();
   }
   function downloadReport(c,found){
     var txt=buildReport(c,found);
@@ -667,7 +782,12 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     $("input[data-t]",box).forEach(function(c){c.onchange=function(){rules[+c.dataset.t].on=c.checked;persistRules();renderRules();if(current)renderMain()}});
     $("[data-o]",box).forEach(function(b){b.onclick=function(){b.parentNode.classList.toggle("open")}});
     $("[data-edit]",box).forEach(function(b){b.onclick=function(){editRule(+b.dataset.edit)}});
-    $("[data-del]",box).forEach(function(b){b.onclick=function(){rules.splice(+b.dataset.del,1);persistRules();renderRules();if(current)renderMain()}});
+    $("[data-del]",box).forEach(function(b){b.onclick=function(){
+      var i=+b.dataset.del,r=rules[i];
+      dialog({title:"Excluir regra?",danger:true,icon:ICON.trash,ok:"Excluir",
+        html:"A regra <b>"+esc(r.name)+"</b> deixa de ser procurada nos contratos. Se quiser só pausar, use o botão de ligar/desligar."
+      }).then(function(ok){if(!ok)return;rules.splice(rules.indexOf(r),1);persistRules();renderRules();if(current)renderMain()});
+    }});
   }
   function sel(a,b){return a===b?" selected":""}
   function editRule(i){
@@ -685,7 +805,10 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     byId("f-save").onclick=function(){
       var pat=byId("f-pat").value.trim();
       // padrão inválido (ex.: parêntese sem fechar) faria a regra ser ignorada sem aviso
-      try{new RegExp(pat,"i")}catch(e){alert("As palavras-chave têm um caractere que a busca não entende (por exemplo, um parêntese ou colchete sem fechar). Corrija e salve de novo.");byId("f-pat").focus();return}
+      try{new RegExp(pat,"i")}catch(e){
+        dialog({title:"Palavra-chave com erro",text:"Tem um caractere que a busca não entende, como um parêntese ou colchete sem fechar. Corrija e salve de novo.",ok:"Corrigir",noCancel:true})
+          .then(function(){var fp=byId("f-pat");if(fp)fp.focus()});
+        return}
       r.name=byId("f-name").value.trim()||"Regra";r.sev=byId("f-sev").value;r.pat=pat;r.reason=byId("f-reason").value.trim();r.sugg=byId("f-sugg").value.trim();if(isNew)rules.push(r);persistRules();renderRules();if(current)renderMain()};
     byId("f-cancel").onclick=renderRules;
   }
@@ -717,8 +840,16 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   byId("closedrawer").onclick=closeDrawer;byId("overlay").onclick=closeDrawer;
   byId("savetpl").onclick=function(){var n=byId("tplname").value.trim();if(!n)return;templates[n]=clone(rules);save("clausa-templates",templates);byId("tplname").value="";renderTpls()};
   byId("loadtpl").onclick=function(){var n=byId("tpls").value;if(!n||!templates[n])return;rules=clone(templates[n]);persistRules();renderRules();if(current)renderMain()};
-  byId("deltpl").onclick=function(){var n=byId("tpls").value;if(!n)return;delete templates[n];save("clausa-templates",templates);renderTpls()};
-  byId("resetrules").onclick=function(){rules=clone(DEFAULTS);persistRules();renderRules();if(current)renderMain()};
+  byId("deltpl").onclick=function(){
+    var n=byId("tpls").value;if(!n)return;
+    dialog({title:"Excluir modelo?",danger:true,icon:ICON.trash,ok:"Excluir",html:"O modelo <b>"+esc(n)+"</b> será apagado. As regras que estão em uso agora não mudam."})
+      .then(function(ok){if(!ok)return;delete templates[n];save("clausa-templates",templates);renderTpls()});
+  };
+  byId("resetrules").onclick=function(){
+    dialog({title:"Restaurar regras padrão?",danger:true,icon:ICON.reset,ok:"Restaurar",
+      text:"Todas as regras voltam ao original: as que você criou ou editou serão perdidas. Para guardá-las, salve antes como modelo."})
+      .then(function(ok){if(!ok)return;rules=clone(DEFAULTS);persistRules();renderRules();if(current)renderMain()});
+  };
 
   // adiciona input de arquivo oculto (reaproveitado pelos botões "Carregar .txt")
   var fi=el("input");fi.type="file";fi.id="file";fi.accept=".txt,text/plain";fi.style.display="none";document.body.appendChild(fi);
