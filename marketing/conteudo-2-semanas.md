@@ -91,7 +91,7 @@ Legenda:
 | Qua 02/12 | Instagram | 10h | **Reel/carrossel "A cláusula que ninguém lê"** (renovação + multa) |
 | Qui 03/12 | LinkedIn | 8h | **Post 4: bastidores das conversas** (só se as conversas aconteceram) |
 | Qui 03/12 | Instagram Stories | 12h | Bastidor: foto do seu dia de trabalho no Clausa + "o que você queria que uma ferramenta dessas fizesse?" (caixinha de pergunta) |
-| Sex 04/12 | Instagram | 10h | **Reel "Por que eu criei o Clausa"**, você falando para a câmera |
+| Sex 04/12 | Instagram | 10h | **Reel "Por que eu criei o Clausa"**, sem mostrar o rosto (só as mãos, ou animado com locução) |
 
 ### Post 3 — LinkedIn — dica "Renovação automática"
 > A cláusula que mais pega gente desprevenida não é a mais complicada. É a mais esquecida.
@@ -123,10 +123,15 @@ Legenda:
 
 *Se nenhuma conversa acontecer até quinta, troque este post por outra dica (ex.: "multa rescisória: quando 100% é abusivo") e guarde este modelo para a semana seguinte.*
 
-### Reel "Por que eu criei o Clausa" — você na câmera (celular na vertical, luz de janela de frente)
+### Reel "Por que eu criei o Clausa" — sem mostrar o rosto
+Locução (gerar no ElevenLabs, mesma voz do anúncio, ou gravar só a sua voz):
 > "Eu cansei de ver gente assinando contrato sem entender o que estava assinando. Advogado bom existe, mas nem todo contrato passa por um antes da assinatura. Então comecei a construir o Clausa: uma ferramenta que faz uma primeira leitura e mostra onde olhar. A decisão continua sendo sua, ou do seu advogado. Ainda está no começo, e eu vou mostrar tudo por aqui. Testa e me fala o que achou: link na bio."
 
-Dicas de gravação: 30 a 40 segundos, olhando para a lente (não para a tela), sem roteiro na mão (fale com as suas palavras a partir desse texto), primeira frase logo no primeiro segundo.
+Imagem, escolha uma:
+- **Só as mãos:** celular na vertical, de cima, apontado para a mesa. Um contrato impresso, você passando marca-texto nas cláusulas, folheando, digitando no notebook com o teste grátis aberto. Grave 4 ou 5 tomadas de 5 a 10 segundos; eu monto com a locução e as legendas.
+- **Animado:** me mande só a locução e eu faço no mesmo estilo do anúncio.
+
+Marque "conteúdo gerado por IA" se usar voz do ElevenLabs.
 
 ---
 
