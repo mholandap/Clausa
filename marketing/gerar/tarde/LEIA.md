@@ -15,3 +15,11 @@ Textos e horários das cenas ficam no array `S` de `tarde-founder.html`.
 `base2.sh` monta 11 cortes de 2–4 batidas da trilha (88 BPM), cortando no gesto; `overlay2.js` renderiza `../../tarde-founder-v2.html`.
 Trilha: `python3 lofi.py 25.133 "[1.367,3.4,4.767,7.5,9.533,11.567,14.3,16.333,18.367,20.4]" 22.3 musica2.wav` + som ambiente dos cortes abertos.
 Saída: `../../tarde-founder-dia1-v2.mp4` (25 s).
+
+## Versão 3 (texto atrás da pessoa)
+1. Máscara da pessoa: `python3 ../../ferramentas/recortar_pessoa.py base2.mp4 mascara.mkv rvm_mobilenetv3_fp32.onnx 0.25`
+   (modelo RVM: github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_mobilenetv3_fp32.onnx — GPL-3.0, não versionado).
+2. Textos em duas camadas: `node overlay3.js behind full ovB` e `node overlay3.js front full ovF` (`../../tarde-founder-v3.html`).
+3. Montagem: base + camada de trás + (base recortada pela máscara) + camada da frente:
+   `-filter_complex "[1:v]format=gray[m];[0:v]split[b0][b1];[b0][2:v]overlay[bt];[b1][m]alphamerge[pe];[bt][pe]overlay[c];[c][3:v]overlay"`
+Palavras de trás: posicionadas pela altura da cabeça medida na máscara (closes: no alto, a cabeça cobre a base das letras; planos abertos: no meio da sala).
