@@ -250,6 +250,12 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     {id:"r2",on:true,sev:"medio",name:"Rescisão",pat:"rescis|resili|distrat",reason:"Verifique as hipóteses de rescisão, prazos de aviso e consequências para cada parte.",sugg:"Equilibrar as hipóteses de rescisão entre as partes e prever prazo de aviso razoável."},
     {id:"r3",on:true,sev:"alto",name:"Exclusividade",pat:"exclusiv",reason:"Restringe a atuação de uma das partes; confira duração, alcance e exceções.",sugg:"Delimitar a exclusividade por território, segmento e prazo, com exceções previstas."},
     {id:"r4",on:true,sev:"medio",name:"Renovação / prorrogação",pat:"renov|prorrog",reason:"Renovação automática faz o contrato se estender sozinho; controle a data de aviso.",sugg:"Registrar a data-limite de aviso e avaliar um prazo de renovação mais curto."},
+    {id:"r23",on:true,sev:"alto",name:"Não concorrência",pat:"n[ãa]o concorr|non.?compete|n[ãa]o poder[áa][^.;]{0,40}(concorr|atuar no mesmo|exercer atividade)",reason:"Proíbe uma das partes de atuar no mesmo ramo; pode limitar o trabalho por anos depois do fim do contrato.",sugg:"Limitar a não concorrência em prazo, território e atividade, e prever compensação por ela."},
+    {id:"r24",on:true,sev:"alto",name:"Fiança / devedor solidário",pat:"fiador|fian[çc]a|devedor solid|solidariamente respons",reason:"Alguém passa a responder com o próprio patrimônio pela dívida de outra pessoa.",sugg:"Conferir quem é o fiador ou devedor solidário, até quando vale a garantia e se há renúncia ao benefício de ordem."},
+    {id:"r25",on:true,sev:"medio",name:"Fidelidade / permanência mínima",pat:"fidelidade|perman[êe]ncia m[íi]nima|prazo m[íi]nimo de perman|car[êe]ncia",reason:"Prende a parte ao contrato por um período mínimo, geralmente com multa para sair antes.",sugg:"Verificar o prazo de permanência, a multa de saída e se ela diminui com o tempo cumprido."},
+    {id:"r26",on:true,sev:"medio",name:"Encargos por atraso",pat:"juros de mora|juros morat|multa morat|encargos morat|em caso de atraso|atraso no pagamento",reason:"Define juros, multa e correção em caso de atraso; os valores somados podem pesar.",sugg:"Conferir o percentual da multa por atraso, a taxa de juros e o índice de correção."},
+    {id:"r27",on:true,sev:"medio",name:"Arbitragem",pat:"arbitragem|arbitral|c[âa]mara de (media|arbitr)",reason:"Disputas vão para um árbitro, fora do Judiciário; costuma ser mais rápido, mas pode custar caro.",sugg:"Avaliar se a arbitragem faz sentido para o valor do contrato e quem paga os custos do procedimento."},
+    {id:"r28",on:true,sev:"medio",name:"Cessão do contrato",pat:"\\bceder\\b|\\bcess[ãa]o\\b|transferir[^.;]{0,30}(contrato|direitos|obriga)|subcontrat",reason:"Permite que uma parte passe o contrato ou as obrigações para terceiros.",sugg:"Exigir concordância prévia e por escrito para qualquer cessão ou subcontratação."},
     {id:"r22",on:true,sev:"medio",name:"Irrevogável e irretratável",pat:"irrevog|irretrat",reason:"Impede que as partes desistam ou voltem atrás por conta própria. O descumprimento ainda permite rescindir, mas a saída fica mais difícil.",sugg:"Avaliar se a irrevogabilidade é necessária para este negócio e prever hipóteses claras de saída."},
     {id:"r5",on:true,sev:"medio",name:"Limitação de responsabilidade",pat:"limita[^.;]{0,50}responsab|responsab[^.;]{0,60}limitad|isen[çc][ãa]o de responsab",reason:"Define o teto de indenização; confira se é compatível com o risco.",sugg:"Rever o teto e excluir dolo, culpa grave e violação de sigilo do limite."},
     {id:"r6",on:true,sev:"medio",name:"Reajuste de preço",pat:"reajust|corre[çc][ãa]o monet|[íi]ndice",reason:"Confirme o índice, a periodicidade e se há teto ou piso.",sugg:"Fixar índice claro (ex.: IPCA), periodicidade anual e, se possível, um teto."},
@@ -277,7 +283,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   function esc(s){return (s+"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
   function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
 
-  var RULES_VERSION=6;
+  var RULES_VERSION=7;
   var rules;
   var savedV=load("clausa-rules-v"), savedRules=load("clausa-rules");
   if(savedV===RULES_VERSION){rules=savedRules||clone(DEFAULTS)}
