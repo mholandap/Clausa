@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Clausa — textos do vídeo "Uma tarde construindo o Clausa"</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
+  body{font-family:Inter,system-ui,sans-serif;color:#FAFAFA;position:relative}
+  .grp{position:absolute;left:72px;right:72px;bottom:430px;opacity:0}
+  .pill{display:inline-flex;align-items:center;gap:14px;background:rgba(11,11,12,.72);border:1px solid rgba(255,255,255,.12);
+        border-radius:999px;padding:14px 26px 14px 20px;font:800 38px/1 "Inter Tight",Inter;letter-spacing:.5px;font-variant-numeric:tabular-nums;
+        -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+  .pill i{width:16px;height:16px;border-radius:50%;background:#FF8A33;box-shadow:0 0 14px #FF8A33}
+  .cap{margin-top:22px;display:inline-block;max-width:936px;background:rgba(11,11,12,.72);border-radius:22px;padding:22px 28px 26px;
+       font:900 66px/1.06 "Inter Tight",Inter;letter-spacing:-.035em;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+  .cap + .cap{margin-top:14px}
+  .w{display:inline-block;margin-right:.2em;transform-origin:50% 90%}
+  .hl{background:#FF8A33;color:#140a05;padding:0 .1em;border-radius:6px}
+  #end{position:absolute;left:72px;right:72px;bottom:430px;opacity:0}
+  #end .big{font:900 84px/1.02 "Inter Tight",Inter;letter-spacing:-.04em;background:rgba(11,11,12,.75);border-radius:24px;padding:26px 30px 30px;display:inline-block;
+       -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+  #end .sub{margin-top:18px;display:inline-flex;align-items:center;gap:12px;background:#FF8A33;color:#140a05;font:800 42px/1 "Inter Tight",Inter;padding:20px 28px;border-radius:16px}
+  #bar{position:absolute;left:0;top:0;height:8px;background:linear-gradient(90deg,#E2590B,#FF8A33)}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div id="G"></div>
+<div id="end"><div class="big">Amanhã, 8h:<br>meu primeiro post<br>no <span class="hl">LinkedIn</span>.</div><br><div class="sub">Segue pra acompanhar →</div></div>
+<script>
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), seg=(t,a,b)=>clamp((t-a)/(b-a));
+const eo=x=>1-Math.pow(1-x,3);
+const spring=x=>x<=0?0:x>=1?1:1-Math.exp(-6.5*x)*Math.cos(10*x);
+// cenas: início, fim, hora, linhas de legenda [texto com *destaque*, quando aparece]
+const T=window.TL||{};
+const S=[
+  {a:0.15, b:7.0,  h:"17:20", lines:[["O Instagram não me deixa colocar o *link* do meu site.",0.25],["E meu primeiro Reel sai *quarta*.",3.4]]},
+  {a:7.04, b:11.55,h:"17:21", lines:[["Tentando pelo *computador*.",7.15]]},
+  {a:11.6, b:19.2, h:"17:29", lines:[["Mensagens pra *advogados*.",11.7]]},
+  {a:19.24,b:23.3, h:"17:32", lines:[["Conferindo as *17* *correções* que subiram hoje.",19.35]]},
+  {a:23.34,b:26.6, h:"17:34", lines:[["Fim de tarde.",23.45]]},
+];
+const END_AT=26.7, DUR=31.13;
+const G=document.getElementById('G');
+S.forEach((s,i)=>{
+  const g=document.createElement('div');g.className='grp';g.id='g'+i;
+  g.innerHTML=`<div class="pill"><i></i>${s.h}</div><br>`;
+  s.lines.forEach(([txt,at],j)=>{
+    const c=document.createElement('div');c.className='cap';c.dataset.at=at;
+    c.innerHTML=txt.split(' ').map(w=>{const m=w.match(/^\*(.+)\*(.*)$/);return m?`<span class="w"><span class="hl">${m[1]}</span>${m[2]}</span>`:`<span class="w">${w}</span>`}).join('');
+    g.appendChild(c);if(j<s.lines.length-1)g.appendChild(document.createElement('br'));
+  });
+  G.appendChild(g);s.el=g;
+});
+function render(t){
+  document.getElementById('bar').style.width=(t/DUR*100)+'%';
+  S.forEach(s=>{
+    const vis=t>=s.a&&t<s.b, out=seg(t,s.b-.18,s.b);
+    s.el.style.opacity=vis?(1-out):0;
+    s.el.style.transform=`translateY(${-out*20}px)`;
+    const pill=s.el.querySelector('.pill'), pp=seg(t,s.a,s.a+.35);
+    pill.style.transform=`translateX(${(1-spring(pp))*-40}px)`;pill.style.opacity=eo(pp);
+    s.el.querySelectorAll('.cap').forEach(c=>{
+      const at=+c.dataset.at, ws=c.querySelectorAll('.w');
+      c.style.opacity=t>=at?1:0; c.style.transform=`scale(${.94+.06*spring(seg(t,at,at+.4))})`;c.style.transformOrigin='0 50%';
+      ws.forEach((w,k)=>{const p=seg(t,at+k*.07,at+k*.07+.3);w.style.opacity=eo(p);w.style.transform=`translateY(${(1-spring(p))*18}px)`});
+    });
+  });
+  const e=document.getElementById('end'), ep=seg(t,END_AT,END_AT+.5);
+  e.style.opacity=eo(ep); e.style.transform=`translateY(${(1-spring(ep))*40}px)`;
+}
+window.render=render; window.DUR=DUR; render(0);
+</script>
+</body>
+</html>
