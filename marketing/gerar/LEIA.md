@@ -2,7 +2,21 @@
 
 Tudo roda offline. Requisitos: Node + Playwright, Python 3 com `numpy` e `onnxruntime`, `espeak-ng` e `ffmpeg`.
 
-## 1. Narração (voz neural Kokoro-82M, pt-BR)
+## 1. Narração
+
+### Opção A (atual): locução gravada (ElevenLabs, voz Matheus)
+A locução está em `locucao-matheus.mp3`. O `align.py` encontra as pausas entre as frases,
+confere que há uma fala para cada frase do roteiro e gera `voz.wav` + `../timing.js`:
+```
+ffmpeg -i locucao-matheus.mp3 -ar 44100 -ac 1 loc44.wav
+python3 align.py loc44.wav voz.wav ../timing.js alinhamento.json
+ffmpeg -i voz.wav -af "highpass=f=80,acompressor=threshold=-18dB:ratio=2:attack=8:release=120:makeup=2,alimiter=limit=0.89" voz44.wav
+```
+Para trocar de locução (outra voz ou a sua própria gravação), basta gravar o mesmo roteiro
+com uma pausa curta entre as frases. `insert_after` em `alinhamento.json` abre respiros extras.
+Depois siga para o passo 2.
+
+### Opção B: voz neural offline (Kokoro-82M, pt-BR)
 Os modelos não ficam no repositório (são grandes). Baixe-os do npm:
 ```
 mkdir -p modelos && cd modelos
