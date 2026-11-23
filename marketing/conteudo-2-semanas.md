@@ -87,8 +87,8 @@ Legenda:
 
 | Dia | Onde | Horário | O quê |
 |---|---|---|---|
-| Ter 01/12 | LinkedIn | 8h | **Post 3: dica "Renovação automática"** |
-| Qua 02/12 | Instagram | 10h | **Reel/carrossel "A cláusula que ninguém lê"** (renovação + multa) |
+| Ter 01/12 | LinkedIn | 8h | **Post 3: dica "Renovação automática"** + anexar o PDF `carrossel-renovacao.pdf` (no LinkedIn: "Adicionar documento") |
+| Qua 02/12 | Instagram | 10h | **Carrossel "Renovação automática: 3 coisas pra olhar"** (7 imagens em `carrossel-renovacao/`) |
 | Qui 03/12 | LinkedIn | 8h | **Post 4: bastidores das conversas** (só se as conversas aconteceram) |
 | Qui 03/12 | Instagram Stories | 12h | Bastidor: foto do seu dia de trabalho no Clausa + "o que você queria que uma ferramenta dessas fizesse?" (caixinha de pergunta) |
 | Sex 04/12 | Instagram | 10h | **Reel "Por que eu criei o Clausa"**, sem mostrar o rosto (só as mãos, ou animado com locução) |
@@ -108,6 +108,15 @@ Legenda:
 > E a dica mais prática de todas: no dia em que assinar, coloque na agenda a data limite do aviso.
 >
 > Você já foi pego(a) por uma renovação automática?
+
+### Carrossel "Renovação automática" — legenda do Instagram
+> Renovação automática é a cláusula que todo mundo assina e quase ninguém relê. 📅
+>
+> Arraste pra ver as 3 coisas que valem conferir antes de assinar, e a dica mais prática de todas.
+>
+> Salva pra consultar no próximo contrato. 📌
+>
+> #contratos #direito #dicasjuridicas #empreendedorismo #legaltech #pequenasempresas
 
 ### Post 4 — LinkedIn — bastidores (preencher com o que for real)
 > Essa semana conversei com [N] pessoas que revisam contratos no dia a dia: [advogados de escritório / pessoal de jurídico / autônomos].
@@ -132,6 +141,35 @@ Imagem, escolha uma:
 - **Animado:** me mande só a locução e eu faço no mesmo estilo do anúncio.
 
 Marque "conteúdo gerado por IA" se usar voz do ElevenLabs.
+
+---
+
+## Próximo Reel (semana 3, qua 09/12) — "A cláusula que ninguém lê": multa por rescisão
+
+**Locução para gerar no ElevenLabs** (voz Matheus; deixe o texto exatamente assim, com os pontos, para as pausas saírem no lugar certo):
+> Tem uma cláusula que quase ninguém lê. E é ela que mais pesa no bolso. A multa por rescisão. Olha esse exemplo: multa de cem por cento do valor que falta. Quer sair no sexto mês de um contrato de um ano? Paga os outros seis meses inteiros. A lei até permite que o juiz reduza uma multa exagerada. Mas aí você já está brigando na justiça. Antes de assinar, confira três coisas. Qual é a porcentagem. Sobre qual valor ela é calculada. E se ela diminui com o tempo cumprido. Revise antes de assinar. Teste grátis, link na bio.
+
+**Cenas** (eu monto quando você mandar o MP3):
+| Fala | Na tela |
+|---|---|
+| "Tem uma cláusula... no bolso." | Texto grande: **"A cláusula que ninguém lê."** |
+| "A multa por rescisão." | Contrato entra; a cláusula de multa é marcada. Destaque: **"Multa por rescisão"** |
+| "Olha esse exemplo... valor que falta." | Zoom em "100% do valor remanescente"; etiqueta **"100%"** |
+| "Quer sair no sexto mês... inteiros." | Linha do tempo de 12 meses: 6 cumpridos, 6 cobrados em laranja |
+| "A lei até permite... na justiça." | **"O juiz pode reduzir."** e embaixo **"Mas aí já virou processo."** |
+| "Antes de assinar, confira três coisas..." | Checklist aparecendo item a item: **1. Porcentagem · 2. Base de cálculo · 3. Redução proporcional** |
+| "Revise antes de assinar. Teste grátis, link na bio." | Final padrão do Clausa |
+
+*Base legal da fala sobre o juiz: art. 413 do Código Civil (a multa deve ser reduzida se for manifestamente excessiva ou se a obrigação foi cumprida em parte).*
+
+**Legenda:**
+> Multa de 100% do valor que falta: parece normal até você precisar sair do contrato. 😬
+>
+> A lei permite reduzir multa exagerada, mas só depois de uma briga na justiça. O mais barato é olhar antes.
+>
+> O teste grátis do Clausa aponta a multa e as outras cláusulas de atenção: link na bio.
+>
+> #contratos #direito #dicasjuridicas #empreendedorismo #legaltech
 
 ---
 
