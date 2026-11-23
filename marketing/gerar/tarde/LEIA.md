@@ -23,3 +23,10 @@ Saída: `../../tarde-founder-dia1-v2.mp4` (25 s).
 3. Montagem: base + camada de trás + (base recortada pela máscara) + camada da frente:
    `-filter_complex "[1:v]format=gray[m];[0:v]split[b0][b1];[b0][2:v]overlay[bt];[b1][m]alphamerge[pe];[bt][pe]overlay[c];[c][3:v]overlay"`
 Palavras de trás: posicionadas pela altura da cabeça medida na máscara (closes: no alto, a cabeça cobre a base das letras; planos abertos: no meio da sala).
+
+## Versão 4 (fontes art déco + pessoa nítida)
+- Fontes: palavras de trás em **Limelight** (impacto: TRAVOU, PACIÊNCIA, 17, AMANHÃ 8H) e **Federo** (QUARTA, COMPUTADOR, FIM DE TARDE); legendas simples em **Poiret One** com contorno escuro (sombras). Arquivo: `../../tarde-founder-v4.html`, camadas com `overlay4.js`.
+- Máscara em alta: `recortar_pessoa.py base2.mp4 mascara_hd.mkv rvm.onnx 0.6` (~5 min).
+- Pessoa nítida e sem texto vazando no cabelo: borda firme na máscara e nitidez só na pessoa:
+  `[1:v]format=gray,lutyuv=y='clip((val-90)*255/(200-90),0,255)',gblur=sigma=0.6[m]` e `[pessoa]unsharp=7:7:0.9:5:5:0`.
+- Sem zoom nos cortes (ampliar amoleceria a imagem).
