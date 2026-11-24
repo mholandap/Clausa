@@ -1,0 +1,27 @@
+{
+ "titulo": "3 palavras perigosas (teste da máquina)",
+ "audio": "../../gerar/locucao-3palavras.mp3",
+ "saida": "../saidas/teste-3palavras.mp4",
+ "palavras_chave": ["três", "palavras", "irrevogável", "irretratável", "foro", "distante", "renovação", "automática", "assinar", "grátis"],
+ "cenas": [
+  {"tipo": "telefone", "hora": "9:41", "data": "terça-feira, 24 de novembro",
+   "fala": "Se você viu uma dessas três palavras no seu contrato, para e lê de novo.",
+   "notificacoes": [{"titulo": "Clausa", "texto": "3 pontos de atenção neste contrato", "palavra": "três palavras", "quando": "agora"}]},
+  {"tipo": "monitor", "n": "01", "titulo": "Irrevogável",
+   "fala": "Irrevogável e irretratável. Você não pode voltar atrás.",
+   "tela": {"cabecalho": "CLÁUSULA 3ª", "texto": "O presente contrato é celebrado em caráter irrevogável e irretratável, obrigando as partes e seus sucessores.",
+            "destaque": "irrevogável e irretratável", "nota": "não pode voltar atrás"}},
+  {"tipo": "monitor", "n": "02", "titulo": "Foro distante",
+   "fala": "Foro de uma comarca distante. Se der briga, o processo corre lá, não aqui.",
+   "tela": {"cabecalho": "CLÁUSULA 9ª", "texto": "Fica eleito o foro da Comarca de Manaus/AM, com renúncia a qualquer outro, por mais privilegiado que seja.",
+            "destaque": "foro da Comarca de Manaus/AM", "nota": "o processo corre lá"}},
+  {"tipo": "monitor", "n": "03", "titulo": "Renovação automática",
+   "fala": "Renovação automática. Ele renova sozinho se você não avisar antes.",
+   "tela": {"cabecalho": "CLÁUSULA 11ª", "texto": "O contrato será renovado automaticamente por iguais períodos de 12 meses, salvo aviso com 90 dias de antecedência.",
+            "destaque": "renovado automaticamente", "nota": "renova sozinho"}},
+  {"tipo": "telefone", "hora": "9:42", "data": "terça-feira, 24 de novembro",
+   "fala": "Revise antes de assinar. Teste grátis. Link na bio.",
+   "notificacoes": [{"titulo": "Clausa", "texto": "Revise antes de assinar. Teste grátis.", "palavra": "revise antes", "quando": "agora"},
+                    {"titulo": "Teste grátis", "texto": "mholandap.github.io/Clausa", "palavra": "link na bio", "quando": "agora"}]}
+ ]
+}
