@@ -77,3 +77,32 @@ Tema claro do site: fundo `#EAEAEE`, texto `#1A1A1A`, laranja `#C2560A`.
 - App: https://mholandap.github.io/Clausa/app.html
 - Instagram: @pedrom.holanda · Metricool: marca 8184609 (fuso America/Sao_Paulo)
 - Arquivos de vídeo e fontes de edição: `marketing/` neste repositório
+
+## 10. Gosto do Pedro (filtro para qualquer peça nova)
+
+Aprendido com as aprovações e reprovações dele. Antes de mostrar qualquer vídeo, conferir esta lista.
+
+**Formato**
+- Reels e vídeos para celular são feitos **direto na vertical (1080×1920)**, ocupando a tela inteira. Nunca encaixar um vídeo horizontal com fundo vazio em volta.
+- Nada de espaço vazio sobrando na tela.
+
+**Visual**
+- Sem "cara de Claude": nada de título em serifa + laranja + brilho escuro.
+- Sem estilo "papel bege". Preferiu a versão escura e limpa.
+- Pessoa, cabelo e celular **sempre nítidos**: nada de desfocado, opaco ou transparente.
+- Texto principal **centralizado** quando é a frase de abertura. Texto gigante no canto inferior esquerdo funciona nas cenas seguintes.
+- Nada de closes que não acrescentam (ex.: close no símbolo da balança e no "§" foi reprovado). Caderno também foi cortado: só entra o que conta a história.
+
+**Movimento**
+- Nada "travado": câmera e elementos em movimento contínuo, fluido (60 fps quando possível).
+- Gostou da linguagem do anúncio de referência do Nomad: texto gigante, tom sobre tom, celular passando na frente de palavras, palavras trocando sob o celular.
+
+**Som**
+- Música nem "de ninar" nem cheia de impactos e pausas nos cortes. Leve, animada e contínua, seguindo o curso natural.
+- Voz sintética do Kokoro foi reprovada (estranha). ElevenLabs (Matheus) aprovada.
+
+**Legendas**
+- Laranja, fonte grossa. Algumas atrás da pessoa, outras na frente. Fontes "deco" do Instagram (Limelight/Federo atrás, Poiret One nas legendas simples) aprovadas no vídeo de bastidores.
+
+**Como afinar**
+- Referências que ele gostar vão para o Drive, pasta "0 - Referências". Estudar o padrão antes de criar.
