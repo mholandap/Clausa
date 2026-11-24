@@ -1,7 +1,7 @@
 // Service worker do Clausa: deixa o app abrir mesmo sem internet.
 // Páginas: tenta a rede primeiro (sempre a versão mais nova) e cai no cache se estiver offline.
 // Nunca guarda chamadas ao Supabase nem a outros sites: só arquivos do próprio Clausa.
-const VERSAO = 'clausa-v1';
+const VERSAO = 'clausa-v2';
 const BASE = ['./', 'index.html', 'app.html', 'entrar.html', 'privacidade.html', 'termos.html',
   'favicon.png', 'manifest.webmanifest', 'js/clausa-config.js', 'img/icones/icone-192.png', 'img/icones/icone-512.png'];
 

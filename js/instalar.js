@@ -22,18 +22,25 @@
   var instalado = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   var ua = navigator.userAgent || '';
   var ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && 'ontouchend' in document);
+  var android = /Android/.test(ua);
 
   function botoes() { return [].slice.call(document.querySelectorAll('[data-instalar]')); }
   function mostrar(sim) { botoes().forEach(function (b) { b.hidden = !sim; }); }
 
-  function dicaIOS() {
-    var v = document.createElement('div'); v.className = 'inst-veu';
-    v.innerHTML = '<div class="inst-box" role="dialog" aria-modal="true" aria-label="Instalar o Clausa">' +
-      '<h3>Instalar o Clausa no iPhone</h3><ol>' +
+  var DICAS = {
+    ios: '<h3>Instalar o Clausa no iPhone</h3><ol>' +
       '<li>Toque em <b>Compartilhar</b> (o quadrado com a seta para cima) na barra do Safari.</li>' +
       '<li>Escolha <b>Adicionar à Tela de Início</b>.</li>' +
-      '<li>Toque em <b>Adicionar</b>. O ícone do Clausa aparece junto dos seus apps.</li></ol>' +
-      '<button type="button">Entendi</button></div>';
+      '<li>Toque em <b>Adicionar</b>. O ícone do Clausa aparece junto dos seus apps.</li></ol>',
+    android: '<h3>Instalar o Clausa no Android</h3><ol>' +
+      '<li>Toque no menu <b>⋮</b> (três pontinhos) no canto do navegador.</li>' +
+      '<li>Escolha <b>Instalar app</b> ou <b>Adicionar à tela inicial</b>.</li>' +
+      '<li>Confirme. O ícone do Clausa aparece junto dos seus apps.</li></ol>'
+  };
+  function dica(qual) {
+    var v = document.createElement('div'); v.className = 'inst-veu';
+    v.innerHTML = '<div class="inst-box" role="dialog" aria-modal="true" aria-label="Instalar o Clausa">' +
+      DICAS[qual] + '<button type="button">Entendi</button></div>';
     function fechar() { v.remove(); }
     v.addEventListener('click', function (e) { if (e.target === v) fechar(); });
     v.querySelector('button').onclick = fechar;
@@ -52,9 +59,9 @@
     if (pedido) {
       pedido.prompt();
       pedido.userChoice.then(function (r) { if (r.outcome === 'accepted') mostrar(false); pedido = null; });
-    } else if (ios) { dicaIOS(); }
+    } else if (ios) { dica('ios'); } else if (android) { dica('android'); }
   });
 
-  function iniciar() { mostrar(!instalado && ios); }
+  function iniciar() { mostrar(!instalado && (ios || android || !!pedido)); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
 })();
