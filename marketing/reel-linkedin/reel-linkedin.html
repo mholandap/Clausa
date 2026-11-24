@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@900&family=Inter:wght@700&display=swap">
+<style>
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#0B0B0C}
+#foto{position:absolute;inset:0;background:url(fundo.jpg) center/cover;transform-origin:55% 45%}
+#sombra{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(0,0,0,.35) 100%)}
+#texto{position:absolute;left:90px;right:90px;top:1235px;text-align:center;text-shadow:0 2px 18px rgba(0,0,0,.75),0 1px 3px rgba(0,0,0,.6)}
+#titulo{font:900 96px/1 "Inter Tight";letter-spacing:-.045em;color:#FF8A33;margin-bottom:30px}
+.l{font:700 46px/1.32 Inter;letter-spacing:-.01em;color:#FAFAFA;display:block}
+#barra{position:absolute;left:0;top:0;height:6px;background:#FF8A33}
+</style></head><body>
+<div id="foto"></div><div id="sombra"></div>
+<div id="texto"><div id="titulo">Bastidores do Clausa</div>
+<span class="l">Enquanto o Claude me ajuda a</span>
+<span class="l">apresentar o Clausa para advogados</span>
+<span class="l">no LinkedIn, eu reviso cada</span>
+<span class="l">mensagem e sigo construindo.</span></div>
+<div id="barra"></div>
+<script>
+window.DUR=10;
+const ease=x=>x<=0?0:x>=1?1:1-Math.pow(1-x,3), io=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const foto=document.getElementById('foto'),tit=document.getElementById('titulo'),ls=[...document.querySelectorAll('.l')],barra=document.getElementById('barra');
+function aparece(el,t,ini){const k=ease((t-ini)/.7);el.style.opacity=k;el.style.transform=`translateY(${(1-k)*26}px)`}
+window.render=t=>{
+  const s=1.0+0.08*io(t/DUR);
+  foto.style.transform=`scale(${s}) translate(${-6*io(t/DUR)}px,${-10*io(t/DUR)}px)`;
+  aparece(tit,t,.35); ls.forEach((l,i)=>aparece(l,t,1.15+i*.35));
+  barra.style.width=(1080*t/DUR)+'px';
+};
+render(0);
+</script></body></html>
