@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <!-- Anúncio para passar na tela do notebook (16:9). Renderizado quadro a quadro por render.js via window.render(t).
-     Gramática visual: texto gigante no canto inferior esquerdo, tom sobre tom, macros do símbolo,
-     glifos gigantes (§, %) com o celular passando na frente, linha do tempo com arcos, palavras trocando sob o celular. -->
+     Gramática visual: texto gigante no canto inferior esquerdo, tom sobre tom,
+     % gigante com o celular passando na frente, linha do tempo com arcos, palavras trocando sob o celular. -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Inter:wght@500;600;700&display=swap">
 <style>
 *{box-sizing:border-box;margin:0}
@@ -15,6 +15,7 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#0B0B0C}
 .bl .clip{overflow:hidden;padding-top:.06em}
 .bl .pre{font-size:118px}.bl .main{font-size:290px}
 .bl span{display:inline-block}
+.ctr{left:0;right:0;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
 .tom{color:#8C3A06}            /* tom sobre tom no laranja */
 .br{color:#FAFAFA}
 /* celular */
@@ -43,21 +44,14 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#0B0B0C}
   <div id="flood" style="position:absolute;inset:0;background:#FF8A33;opacity:0"></div></div>
 
 <!-- 1 SEU CONTRATO -->
-<div class="lay or" id="s1"><div class="bl tom" id="b1"><div class="clip"><span class="main" style="font-size:228px">SEU CONTRATO</span></div></div></div>
+<div class="lay or" id="s1"><div class="bl tom ctr" id="b1"><div class="clip"><span class="main" style="font-size:228px">SEU CONTRATO</span></div></div></div>
 
 <!-- 2 SEM / SURPRESAS. + linha cortando -->
-<div class="lay or" id="s2"><div class="bl tom" id="b2"><div class="clip"><span class="pre">SEM</span></div><div class="clip"><span class="main">SURPRESAS.</span></div>
-  <div id="cut" style="position:absolute;left:-84px;top:62%;height:5px;width:0;background:#140A05"></div></div></div>
+<div class="lay or" id="s2"><div class="bl tom ctr" id="b2"><div class="clip"><span class="pre">SEM</span></div><div class="clip"><span class="main">SURPRESAS.</span></div>
+  <div id="cut" style="position:absolute;left:-40px;top:57%;height:5px;width:0;background:#140A05"></div></div></div>
 
 <!-- 3 faixa de luz -->
 <div class="lay" id="s3" style="background:#0B0B0C"><div id="band" style="position:absolute;left:0;right:0;top:50%;height:4px;background:#FF8A33;box-shadow:0 0 60px 20px rgba(255,138,51,.6)"></div></div>
-
-<!-- 4 macro do símbolo -->
-<div class="lay or" id="s4"><svg id="mac" style="position:absolute;left:50%;top:50%;width:2400px;height:2400px;margin:-1200px;color:rgba(20,10,5,.24)"><use href="#bal"/></svg>
-  <div style="position:absolute;inset:0;background:linear-gradient(100deg,rgba(255,255,255,0) 30%,rgba(255,240,220,.25) 50%,rgba(255,255,255,0) 70%)" id="sheen"></div></div>
-
-<!-- 5 macro § -->
-<div class="lay or" id="s5"><div class="glyph" id="g5" style="color:rgba(20,10,5,.2);top:-260px">§</div></div>
 
 <!-- 6 celular + anéis + UM APP / O CONTRATO INTEIRO -->
 <div class="lay dk" id="s6">
@@ -120,27 +114,25 @@ const $=id=>document.getElementById(id);
 const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), seg=(t,a,b)=>cl((t-a)/(b-a)), lerp=(a,b,p)=>a+(b-a)*p;
 const eo=x=>1-Math.pow(1-x,3), eo5=x=>1-Math.pow(1-x,5), ei=x=>x*x*x, eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
 const back=x=>{const c=1.7;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
-const CENAS=[['s0',0,1],['s1',1,2.5],['s2',2.5,3.6],['s3',3.6,4],['s4',4,5],['s5',5,6],['s6',6,8],['s7',8,9],['s8',9,11],['s9',11,13],['s10',13,16.5],['s11',16.1,19.5]];
-window.DUR=19.5;
+const CENAS=[['s0',0,1],['s1',1,2.5],['s2',2.5,3.6],['s3',3.6,4],['s6',6,8],['s7',8,9],['s8',9,11],['s9',11,13],['s10',13,16.5],['s11',16.1,19.5]];
+window.DUR=17.5;
 // sobe as linhas de um bloco (cada .clip) com atraso, com desfoque de movimento
 function sobe(bl,t,t0,dt=.09,d=.42){[...$(bl).querySelectorAll('.clip>span')].forEach((s,i)=>{const p=eo5(seg(t,t0+i*dt,t0+i*dt+d));
   s.style.transform=`translateY(${(1-p)*105}%)`;s.style.filter=`blur(${(1-p)*10}px)`;});}
 function desce(bl,t,t0,d=.18){[...$(bl).querySelectorAll('.clip>span')].forEach(s=>{const p=ei(seg(t,t0,t0+d));if(t>=t0){s.style.transform=`translateY(${p*110}%)`;s.style.filter=`blur(${p*8}px)`}});}
 function velBlur(el,v){el.style.filter=v>0.3?`blur(${Math.min(22,v*.9)}px)`:'none'}
 window.render=function(t){
+  if(t>=4)t+=2; // cenas 4 e 5 (closes) removidas
   CENAS.forEach(([id,a,b])=>{$(id).style.display=(t>=a&&t<b)?'block':'none'});
   $('fade').style.opacity=seg(t,18.6,19.5)*.85;
   if(t<1){const o=$('orb');const blink=t<.45?(Math.floor(t*8)%2?1:.35):1;
     const s=t<.45?1:1+ei(seg(t,.45,.95))*60;o.style.transform=`scale(${s})`;o.style.opacity=blink;o.style.filter=`blur(${seg(t,.45,.9)*30}px)`;
     $('smear').style.opacity=Math.sin(seg(t,.45,.8)*Math.PI)*.8;$('smear').style.transform=`translateX(${seg(t,.45,.8)*200}px)`;
     $('flood').style.opacity=eo(seg(t,.82,1));}
-  if(t>=1&&t<2.5){sobe('b1',t,1.02);$('b1').style.transform=`scale(${1+.05*seg(t,1.2,2.5)})`;$('b1').style.transformOrigin='left bottom';}
+  if(t>=1&&t<2.5){sobe('b1',t,1.02);$('b1').style.transform=`scale(${1+.05*seg(t,1.2,2.5)})`;$('b1').style.transformOrigin='center';}
   if(t>=2.5&&t<3.6){sobe('b2',t,2.5);const c=$('cut');c.style.width=`${eo(seg(t,3.05,3.35))*2100}px`;
     const x=-ei(seg(t,3.3,3.6))*700;$('b2').style.transform=`translateX(${x}px)`;$('b2').style.filter=`blur(${seg(t,3.3,3.6)*16}px)`;}
   if(t>=3.6&&t<4){const p=ei(seg(t,3.62,4));$('band').style.height=`${lerp(4,1300,p)}px`;$('band').style.marginTop=`${-lerp(2,650,p)}px`;}
-  if(t>=4&&t<5){const lt=t-4,p=eo5(seg(lt,0,.35));$('mac').style.transform=`translate(${lerp(500,-120,eo(seg(lt,0,1)))}px,${lerp(260,40,p)}px) scale(${lerp(1.7,1.25,eo(seg(lt,0,1)))}) rotate(${lerp(-14,-4,eo(seg(lt,0,1)))}deg)`;
-    $('mac').style.filter=`blur(${(1-p)*18}px)`;$('sheen').style.transform=`translateX(${lerp(-1400,1400,seg(lt,.2,.9))}px)`;}
-  if(t>=5&&t<6){const lt=t-5;$('g5').style.left=`${lerp(1500,250,eo5(seg(lt,0,.5)))-lt*120}px`;$('g5').style.filter=`blur(${(1-eo5(seg(lt,0,.4)))*20}px)`;}
   if(t>=6&&t<8){const lt=t-6,p=eo5(seg(lt,0,.55));
     $('p6').style.transform=`translateX(${(1-p)*900}px) rotateY(${lerp(-60,-16,eo(seg(lt,0,2)))}deg) rotateZ(${lerp(14,5,p)}deg)`;velBlur($('p6'),(1-p)*25);
     $('rings').style.transform=`rotate(${lt*14}deg) scale(${lerp(.7,1,eo(seg(lt,.1,.8)))})`;$('rings').style.opacity=.55*seg(lt,.1,.4);
