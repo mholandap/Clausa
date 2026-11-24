@@ -9,7 +9,7 @@ Anúncio 16:9 para passar em tela cheia no notebook e filmar com o celular (form
 
 Montagem:
 ```bash
-ffmpeg -framerate 60 -i quadros/f%05d.jpg -i trilha.wav -af loudnorm=I=-14:TP=-1.5 -c:v libx264 -crf 16 -pix_fmt yuv420p -c:a aac -b:a 192k -shortest anuncio-tela.mp4
+ffmpeg -framerate 60 -i quadros/f%05d.jpg -i trilha.wav -af "loudnorm=I=-14.5:TP=-2,alimiter=limit=0.79:level=false" -c:v libx264 -crf 16 -pix_fmt yuv420p -c:a aac -b:a 192k -shortest anuncio-tela.mp4
 ```
 
 Como filmar: notebook em tela cheia, brilho no máximo, luz do quarto apagada, celular na vertical a ~50 cm, um pouco acima do teclado, sem tremer. Grave uns 3 s antes de dar play e 2 s depois do fim.
