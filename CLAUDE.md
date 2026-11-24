@@ -1,0 +1,36 @@
+# Clausa: onde paramos (leia antes de começar)
+
+Projeto do Pedro (GitHub `mholandap`, Instagram `@pedrom.holanda`). Clausa = app que aponta cláusulas de atenção em contratos. Hoje funciona **por regras, sem IA**.
+- Site: https://mholandap.github.io/Clausa/ · App: `app.html` · Login: Supabase (`js/clausa-config.js`).
+- Responder sempre em português do Brasil, linguagem simples.
+
+## Regras combinadas com o Pedro
+- **Site/app/repositório:** pode alterar sem perguntar. Fluxo: branch de trabalho → PR → merge em `main` (GitHub Pages publica) → contar o que mudou.
+- **Posts novos em rede social:** só com o "pode publicar" dele, com horário. Agendados já aprovados saem sozinhos.
+- **Só verdade nos posts:** nada de "com IA" até a IA existir; nada de números, clientes ou depoimentos inventados. Conteúdo jurídico com fonte (ver `marketing/avisos/LEIA.md`).
+- **Nunca** pedir/aceitar senha ou cookie de Instagram/LinkedIn. LinkedIn só com o Claude in Chrome na máquina dele, com ele revisando e enviando (roteiro em `marketing/linkedin/abordagem.md`). Nada de envio em massa.
+- Não mudar compartilhamento de arquivos no Drive: ele mesmo coloca "Qualquer pessoa com o link".
+- Voz sintética (ElevenLabs/Matheus) → marcar `isAiGenerated` no Instagram. Música só própria (`marketing/anuncio-tela/musica.py`).
+- Não mostrar dados de terceiros (nomes, perfis, mensagens) sem desfocar.
+- **Gosto do Pedro:** ler a seção 10 de `marketing/GUIA-DA-MARCA.md` antes de criar qualquer peça (vertical 1080×1920 para Reels, sem vazio, nada desfocado/opaco, sem "cara de Claude", música leve e contínua).
+
+## Ferramentas
+- Metricool: marca `8184609`, fuso `America/Sao_Paulo`. Mídia via URL pública `raw.githubusercontent.com/mholandap/Clausa/main/...`.
+- Drive: pastas "Clausa — Vídeos" → `0 - Referências`, `1 - Brutos`, `Marca`. Baixar com `drive.usercontent.google.com/download?id=...&export=download&confirm=t` depois que ele compartilhar.
+- Vídeo: `marketing/anuncio-tela/render.js` (quadro a quadro, `LARG=1080 ALT=1920` para vertical), ffmpeg, Whisper (`marketing/ferramentas/transcrever.py`), máquina de vídeo em `marketing/maquina/`.
+- Banco: tarefa `.github/workflows/manter-banco-ativo.yml` evita a pausa do Supabase grátis.
+- App instalável (PWA): `manifest.webmanifest`, `sw.js`, `js/instalar.js`.
+
+## Agenda do Instagram (atualizado em 24/11/2026)
+- Ter 24/11 18h: anúncio vertical "Dia 2 construindo o Clausa" (`marketing/anuncio-tela/anuncio-vertical.mp4`).
+- Qua 25/11 10h05: Reel "5 avisos que não valem nada", narrado (`marketing/avisos/avisos-narrado.mp4`).
+- Sex 27/11 10h: Reel "3 palavras".
+- Qua 02/12 10h: carrossel "Renovação automática".
+- Rascunho (não sai): anúncio com voz do Matheus "Comecei a construir uma coisa".
+
+## Pendente
+- Reel com foto/print do Claude trabalhando no LinkedIn: legenda sóbria nas cores do Clausa; Pedro vai mandar inspiração e a foto no Drive. Desfocar dados de terceiros.
+- Stories da semana (ideias: chamada para o post das 18h; enquete dos 5 avisos; "instale o app"; time-lapse). Figurinhas de link/enquete o Pedro adiciona à mão.
+- Time-lapse da gravação que o Pedro fez de si mesmo em 24/11 (ele vai mandar).
+- Play Store (≈ R$ 180) e versão com IA (≈ R$ 240–620/mês) ficam para quando houver dinheiro; custos em detalhe na conversa de 24/11.
+- Decisões em aberto: voz clonada no ElevenLabs (plano pago), concorrentes no Metricool (exige Facebook ligado), frequência de posts (sugestão: 3 por semana).
