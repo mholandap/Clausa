@@ -4,290 +4,386 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Clausa — contratos sob controle</title>
+<meta name="description" content="A Clausa lê o contrato com você, aponta as cláusulas que merecem atenção e explica o motivo. A decisão continua com você.">
+<meta property="og:title" content="Clausa — contratos sob controle">
+<meta property="og:description" content="Aponta as cláusulas de risco e explica o motivo. Teste grátis, sem cadastro.">
+<meta property="og:image" content="https://mholandap.github.io/Clausa/img/app-revisao.jpg">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;1,400&display=swap">
 <style>
-:root{--ink:#FAFAFA;--paper:#0B0B0C;--card:#161617;--seal:#E2590B;--teal:#FF8A33;--gray:#9B9B9E;--line:#2A2A2D;--hi-high:#4A2B2B;--hi-mid:#4A4420;--hi-ok:#20423B;--text:#FAFAFA;--bb:#121214;--bf:#FAFAFA;--nav:rgba(11,11,12,.9);--shadow:0 1px 2px rgba(0,0,0,.4),0 12px 32px rgba(0,0,0,.5);--shadow-lg:0 2px 8px rgba(0,0,0,.45),0 20px 50px rgba(0,0,0,.6);--glow-a:rgba(255,122,26,.22);--glow-b:rgba(226,89,11,.15);--band:rgba(18,18,20,.54);color-scheme:dark;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-:root[data-theme="light"]{--ink:#1A1A1A;--paper:#EAEAEE;--card:#FFFFFF;--seal:#E2590B;--teal:#C2560A;--gray:#565659;--line:#DBDBE1;--hi-high:#F3DCD8;--hi-mid:#F4EBCF;--hi-ok:#D7E7E0;--text:#1A1A1A;--bb:#E4E4EA;--bf:#1A1A1A;--nav:rgba(234,234,238,.88);--shadow:0 1px 2px rgba(20,20,20,.06),0 10px 30px rgba(20,20,20,.10);--shadow-lg:0 2px 6px rgba(20,20,20,.07),0 18px 44px rgba(20,20,20,.14);--glow-a:rgba(255,122,26,.38);--glow-b:rgba(226,89,11,.26);--band:rgba(224,224,230,.45);color-scheme:light}
-html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
+:root{--ink:#FAFAFA;--paper:#0B0B0C;--paper2:#101012;--card:#161617;--card2:#1C1C1E;--seal:#E2590B;--teal:#FF8A33;--gray:#9B9B9E;--line:#2A2A2D;--line2:#232326;
+--hi-high:#4A2B2B;--hi-mid:#4A4420;--hi-ok:#20423B;--c-alto:#F0625A;--c-medio:#E0B65C;--c-ok:#5FB58C;--text:#FAFAFA;--nav:rgba(11,11,12,.82);
+--shadow:0 1px 2px rgba(0,0,0,.4),0 12px 32px rgba(0,0,0,.45);--shadow-lg:0 30px 80px rgba(0,0,0,.6),0 8px 24px rgba(0,0,0,.4);--glow:rgba(255,122,26,.20);color-scheme:dark}
+:root[data-theme="light"]{--ink:#141414;--paper:#F4F4F6;--paper2:#ECECF0;--card:#FFFFFF;--card2:#F7F7F9;--teal:#C2560A;--gray:#5A5A5E;--line:#DCDCE2;--line2:#E6E6EB;
+--hi-high:#F3DCD8;--hi-mid:#F4EBCF;--hi-ok:#D7E7E0;--c-alto:#C23A32;--c-medio:#9A7314;--c-ok:#2E8A5F;--text:#141414;--nav:rgba(244,244,246,.85);
+--shadow:0 1px 2px rgba(20,20,20,.05),0 10px 30px rgba(20,20,20,.08);--shadow-lg:0 30px 70px rgba(20,20,20,.18),0 8px 20px rgba(20,20,20,.08);--glow:rgba(255,122,26,.22);color-scheme:light}
 *{box-sizing:border-box}
-select,input,textarea{max-width:100%}
-body{margin:0;position:relative;z-index:0;background:var(--paper);color:var(--text);font:400 16px/1.65 "Inter",system-ui,sans-serif}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--nav);z-index:30}
-/* luz ambiente suave atrás do conteúdo */
-body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(55% 45% at 50% 6%,var(--glow-a),transparent 72%),radial-gradient(48% 42% at 85% 56%,var(--glow-b),transparent 70%),radial-gradient(44% 42% at 13% 88%,var(--glow-a),transparent 72%)}
-@keyframes glow-breathe{0%,100%{opacity:.8;transform:translateY(0)}50%{opacity:1;transform:translateY(-16px)}}
-@media (prefers-reduced-motion:no-preference){body::after{animation:glow-breathe 18s ease-in-out infinite}}
-h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;line-height:1.14;margin:0}
-a{color:inherit}.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
-#bar{position:fixed;left:0;top:env(safe-area-inset-top,0px);height:3px;width:0;background:var(--seal);z-index:40}
-.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--nav);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.nav .wrap{display:flex;align-items:center;height:62px;gap:18px}
-.logo{font-family:"Playfair Display",Georgia,serif;font-weight:600;font-size:23px;display:flex;align-items:center;gap:8px;text-decoration:none}
-.logo i{width:14px;height:14px;border-radius:50%;background:var(--seal)}
-.logo .scales{width:23px;height:23px;flex:none;color:var(--teal)}
-.logo:hover .scales{transform:translateY(-1px)}
-.logo .scales{transition:transform .25s ease}
-.links{display:flex;gap:18px;font-size:15px}.links a{text-decoration:none;white-space:nowrap;color:var(--gray);padding:4px 0;border-bottom:2px solid transparent}
-.links a.act{color:var(--text);border-color:var(--seal)}
-.btn{font:600 15px "Inter",sans-serif;border:0;border-radius:6px;padding:12px 20px;background:var(--seal);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
-.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line);padding:8px 12px;font-size:14px}
-.btn.sm{padding:9px 16px;font-size:14px}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--paper);color:var(--text);font:400 16px/1.65 "Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;letter-spacing:-.03em;line-height:1.08;margin:0}
+a{color:inherit}
+img{max-width:100%;display:block}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
 :focus-visible{outline:3px solid var(--teal);outline-offset:2px}
-.hero{display:grid;grid-template-columns:1fr 1.1fr;gap:44px;padding:64px 20px 80px;align-items:start}
-.hero h1{font-size:clamp(36px,5.2vw,58px)}.hero p.lead{color:var(--gray);font-size:19px;line-height:1.6;max-width:46ch;margin:20px 0 28px}
-.doc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:26px 28px;font:400 15.5px/1.7 "Inter",system-ui,sans-serif}
-.doc h3{font:500 14px "Inter",sans-serif;color:var(--gray);margin-bottom:12px}.doc p{margin:0 0 10px}
-.cl{cursor:pointer;border-radius:3px;padding:1px 2px;transition:background .4s}
+select,input,textarea{max-width:100%}
+
+/* ---------- topo ---------- */
+#bar{position:fixed;left:0;top:0;height:2px;width:0;background:var(--teal);z-index:40}
+.nav{position:sticky;top:0;z-index:20;background:var(--nav);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line2);padding-top:env(safe-area-inset-top,0px)}
+.nav .wrap{display:flex;align-items:center;height:64px;gap:28px}
+.logo{font:800 21px "Inter Tight","Inter",sans-serif;letter-spacing:-.03em;display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo svg{width:22px;height:22px;color:var(--teal)}
+.links{display:flex;gap:24px;font-size:14.5px}
+.links a{text-decoration:none;color:var(--gray);transition:color .2s}
+.links a:hover,.links a.act{color:var(--text)}
+.nav-r{display:flex;gap:8px;align-items:center;margin-left:auto}
+.btn{font:600 15px "Inter",sans-serif;border:0;border-radius:10px;padding:13px 22px;background:var(--seal);color:#fff;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:transform .2s ease,box-shadow .25s ease,background .2s;white-space:nowrap}
+.btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(226,89,11,.35)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--gray);box-shadow:none}
+.btn.sm{padding:9px 15px;font-size:14px;border-radius:9px}
+.icon-btn{width:38px;height:38px;display:grid;place-items:center;border-radius:9px;border:1px solid var(--line);background:transparent;color:var(--gray);cursor:pointer}
+.icon-btn:hover{color:var(--text);border-color:var(--gray)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding:88px 0 0;text-align:center;overflow:hidden}
+.hero::before{content:"";position:absolute;left:50%;top:-180px;width:1100px;height:760px;transform:translateX(-50%);background:radial-gradient(closest-side,var(--glow),transparent);pointer-events:none;z-index:-1}
+.badge{display:inline-flex;align-items:center;gap:8px;font:500 13px "Inter";color:var(--gray);border:1px solid var(--line);background:var(--card);border-radius:30px;padding:6px 14px 6px 10px;margin-bottom:26px}
+.badge i{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(255,138,51,.18)}
+.hero h1{font-size:clamp(40px,6.4vw,76px);max-width:15ch;margin:0 auto}
+.hero h1 em{font-style:normal;color:var(--teal)}
+.hero .lead{color:var(--gray);font-size:clamp(17px,1.6vw,20px);line-height:1.6;max-width:56ch;margin:24px auto 34px}
+.ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.trust{display:flex;gap:10px 26px;justify-content:center;flex-wrap:wrap;margin:28px 0 0;padding:0;list-style:none;color:var(--gray);font-size:14px}
+.trust li{display:flex;align-items:center;gap:8px}.trust svg{color:var(--c-ok);flex:none}
+.shot{position:relative;max-width:1040px;margin:64px auto 0;padding:0 24px}
+.browser{border-radius:14px 14px 0 0;border:1px solid var(--line);border-bottom:0;background:var(--card);box-shadow:var(--shadow-lg);overflow:hidden}
+.browser .chrome{display:flex;align-items:center;gap:7px;height:40px;padding:0 14px;border-bottom:1px solid var(--line);background:var(--card2)}
+.browser .chrome i{width:11px;height:11px;border-radius:50%;background:var(--line)}
+.browser .chrome span{margin:0 auto;font:500 12.5px "Inter";color:var(--gray);background:var(--paper);border:1px solid var(--line2);border-radius:7px;padding:3px 40px}
+.browser img{width:100%;height:auto;aspect-ratio:1280/800;object-fit:cover;object-position:top}
+.phone{position:absolute;right:-6px;top:96px;width:min(22%,230px);border-radius:34px;border:7px solid #1d1d20;background:#000;box-shadow:var(--shadow-lg);overflow:hidden}
+.phone img{width:100%;height:auto;aspect-ratio:390/800;object-fit:cover;object-position:top}
+.hero-fade{height:120px;margin-top:-120px;position:relative;background:linear-gradient(transparent,var(--paper));pointer-events:none}
+
+/* ---------- seções ---------- */
+section{padding:112px 0}
+.alt{background:var(--paper2);border-top:1px solid var(--line2);border-bottom:1px solid var(--line2)}
+.eyebrow{font:600 13px "Inter";letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin:0 0 14px}
+section h2{font-size:clamp(32px,4.2vw,50px);max-width:18ch}
+.sub{color:var(--gray);max-width:60ch;margin:18px 0 52px;font-size:18px;line-height:1.6}
+.center{text-align:center}.center h2,.center .sub{margin-left:auto;margin-right:auto}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.card{background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:28px;transition:border-color .25s,transform .25s}
+.card:hover{border-color:var(--line);transform:translateY(-2px)}
+.card h3{font-size:21px;letter-spacing:-.02em;margin:18px 0 8px}
+.card p{margin:0;color:var(--gray);font-size:15.5px}
+.ico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:rgba(255,138,51,.12);color:var(--teal);border:1px solid rgba(255,138,51,.22)}
+
+/* demo do topo (cláusulas clicáveis) */
+.split{display:grid;grid-template-columns:1fr 1.05fr;gap:64px;align-items:center}
+.doc{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:30px 32px;box-shadow:var(--shadow);font:400 15.5px/1.75 "Inter",sans-serif}
+.doc h3{font:500 13px "Inter";color:var(--gray);letter-spacing:.02em;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.doc p{margin:0 0 12px}
+.cl{cursor:pointer;border-radius:4px;padding:1px 3px;transition:background .4s,box-shadow .2s}
+.cl:hover{box-shadow:inset 0 -2px 0 var(--teal)}
 .cl.on[data-r="alto"]{background:var(--hi-high)}.cl.on[data-r="medio"]{background:var(--hi-mid)}.cl.on[data-r="ok"]{background:var(--hi-ok)}
-.note{margin:14px 0;min-height:76px;border-left:4px solid var(--teal);padding:8px 14px;font:400 14px/1.5 "Inter",sans-serif;color:var(--gray);background:var(--paper)}.note b{color:var(--text)}
-section{padding:88px 0}.band{background:var(--band);color:var(--bf);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.band .gray{color:var(--bf);opacity:.72}
-section h2{font-size:clamp(28px,4vw,42px);margin-bottom:18px;max-width:20ch}.sub{color:var(--gray);max-width:58ch;margin:0 0 40px;font-size:18px;line-height:1.6}
-.problem{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:40px}
-.problem h3{font-size:22px;margin-bottom:8px}.problem p{margin:0;opacity:.8}
-.how{display:grid;grid-template-columns:1fr 1fr;gap:56px}
-.step{min-height:32vh;display:flex;flex-direction:column;justify-content:center;opacity:.35;transition:opacity .4s}.step.cur{opacity:1}
-.step b{font:600 14px "Inter",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}.step h3{font-size:34px;margin:8px 0 12px}.step p{color:var(--gray);margin:0;max-width:44ch;font-size:18.5px;line-height:1.55}
-.panel{position:sticky;top:calc(env(safe-area-inset-top,0px) + 90px);align-self:start;height:360px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:24px;overflow:hidden}
-.pane{position:absolute;inset:24px;opacity:0;transform:translateY(12px);transition:.4s;pointer-events:none}.pane.show{opacity:1;transform:none;pointer-events:auto}
-.drop{border:2px dashed var(--line);border-radius:6px;padding:28px;text-align:center;color:var(--gray)}
-.file{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
-.chip{font:600 12px "Inter",sans-serif;border-radius:20px;padding:3px 10px;white-space:nowrap}
-.chip.alto{background:var(--hi-high)}.chip.medio{background:var(--hi-mid)}.chip.ok{background:var(--hi-ok)}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}.tab{font:500 15px "Inter",sans-serif;border:1px solid var(--line);background:transparent;color:var(--text);border-radius:30px;padding:9px 18px;cursor:pointer}
-.tab[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.tp{display:none;grid-template-columns:1fr 1fr;gap:40px;align-items:center}.tp.show{display:grid}
-.tp h3{font-size:26px;margin-bottom:10px}.tp ul{padding-left:18px;color:var(--gray)}.tp li{margin:6px 0}
-.mock{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px}
-.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}.row:last-child{border:0}
-.row button{font:500 13px "Inter",sans-serif;border:1px solid var(--line);background:transparent;color:var(--text);border-radius:5px;padding:4px 10px;cursor:pointer}
+.note{margin:18px 0;min-height:80px;border-left:3px solid var(--teal);border-radius:0 10px 10px 0;padding:12px 16px;font:400 14.5px/1.55 "Inter";color:var(--gray);background:var(--paper)}
+.note b{color:var(--text)}
+.checks{list-style:none;padding:0;margin:28px 0 0;display:grid;gap:14px}
+.checks li{display:flex;gap:12px;align-items:flex-start;color:var(--gray)}.checks li b{color:var(--text);font-weight:600}
+.checks svg{color:var(--teal);flex:none;margin-top:3px}
+
+/* passos */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:s}
+.step{background:var(--card);border:1px solid var(--line2);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.step .txt{padding:26px 28px 22px}
+.step .num{font:800 14px "Inter Tight";color:var(--teal);letter-spacing:.04em}
+.step h3{font-size:22px;margin:10px 0 8px}.step p{margin:0;color:var(--gray);font-size:15.5px}
+.step .vis{margin-top:auto;border-top:1px solid var(--line2);background:var(--paper2);padding:20px;min-height:200px}
+.step .vis img{width:100%;height:auto;border-radius:10px;border:1px solid var(--line);aspect-ratio:16/10;object-fit:cover;object-position:center 42%}
+.file,.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line2);font-size:14px}
+.file:last-child,.row:last-child{border:0}
+.chip{font:600 12px "Inter";border-radius:20px;padding:3px 10px;white-space:nowrap}
+.chip.alto{background:var(--hi-high);color:var(--c-alto)}.chip.medio{background:var(--hi-mid);color:var(--c-medio)}.chip.ok{background:var(--hi-ok);color:var(--c-ok)}
+:root:not([data-theme="light"]) .chip.alto{color:#FFB4AE}:root:not([data-theme="light"]) .chip.medio{color:#F1D58E}:root:not([data-theme="light"]) .chip.ok{color:#9FDCBD}
+
+/* recursos (abas) */
+.tabs{display:inline-flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:12px;background:var(--card);margin-bottom:36px}
+.tab{font:500 14.5px "Inter";border:0;background:transparent;color:var(--gray);border-radius:9px;padding:9px 18px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--card2);color:var(--text);box-shadow:inset 0 0 0 1px var(--line)}
+.tp{display:none;grid-template-columns:1fr 1fr;gap:56px;align-items:center}.tp.show{display:grid}
+.tp h3{font-size:30px;margin-bottom:14px}
+.tp ul{list-style:none;padding:0;margin:0;display:grid;gap:12px;color:var(--gray)}
+.tp li{display:flex;gap:10px}.tp li::before{content:"";width:18px;height:18px;flex:none;margin-top:4px;border-radius:50%;background:rgba(255,138,51,.15) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF8A33' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/11px no-repeat}
+.mock{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 22px;box-shadow:var(--shadow)}
+.row button{font:500 13px "Inter";border:1px solid var(--line);background:transparent;color:var(--text);border-radius:7px;padding:5px 11px;cursor:pointer}
 .row.done span:first-child{text-decoration:line-through;opacity:.5}
-.prog{height:8px;background:var(--line);border-radius:4px;margin:6px 0 14px;overflow:hidden}.prog div{height:100%;width:0;background:var(--teal);transition:width .4s}
-.calc{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center}.calc label{display:block;margin:16px 0 4px;font-weight:500}.calc input[type=range]{width:100%;accent-color:var(--seal)}
-.out{background:var(--bb);color:var(--bf);border-radius:6px;padding:30px}.out strong{display:block;font:600 46px "Playfair Display",Georgia,serif}.out small{opacity:.8}
-#res{color:#fff}:root[data-theme="light"] #res{color:var(--ink)}
-.sec{display:grid;grid-template-columns:repeat(2,1fr);gap:28px 44px}.sec h3{font-size:20px;margin-bottom:6px}.sec p{margin:0;opacity:.8}
-details{border-bottom:1px solid var(--line);padding:16px 0;max-width:760px}summary{cursor:pointer;font-weight:500}details p{color:var(--gray);margin:8px 0 0}
-form{display:flex;gap:10px;flex-wrap:wrap;max-width:520px}input[type=email]{flex:1 1 240px;padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--text);font:400 16px "Inter",sans-serif}
+.prog{height:8px;background:var(--line);border-radius:4px;margin:8px 0 10px;overflow:hidden}.prog div{height:100%;width:0;background:var(--teal);transition:width .4s}
+#dd{padding-top:20px}#dd input{accent-color:var(--seal);width:17px;height:17px}
+
+/* experimente */
+.demo{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+.lb{display:block;font-weight:600;margin-bottom:10px;font-size:14px}
+textarea{width:100%;min-height:300px;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--text);font:400 15px/1.6 "Inter",sans-serif;resize:vertical}
+textarea:focus,input:focus,select:focus{outline:0;border-color:var(--teal);box-shadow:0 0 0 3px rgba(255,138,51,.18)}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+#rs{padding:20px 24px;max-height:420px;overflow:auto;margin-top:30px}
+.mut{color:var(--gray);margin:0}.small{font-size:13.5px;margin-top:18px}
+.fd{padding:14px 0;border-bottom:1px solid var(--line2);font-size:14px}.fd:last-child{border:0}.fd b{margin-left:8px}
+.fd q{display:block;margin:8px 0;color:var(--gray);font-style:italic}
+.sum{font-weight:600;margin:0 0 6px}.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+
+/* calculadora */
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.calc label{display:flex;justify-content:space-between;margin:22px 0 8px;font-weight:500}
+.calc label b{font:700 16px "Inter Tight";color:var(--teal)}
+.calc input[type=range]{width:100%;accent-color:var(--seal)}
+.out{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:40px;box-shadow:var(--shadow)}
+.out small{color:var(--gray);display:block}
+.out strong{display:block;font:800 clamp(40px,5vw,58px)/1.1 "Inter Tight";letter-spacing:-.03em;margin:10px 0;color:var(--text)}
+
+/* faq + formulário */
+.faq{max-width:780px;margin:0 auto}
+details{border-bottom:1px solid var(--line);padding:22px 0}
+summary{cursor:pointer;font:600 17px "Inter";list-style:none;display:flex;justify-content:space-between;gap:20px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font:400 24px/1 "Inter";color:var(--gray);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--gray);margin:10px 0 0}
+.cta-box{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:56px;position:relative;overflow:hidden}
+.cta-box::before{content:"";position:absolute;right:-200px;top:-200px;width:500px;height:500px;background:radial-gradient(closest-side,var(--glow),transparent);pointer-events:none}
+.cta-box h2{max-width:14ch}
+form{display:grid;gap:10px;position:relative}
+form input[type=text],form input[type=email],form select{width:100%;padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--text);font:400 15.5px "Inter",sans-serif}
+.ck{font-size:13.5px;color:var(--gray);display:flex;gap:8px;align-items:flex-start}.ck input{margin-top:4px;accent-color:var(--seal)}
+form .btn{justify-content:center}
 #msg{margin-top:12px;font-weight:500;min-height:24px;color:var(--teal)}
-footer{padding:32px 0 48px;color:var(--gray);font-size:14px}
-@media (max-width:900px){.links{display:none}.hero,.calc,.how,.tp.show,.sec,.problem{grid-template-columns:1fr}.hero{padding:40px 20px 56px}section{padding:60px 0}.step{min-height:28vh}.panel{height:340px;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:5}.how{gap:16px}}
-.status{background:var(--bb);color:var(--bf);text-align:center;font-size:14px;padding:9px 16px;border-bottom:1px solid var(--line)}
-.demo{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}.lb{display:block;font-weight:500;margin-bottom:6px}
-textarea{width:100%;min-height:260px;padding:14px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--text);font:400 15px/1.55 "Inter",sans-serif;resize:vertical}
-.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.mut{color:var(--gray);margin:0}.small{font-size:14px;margin-top:16px}
-.fd{padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}.fd:last-child{border:0}.fd b{margin-left:8px}.fd q{display:block;margin:6px 0;color:var(--gray);font-style:italic}
-.sum{font-weight:500;margin:0 0 6px}.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:32px}.cards h3{font-size:22px;margin-bottom:8px}.cards p{margin:0;opacity:.8}
-form input[type=text],form select{flex:1 1 240px;padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--text);font:400 16px "Inter",sans-serif}
-.ck{flex:1 1 100%;font-size:14px;opacity:.9}.ck input{margin-right:6px}
-#privacidade{border-top:1px solid var(--line)}#privacidade h3{font-size:20px;margin:24px 0 6px}#privacidade p,#privacidade li{color:var(--gray);max-width:70ch}
-@media (max-width:900px){.demo,.cards{grid-template-columns:1fr}}
-/* ===== Minimalista: movimento discreto e sombras suaves ===== */
-#bar{background:var(--teal)}
-/* caixinhas de texto viram cartões com sombra suave */
-.problem>div,.cards>div,.sec>div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px}
-.doc,.mock,.panel,.out,.problem>div,.cards>div,.sec>div{box-shadow:var(--shadow)}
-/* fio de degradê sutil no topo dos cartões */
-@keyframes grad-slide{to{background-position:200% 0}}
-.doc,.mock,.panel,.out,.problem>div,.cards>div,.sec>div{position:relative;overflow:hidden}
-.doc::before,.mock::before,.panel::before,.out::before,.problem>div::before,.cards>div::before,.sec>div::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,var(--teal) 18%,rgba(255,255,255,.85) 50%,var(--teal) 82%,transparent);background-size:200% 100%}
-@media (prefers-reduced-motion:no-preference){.doc::before,.mock::before,.panel::before,.out::before,.problem>div::before,.cards>div::before,.sec>div::before{animation:grad-slide 5s linear infinite}}
-/* reações discretas ao passar o mouse */
-.mock,.cards>div,.problem>div,.sec>div{transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s ease}
-.mock:hover,.cards>div:hover,.problem>div:hover,.sec>div:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
-.btn{transition:transform .2s ease,box-shadow .25s ease,opacity .2s ease}
-.btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
-.btn:active{transform:translateY(0)}
-.btn.ghost:hover{border-color:var(--seal)}
-.cl{transition:background .4s ease,box-shadow .2s ease}.cl:hover{box-shadow:inset 0 -2px 0 var(--teal)}
-/* entrada suave ao rolar a página */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+
+/* rodapé */
+footer{border-top:1px solid var(--line2);padding:56px 0 40px;color:var(--gray);font-size:14px}
+.fgrid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px}
+.fgrid h4{font:600 13px "Inter";color:var(--text);margin:0 0 14px;letter-spacing:.02em}
+.fgrid a{display:block;text-decoration:none;margin:0 0 10px}.fgrid a:hover{color:var(--text)}
+.fgrid p{margin:14px 0 0;max-width:34ch}
+.fbot{margin-top:44px;padding-top:24px;border-top:1px solid var(--line2);font-size:13px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* entrada suave */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
 .reveal.in{opacity:1;transform:none}
-#topo .doc{transition-delay:.12s}#topo .lead{transition-delay:.22s}#topo .btn{transition-delay:.36s}
-/* títulos surgindo palavra por palavra */
-.word{display:inline-block;opacity:0;transform:translateY(1.1em);transition:opacity .4s ease,transform .45s cubic-bezier(.2,.8,.2,1)}
-.word.show{opacity:1;transform:none}
-.problem>div:nth-child(2),.cards>div:nth-child(2){transition-delay:.08s}
-.problem>div:nth-child(3),.cards>div:nth-child(3){transition-delay:.16s}
-.sec>div:nth-child(2){transition-delay:.06s}.sec>div:nth-child(3){transition-delay:.12s}.sec>div:nth-child(4){transition-delay:.18s}
-@media (max-width:700px){#theme{display:none}}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+
+@media (max-width:960px){
+  .links{display:none}
+  .split,.tp.show,.calc,.demo,.cta-box{grid-template-columns:1fr}
+  .grid3,.steps{grid-template-columns:1fr}
+  .grid2{grid-template-columns:1fr}
+  .fgrid{grid-template-columns:1fr 1fr}
+  .fgrid>div:first-child{grid-column:1/-1}
+  section{padding:80px 0}
+  .split{gap:40px}
+  .cta-box{padding:32px 24px;gap:28px}
+  #rs{margin-top:0}
+}
+@media (max-width:640px){
+  .wrap{padding:0 18px}
+  .hero{padding-top:56px}
+  .nav .wrap{gap:12px}
+  #theme,.nav-r .ghost{display:none}
+  .shot{padding:0 12px;margin-top:44px}
+  .browser{display:none}
+  .phone{position:relative;right:auto;top:auto;width:min(78%,300px);margin:0 auto -60px;display:block}
+  .browser .chrome span{padding:3px 16px}
+  .doc{padding:22px}
+  .tabs{display:flex;overflow:auto}
+  .out{padding:28px}
+}
 </style>
 </head>
 <body>
 <div id="bar"></div>
-<div class="status">Projeto em desenvolvimento. Esta página apresenta um conceito e uma demonstração, não um produto à venda.</div>
 <nav class="nav"><div class="wrap">
-  <a class="logo" href="#topo" aria-label="Clausa — voltar ao início">Clausa<svg class="scales" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="6.4" r="1.9" fill="currentColor" stroke="none"/><path d="M24 7.5 V37.5"/><path d="M9.5 14 H38.5"/><path d="M9.5 14 V17"/><path d="M4.8 17 Q9.5 23.6 14.2 17"/><path d="M38.5 14 V17"/><path d="M33.8 17 Q38.5 23.6 43.2 17"/><path d="M17.5 37.5 H30.5"/></svg></a>
-  <div class="links"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#teste">Experimente</a><a href="#calc">Calculadora</a><a href="#seguranca">Segurança</a><a href="#piloto">Piloto</a><a href="https://clausa-fawn.vercel.app/" target="_blank" rel="noopener">Questionário ↗</a></div>
-  <div style="display:flex;gap:8px;align-items:center;margin-left:auto;flex:none"><button class="btn ghost" id="theme" type="button" aria-label="Alternar tema claro e escuro">Tema</button><a class="btn ghost sm" href="entrar.html">Entrar</a><a class="btn sm" href="#lista">Lista de espera</a></div>
+  <a class="logo" href="#topo" aria-label="Clausa — voltar ao início">Clausa<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="6.4" r="1.9" fill="currentColor" stroke="none"/><path d="M24 7.5 V37.5"/><path d="M9.5 14 H38.5"/><path d="M9.5 14 V17"/><path d="M4.8 17 Q9.5 23.6 14.2 17"/><path d="M38.5 14 V17"/><path d="M33.8 17 Q38.5 23.6 43.2 17"/><path d="M17.5 37.5 H30.5"/></svg></a>
+  <div class="links"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#teste">Experimente</a><a href="#seguranca">Segurança</a><a href="#faq">Dúvidas</a></div>
+  <div class="nav-r">
+    <button class="icon-btn" id="theme" type="button" aria-label="Alternar tema claro e escuro"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <a class="btn ghost sm" href="entrar.html">Entrar</a>
+    <a class="btn sm" href="app.html">Testar grátis</a>
+  </div>
 </div></nav>
 
-<div id="topo" class="wrap hero">
-  <div>
-    <h1>Leia o contrato inteiro em minutos e saiba onde olhar primeiro.</h1>
-    <p class="lead">A Clausa organiza contratos e due diligence para escritórios de advocacia corporativa: aponta cláusulas de risco, controla prazos e renovações, e deixa a decisão com o advogado.</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap"><a class="btn" href="app.html" target="_blank" rel="noopener">Testar o app →</a><a class="btn ghost" href="#como">Ver como funciona</a><a class="btn ghost" href="https://clausa-fawn.vercel.app/" target="_blank" rel="noopener">Responder o questionário ↗</a></div>
+<header id="topo" class="hero">
+  <div class="wrap">
+    <span class="badge reveal"><i></i>Em desenvolvimento · teste grátis aberto</span>
+    <h1>Saiba onde olhar <em>antes de assinar.</em></h1>
+    <p class="lead reveal">A Clausa lê o contrato com você, aponta as cláusulas que merecem atenção e explica o motivo de cada uma. A decisão continua sendo sua, ou do seu advogado.</p>
+    <div class="ctas reveal"><a class="btn" href="app.html">Testar grátis <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn ghost" href="#como">Ver como funciona</a></div>
+    <ul class="trust reveal">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Sem cadastro para testar</li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Sem login, o texto fica só no seu aparelho</li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Pensada para contratos brasileiros</li>
+    </ul>
   </div>
-  <div class="doc">
-    <h3>Contrato de prestação de serviços (exemplo fictício)</h3>
-    <p><span class="cl" data-r="medio" tabindex="0" data-t="Renovação automática" data-d="O prazo renova sozinho por mais 36 meses. A Clausa registra a data limite de aviso para não perder a janela de saída.">O prazo de vigência é de 36 meses, renovado automaticamente por igual período</span>, salvo aviso em contrário com 90 dias de antecedência.</p>
+  <div class="shot reveal">
+    <div class="browser"><div class="chrome"><i></i><i></i><i></i><span>mholandap.github.io/Clausa/app</span></div>
+      <img src="img/app-revisao.jpg" width="1280" height="800" alt="Tela do app Clausa: revisão de um contrato de prestação de serviços com 2 riscos altos, 6 pontos de atenção e 3 sem alerta, e a cláusula de multa destacada com sugestão de melhoria."></div>
+    <div class="phone"><img src="img/app-celular.jpg" width="390" height="800" alt="O mesmo app no celular, mostrando a cláusula de multa com risco alto." loading="lazy"></div>
+  </div>
+  <div class="hero-fade"></div>
+</header>
+
+<section class="alt"><div class="wrap">
+  <p class="eyebrow">O problema</p>
+  <h2>Contrato longo esconde o que importa.</h2>
+  <p class="sub">Quem assina raramente lê tudo. E quem revisa gasta horas procurando a mesma meia dúzia de cláusulas.</p>
+  <div class="grid3">
+    <div class="card reveal"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></div><h3>Páginas demais</h3><p>Multas, renovações e foro ficam escondidos entre dezenas de páginas e anexos.</p></div>
+    <div class="card reveal"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><h3>Prazos que passam</h3><p>A janela para cancelar uma renovação automática some sem ninguém perceber.</p></div>
+    <div class="card reveal"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3>Revisão manual</h3><p>Conferir cláusula por cláusula leva tempo que poderia ir para a negociação.</p></div>
+  </div>
+</div></section>
+
+<section id="ver"><div class="wrap split">
+  <div>
+    <p class="eyebrow">Na prática</p>
+    <h2>Cada trecho importante, explicado.</h2>
+    <p class="sub" style="margin-bottom:0">Toque nos trechos do contrato ao lado ou clique em “Analisar contrato”. É assim que a Clausa mostra o que encontrou.</p>
+    <ul class="checks">
+      <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg><span><b>Nível de atenção</b>: risco alto, atenção ou sem alerta.</span></li>
+      <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg><span><b>O motivo</b>, em português claro, sem juridiquês.</span></li>
+      <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg><span><b>Uma sugestão</b> que você aprova ou rejeita.</span></li>
+    </ul>
+  </div>
+  <div class="doc reveal">
+    <h3><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>Contrato de prestação de serviços (exemplo fictício)</h3>
+    <p><span class="cl" data-r="medio" tabindex="0" data-t="Renovação automática" data-d="O prazo renova sozinho por mais 36 meses. Anote a data limite do aviso para não perder a janela de saída.">O prazo de vigência é de 36 meses, renovado automaticamente por igual período</span>, salvo aviso em contrário com 90 dias de antecedência.</p>
     <p><span class="cl" data-r="alto" tabindex="0" data-t="Multa rescisória elevada" data-d="A multa equivale a todo o saldo do contrato. Costuma ser ponto de negociação em contratos longos.">A rescisão antecipada sujeita a parte que a der causa a multa de 100% do valor remanescente do contrato.</span></p>
-    <p><span class="cl" data-r="ok" tabindex="0" data-t="Foro de eleição" data-d="Cláusula usual, sem alerta. Fica registrada para consulta.">Fica eleito o foro da comarca de São Paulo/SP para dirimir quaisquer controvérsias.</span></p>
+    <p><span class="cl" data-r="ok" tabindex="0" data-t="Foro de eleição" data-d="Mesma cidade das partes: sem alerta. Se fosse em outra cidade, a defesa ficaria mais cara e difícil.">Fica eleito o foro da comarca de São Paulo/SP para dirimir quaisquer controvérsias.</span></p>
     <div class="note" id="note" aria-live="polite">Clique em “Analisar contrato” ou toque em um trecho para ver a leitura da Clausa.</div>
     <button class="btn" id="scan" type="button">Analisar contrato</button>
   </div>
-</div>
+</div></section>
 
-<section class="band"><div class="wrap">
-  <h2>O trabalho que consome horas e não exige o seu melhor raciocínio.</h2>
-  <p class="sub gray">Em operações corporativas, parte relevante do tempo vai para localizar informação, comparar versões e conferir datas.</p>
-  <div class="problem">
-    <div><h3>Contratos longos</h3><p>Cláusulas importantes ficam escondidas entre dezenas de páginas e anexos.</p></div>
-    <div><h3>Prazos espalhados</h3><p>Renovações e avisos prévios vivem em planilhas, e-mails e na memória de cada pessoa.</p></div>
-    <div><h3>Diligência manual</h3><p>Centenas de documentos precisam ser conferidos um a um, com pendências difíceis de acompanhar.</p></div>
+<section id="como" class="alt"><div class="wrap">
+  <div class="center"><p class="eyebrow">Como funciona</p><h2>Do texto ao alerta em três passos.</h2><p class="sub">Sem instalar nada. Funciona no navegador do computador e do celular.</p></div>
+  <div class="steps">
+    <div class="step reveal"><div class="txt"><span class="num">01</span><h3>Cole o contrato</h3><p>Cole o texto ou carregue um arquivo .txt. Sem cadastro, ele fica só no seu aparelho.</p></div>
+      <div class="vis"><img src="img/app-inicio.jpg" width="1280" height="800" alt="Tela inicial do app com a caixa para colar o contrato." loading="lazy"></div></div>
+    <div class="step reveal"><div class="txt"><span class="num">02</span><h3>Veja o que importa</h3><p>Cada cláusula relevante aparece com o nível de atenção, o trecho e o motivo.</p></div>
+      <div class="vis"><div class="file"><span>Multa de 50% do saldo</span><span class="chip alto">Risco alto</span></div><div class="file"><span>Renovação automática</span><span class="chip medio">Atenção</span></div><div class="file"><span>Reajuste pelo IPCA</span><span class="chip medio">Atenção</span></div><div class="file"><span>Confidencialidade</span><span class="chip ok">Sem alerta</span></div></div></div>
+    <div class="step reveal"><div class="txt"><span class="num">03</span><h3>Decida e guarde</h3><p>Aprove ou rejeite cada sugestão e baixe o relatório. Com login, fica salvo na sua conta.</p></div>
+      <div class="vis"><div class="file"><span>Rever valor da multa</span><span class="chip ok">Aprovada</span></div><div class="file"><span>Aviso de 60 dias antes da renovação</span><span class="chip ok">Aprovada</span></div><div class="file"><span>Exclusividade por território</span><span class="chip medio">Pendente</span></div><div class="file"><span>Relatório da revisão (.txt)</span><span class="chip ok">Baixado</span></div></div></div>
   </div>
 </div></section>
 
-<section id="como"><div class="wrap">
-  <h2>Do arquivo ao alerta em três passos</h2>
-  <p class="sub">Role a página para acompanhar o caminho de um contrato dentro da Clausa.</p>
-  <div class="how">
-    <div>
-      <div class="step cur" data-i="0"><b>Passo 1</b><h3>Envie os documentos</h3><p>Arraste contratos, aditivos e anexos. A Clausa separa cada arquivo e identifica o tipo de documento.</p></div>
-      <div class="step" data-i="1"><b>Passo 2</b><h3>Revise o que importa</h3><p>Cada cláusula relevante aparece com o nível de atenção e o motivo. O advogado confirma, ajusta ou descarta.</p></div>
-      <div class="step" data-i="2"><b>Passo 3</b><h3>Acompanhe prazos</h3><p>Vencimentos e avisos prévios entram no calendário do escritório, com lembretes antes da data limite.</p></div>
-    </div>
-    <div class="panel" aria-hidden="true">
-      <div class="pane show"><div class="drop">Arraste os arquivos aqui</div>
-        <div class="file"><span>Contrato_servicos_v3.pdf</span><span class="chip ok">Lido</span></div>
-        <div class="file"><span>Aditivo_01.docx</span><span class="chip ok">Lido</span></div>
-        <div class="file"><span>Anexo_precos.xlsx</span><span class="chip medio">Em análise</span></div></div>
-      <div class="pane"><div class="file"><span>Renovação automática</span><span class="chip medio">Atenção</span></div>
-        <div class="file"><span>Multa de 100% do saldo</span><span class="chip alto">Risco alto</span></div>
-        <div class="file"><span>Limitação de responsabilidade</span><span class="chip medio">Atenção</span></div>
-        <div class="file"><span>Foro de eleição</span><span class="chip ok">Sem alerta</span></div></div>
-      <div class="pane"><div class="file"><span>Aviso de renovação — Contrato A</span><span class="chip alto">em 12 dias</span></div>
-        <div class="file"><span>Entrega de relatório — Contrato B</span><span class="chip medio">em 31 dias</span></div>
-        <div class="file"><span>Fim de vigência — Contrato C</span><span class="chip ok">em 118 dias</span></div></div>
-    </div>
-  </div>
-</div></section>
-
-<section id="recursos" style="padding-top:0"><div class="wrap">
-  <h2>Recursos pensados para a rotina do escritório</h2>
+<section id="recursos"><div class="wrap">
+  <p class="eyebrow">Para onde estamos indo</p>
+  <h2>Recursos pensados para quem lida com contratos.</h2>
+  <p class="sub">A revisão de cláusulas já funciona no teste grátis. Prazos e due diligence estão em construção, com base nas conversas com quem usa.</p>
   <div class="tabs" role="tablist">
     <button class="tab" role="tab" aria-selected="true" data-t="0">Contratos</button>
     <button class="tab" role="tab" aria-selected="false" data-t="1">Prazos</button>
     <button class="tab" role="tab" aria-selected="false" data-t="2">Due diligence</button>
   </div>
-  <div class="tp show"><div><h3>Leitura assistida de contratos</h3><ul><li>Destaque de cláusulas de risco com a justificativa</li><li>Resumo das obrigações de cada parte</li><li>Comparação entre versões da minuta</li></ul></div>
-    <div class="mock"><div class="row"><span>Limitação de responsabilidade</span><span class="chip medio">Atenção</span></div><div class="row"><span>Exclusividade por 24 meses</span><span class="chip alto">Risco alto</span></div><div class="row"><span>Cláusula de confidencialidade</span><span class="chip ok">Sem alerta</span></div></div></div>
-  <div class="tp"><div><h3>Calendário de obrigações</h3><ul><li>Vencimentos, renovações e avisos prévios em um só lugar</li><li>Lembretes antes da data limite</li><li>Responsável definido para cada prazo</li></ul></div>
+  <div class="tp show"><div><h3>Leitura assistida</h3><ul><li>Destaque de cláusulas de risco com a justificativa</li><li>Sugestões que você aprova ou rejeita</li><li>Regras e modelos que você mesmo ajusta</li></ul></div>
+    <div class="mock"><div class="row"><span>Limitação de responsabilidade</span><span class="chip medio">Atenção</span></div><div class="row"><span>Exclusividade por 24 meses</span><span class="chip alto">Risco alto</span></div><div class="row"><span>Irrevogável e irretratável</span><span class="chip medio">Atenção</span></div><div class="row"><span>Cláusula de confidencialidade</span><span class="chip ok">Sem alerta</span></div></div></div>
+  <div class="tp"><div><h3>Calendário de obrigações <span class="chip medio" style="vertical-align:middle;font-size:11px">Em breve</span></h3><ul><li>Vencimentos, renovações e avisos prévios em um só lugar</li><li>Lembretes antes da data limite</li><li>Responsável definido para cada prazo</li></ul></div>
     <div class="mock" id="deadlines"><div class="row"><span>Aviso de renovação — Contrato A</span><button type="button">Tratado</button></div><div class="row"><span>Entrega de relatório — Contrato B</span><button type="button">Tratado</button></div><div class="row"><span>Revisão de preços — Contrato D</span><button type="button">Tratado</button></div></div></div>
-  <div class="tp"><div><h3>Sala de dados organizada</h3><ul><li>Checklist por documento e por responsável</li><li>Progresso da diligência em tempo real</li><li>Pendências visíveis para toda a equipe</li></ul></div>
+  <div class="tp"><div><h3>Sala de dados organizada <span class="chip medio" style="vertical-align:middle;font-size:11px">Em breve</span></h3><ul><li>Checklist por documento e por responsável</li><li>Progresso da diligência em tempo real</li><li>Pendências visíveis para toda a equipe</li></ul></div>
     <div class="mock" id="dd"><b id="ddp">0% concluído</b><div class="prog"><div id="ddb"></div></div>
       <label class="row"><span>Certidões negativas</span><input type="checkbox"></label><label class="row"><span>Contratos relevantes</span><input type="checkbox"></label><label class="row"><span>Passivo trabalhista</span><input type="checkbox"></label><label class="row"><span>Propriedade intelectual</span><input type="checkbox"></label></div></div>
 </div></section>
 
-<section id="calc" class="band"><div class="wrap">
-  <h2>Quanto tempo o seu escritório gasta em revisão?</h2>
-  <p class="sub gray">Ajuste os valores. A estimativa é ilustrativa e supõe 40% menos tempo de revisão.</p>
-  <div class="calc">
-    <div><label for="n">Contratos por mês: <b id="nv">30</b></label><input type="range" id="n" min="5" max="200" value="30">
-      <label for="h">Horas por contrato: <b id="hv">3</b></label><input type="range" id="h" min="1" max="10" value="3">
-      <label for="v">Valor da hora (R$): <b id="vv">300</b></label><input type="range" id="v" min="100" max="1000" step="50" value="300"></div>
-    <div class="out" style="background:var(--card);color:var(--text);border:1px solid var(--line);box-shadow:var(--shadow)"><small>Valor estimado liberado</small><strong id="res">R$ 0</strong><small id="hrs"></small></div>
-  </div>
-</div></section>
-
-<section id="teste"><div class="wrap">
-  <h2>Experimente com um texto de contrato</h2>
-  <p class="sub">Cole um trecho de contrato ou carregue o exemplo. A demonstração procura cláusulas que costumam merecer atenção e mostra o resultado na hora. O texto fica no seu navegador e não é enviado a ninguém.</p>
+<section id="teste" class="alt"><div class="wrap">
+  <p class="eyebrow">Experimente aqui</p>
+  <h2>Cole um trecho e veja na hora.</h2>
+  <p class="sub">Uma versão rápida da leitura da Clausa, direto nesta página. O texto não sai do seu navegador.</p>
   <div class="demo">
     <div><label class="lb" for="ct">Texto do contrato</label><textarea id="ct" placeholder="Cole aqui o texto do contrato…"></textarea>
       <div class="acts"><button class="btn" id="an" type="button">Analisar</button><button class="btn ghost" id="ex" type="button">Carregar exemplo</button><button class="btn ghost" id="cl" type="button">Limpar</button></div></div>
     <div class="mock" id="rs" aria-live="polite"><p class="mut">O resultado aparece aqui.</p></div>
   </div>
-  <p class="mut small">Demonstração baseada em palavras-chave, sem inteligência artificial. Ela mostra o conceito e não substitui a leitura do contrato por um advogado.</p>
+  <p class="mut small">A leitura é feita por regras e palavras-chave, sem inteligência artificial. Ela aponta onde olhar e não substitui a leitura do contrato por um advogado.</p>
 </div></section>
 
-<section id="piloto" class="band"><div class="wrap">
-  <h2>Estamos construindo com quem vive o problema</h2>
-  <p class="sub gray">A Clausa ainda não está à venda. Estamos conversando com escritórios para entender a rotina e decidir o que construir primeiro.</p>
-  <div class="cards">
-    <div><h3>Conversa sobre a rotina</h3><p>Uma conversa de cerca de 30 minutos sobre como o escritório lida com contratos, prazos e diligências. Sem compromisso.</p></div>
-    <div><h3>Demonstração guiada</h3><p>Apresentação do conceito e das telas em desenvolvimento, com espaço para o escritório dizer o que faria diferença.</p></div>
-    <div><h3>Versão de teste</h3><p>Escritórios interessados podem testar uma versão inicial com o apoio direto de quem está construindo. Condições combinadas caso a caso.</p></div>
+<section id="calc"><div class="wrap calc">
+  <div>
+    <p class="eyebrow">Para escritórios</p>
+    <h2>Quanto tempo vai para revisão?</h2>
+    <p class="sub" style="margin-bottom:8px">Ajuste os valores. A estimativa é ilustrativa e supõe 40% menos tempo de revisão.</p>
+    <label for="n">Contratos por mês <b id="nv">30</b></label><input type="range" id="n" min="5" max="200" value="30">
+    <label for="h">Horas por contrato <b id="hv">3</b></label><input type="range" id="h" min="1" max="10" value="3">
+    <label for="v">Valor da hora (R$) <b id="vv">300</b></label><input type="range" id="v" min="100" max="1000" step="50" value="300">
   </div>
-  <p style="margin-top:32px"><a class="btn" href="#lista">Quero participar</a></p>
+  <div class="out reveal"><small>Valor estimado liberado</small><strong id="res">R$ 0</strong><small id="hrs"></small></div>
 </div></section>
 
-<section id="seguranca"><div class="wrap">
-  <h2>Confidencialidade como requisito</h2>
-  <p class="sub">Documentos de clientes exigem cuidado. Estes são os princípios que guiam o produto.</p>
-  <div class="sec">
-    <div><h3>Acesso por perfil</h3><p>Cada pessoa vê apenas os processos e documentos liberados para ela.</p></div>
-    <div><h3>Registro de atividade</h3><p>Todo acesso e alteração fica registrado para consulta.</p></div>
-    <div><h3>Revisão humana</h3><p>A Clausa sugere. O advogado sempre confirma antes de qualquer conclusão.</p></div>
-    <div><h3>Dados do escritório</h3><p>Os documentos do cliente pertencem ao escritório e podem ser exportados ou apagados.</p></div>
+<section id="seguranca" class="alt"><div class="wrap">
+  <div class="center"><p class="eyebrow">Segurança</p><h2>Confidencialidade como requisito.</h2><p class="sub">Contrato é documento sensível. Estes são os princípios que guiam o produto.</p></div>
+  <div class="grid2">
+    <div class="card reveal"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div><h3>Seu texto, seu controle</h3><p>Sem login, o contrato fica só no seu navegador. Com login, fica salvo na sua conta para você acessar de outro aparelho.</p></div>
+    <div class="card reveal"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></div><h3>Apague quando quiser</h3><p>Cada contrato pode ser apagado do aparelho e da conta, junto com as aprovações.</p></div>
+    <div class="card reveal"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div><h3>Revisão humana</h3><p>A Clausa sugere. Você, ou o seu advogado, confirma antes de qualquer conclusão.</p></div>
+    <div class="card reveal"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></div><h3>Privacidade e LGPD</h3><p>Usamos os dados só para o que está na <a href="privacidade.html">política de privacidade</a>.</p></div>
   </div>
 </div></section>
 
-<section id="faq" style="padding-top:0"><div class="wrap">
-  <h2>Dúvidas frequentes</h2>
-  <details><summary>A Clausa substitui o advogado?</summary><p>Não. Ela aponta onde olhar e organiza as informações. A análise e a decisão continuam com o advogado.</p></details>
-  <details><summary>Quais documentos posso enviar?</summary><p>A proposta é aceitar PDF, Word e planilhas. Os formatos exatos serão definidos com os primeiros escritórios.</p></details>
-  <details><summary>Quanto custa?</summary><p>Ainda não definido. Estamos conversando com escritórios para entender o que faz sentido.</p></details>
-  <details><summary>Quando estará disponível?</summary><p>Estamos na fase de conversas. Quem entrar na lista de espera será avisado das primeiras vagas.</p></details>
+<section id="faq"><div class="wrap">
+  <div class="center"><p class="eyebrow">Dúvidas</p><h2>Perguntas frequentes</h2><p class="sub"></p></div>
+  <div class="faq">
+    <details><summary>A Clausa substitui o advogado?</summary><p>Não. Ela aponta onde olhar e explica o motivo. A análise e a decisão continuam com você ou com o seu advogado.</p></details>
+    <details><summary>Usa inteligência artificial?</summary><p>Ainda não. Hoje a leitura é feita por regras escritas para cláusulas comuns em contratos brasileiros. Isso deixa o resultado previsível e fácil de conferir.</p></details>
+    <details><summary>Quanto custa?</summary><p>O teste no app é grátis e não pede cadastro. Os planos ainda estão sendo definidos com quem usa.</p></details>
+    <details><summary>Quais formatos posso usar?</summary><p>Hoje, texto colado ou arquivo .txt. PDF e Word estão nos próximos passos.</p></details>
+    <details><summary>Sou de um escritório. Posso participar?</summary><p>Sim. Estamos conversando com escritórios para decidir o que construir primeiro. Deixe seu contato abaixo.</p></details>
+  </div>
 </div></section>
 
-<section id="lista" class="band"><div class="wrap">
-  <h2>Peça uma demonstração ou entre na lista de espera</h2>
-  <form id="f" novalidate>
-    <input type="text" name="nome" id="nm" placeholder="Seu nome" aria-label="Nome" required>
-    <input type="text" name="escritorio" placeholder="Escritório ou empresa" aria-label="Escritório ou empresa">
-    <input type="email" name="email" id="e" placeholder="seu@escritorio.com.br" aria-label="E-mail" required>
-    <select name="interesse" aria-label="O que você procura"><option>Quero uma demonstração</option><option>Quero testar uma versão inicial</option><option>Quero entrar na lista de espera</option><option>Quero participar de uma conversa sobre a rotina</option></select>
-    <label class="ck"><input type="checkbox" id="ok" name="consentimento" value="sim">Concordo com o uso dos meus dados para esse contato, conforme a <a href="#privacidade">política de privacidade</a>.</label>
-    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
-    <input type="hidden" name="_subject" value="Clausa — novo contato da lista de espera">
-    <button class="btn" type="submit">Enviar</button>
-  </form>
-  <div id="msg" role="status"></div>
+<section id="lista" style="padding-top:0"><div class="wrap">
+  <div class="cta-box">
+    <div>
+      <p class="eyebrow">Piloto com escritórios</p>
+      <h2>Construa a Clausa com a gente.</h2>
+      <p class="sub" style="margin-bottom:24px">Uma conversa de 30 minutos sobre a sua rotina, uma demonstração guiada e acesso antecipado às próximas versões. Sem compromisso.</p>
+      <a class="btn ghost" href="app.html">Ou teste agora, grátis</a>
+    </div>
+    <form id="f" novalidate>
+      <input type="text" name="nome" id="nm" placeholder="Seu nome" aria-label="Nome" required>
+      <input type="text" name="escritorio" placeholder="Escritório ou empresa" aria-label="Escritório ou empresa">
+      <input type="email" name="email" id="e" placeholder="seu@email.com.br" aria-label="E-mail" required>
+      <select name="interesse" aria-label="O que você procura"><option>Quero uma demonstração</option><option>Quero testar uma versão inicial</option><option>Quero entrar na lista de espera</option><option>Quero participar de uma conversa sobre a rotina</option></select>
+      <label class="ck"><input type="checkbox" id="ok" name="consentimento" value="sim"><span>Concordo com o uso dos meus dados para esse contato, conforme a <a href="privacidade.html">política de privacidade</a>.</span></label>
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+      <input type="hidden" name="_subject" value="Clausa — novo contato da lista de espera">
+      <button class="btn" type="submit">Quero participar</button>
+      <div id="msg" role="status"></div>
+    </form>
+  </div>
 </div></section>
 
-<section id="privacidade"><div class="wrap">
-  <h2>Privacidade e Termos</h2>
-  <p class="sub gray">Levamos a sério a confidencialidade dos seus dados e documentos, em conformidade com a LGPD. Leia os documentos completos:</p>
-  <p style="display:flex;gap:12px;flex-wrap:wrap"><a class="btn" href="privacidade.html">Política de Privacidade</a><a class="btn ghost" href="termos.html">Termos de Uso</a></p>
-</div></section>
-
-<footer><div class="wrap">Protótipo de conceito. Nome, textos e números são ilustrativos e os contratos mostrados são fictícios. <a href="privacidade.html">Política de Privacidade</a> · <a href="termos.html">Termos de Uso</a></div></footer>
+<footer><div class="wrap">
+  <div class="fgrid">
+    <div><a class="logo" href="#topo" style="margin:0">Clausa<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="6.4" r="1.9" fill="currentColor" stroke="none"/><path d="M24 7.5 V37.5"/><path d="M9.5 14 H38.5"/><path d="M9.5 14 V17"/><path d="M4.8 17 Q9.5 23.6 14.2 17"/><path d="M38.5 14 V17"/><path d="M33.8 17 Q38.5 23.6 43.2 17"/><path d="M17.5 37.5 H30.5"/></svg></a><p>Revise antes de assinar. Projeto em desenvolvimento, feito no Brasil.</p></div>
+    <div><h4>Produto</h4><a href="app.html">Testar grátis</a><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="entrar.html">Entrar</a></div>
+    <div><h4>Contato</h4><a href="#lista">Piloto com escritórios</a><a href="https://clausa-fawn.vercel.app/" target="_blank" rel="noopener">Questionário ↗</a><a href="https://www.instagram.com/pedrom.holanda/" target="_blank" rel="noopener">Instagram ↗</a></div>
+    <div><h4>Legal</h4><a href="privacidade.html">Privacidade</a><a href="termos.html">Termos de uso</a></div>
+  </div>
+  <div class="fbot"><span>© 2026 Clausa</span><span>Os contratos mostrados são exemplos fictícios. A Clausa não presta consultoria jurídica.</span></div>
+</div></footer>
 
 <script>
 (function(){
   var root=document.documentElement,$=function(s,c){return [].slice.call((c||document).querySelectorAll(s))};
   try{var s=localStorage.getItem("clausa-theme");if(s)root.setAttribute("data-theme",s)}catch(e){}
-  /* animações ao rolar: títulos palavra por palavra + entrada dos blocos (desligadas p/ quem prefere menos movimento) */
-  if(matchMedia("(prefers-reduced-motion: no-preference)").matches){
-    function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
-    var heads=$(".hero h1,section h2");
-    heads.forEach(function(h){
-      var words=h.textContent.trim().split(/\s+/);
-      h.innerHTML=words.map(function(w){return '<span class="word">'+esc(w)+'</span>'}).join(' ');
-      h.querySelectorAll(".word").forEach(function(x,i){x.style.transitionDelay=(i*45)+"ms"});
-    });
-    var ho=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.querySelectorAll(".word").forEach(function(x){x.classList.add("show")});ho.unobserve(e.target)}})},{rootMargin:"0px 0px -12% 0px"});
-    heads.forEach(function(h){ho.observe(h)});
-    var rev=$("#topo .lead,#topo .doc,#topo .btn,.problem>div,.sec>div,.cards>div,.sub,.calc,.demo>div,details,.tabs");
-    rev.forEach(function(x){x.classList.add("reveal")});
-    var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");ro.unobserve(e.target)}})},{rootMargin:"0px 0px -8% 0px"});
+  /* entrada suave ao rolar */
+  var rev=$(".reveal");
+  if("IntersectionObserver" in window&&matchMedia("(prefers-reduced-motion: no-preference)").matches){
+    var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");ro.unobserve(e.target)}})},{rootMargin:"0px 0px -6% 0px"});
     rev.forEach(function(x){ro.observe(x)});
-  }
+  }else rev.forEach(function(x){x.classList.add("in")});
   document.getElementById("theme").onclick=function(){
     var n=root.getAttribute("data-theme")==="light"?"dark":"light";
     root.setAttribute("data-theme",n);try{localStorage.setItem("clausa-theme",n)}catch(e){}};
@@ -302,11 +398,6 @@ form input[type=text],form select{flex:1 1 240px;padding:12px 14px;border:1px so
   cls.forEach(function(c){c.onclick=function(){show(c)};c.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();show(c)}}});
   document.getElementById("scan").onclick=function(){tm.forEach(clearTimeout);tm=[];cls.forEach(function(x){x.classList.remove("on")});note.textContent="Analisando…";
     cls.forEach(function(c,i){tm.push(setTimeout(function(){c.classList.add("on");if(i===cls.length-1)note.innerHTML="<b>Leitura concluída.</b> 1 risco alto, 1 ponto de atenção e 1 cláusula sem alerta. Toque em cada trecho para ver o motivo."},700*(i+1)))})};
-
-  var steps=$(".step"),panes=$(".pane");
-  var so=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var i=+e.target.dataset.i;
-    steps.forEach(function(x,k){x.classList.toggle("cur",k===i)});panes.forEach(function(x,k){x.classList.toggle("show",k===i)})}})},{rootMargin:"-45% 0px -45% 0px"});
-  steps.forEach(function(x){so.observe(x)});
 
   var secs=$("section[id],#topo"),links=$(".links a");
   var no=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)links.forEach(function(a){a.classList.toggle("act",a.getAttribute("href")==="#"+e.target.id)})})},{rootMargin:"-40% 0px -55% 0px"});

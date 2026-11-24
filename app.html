@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Clausa — App</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.95.0/dist/umd/supabase.js"></script>
 <script src="js/clausa-config.js"></script>
 <style>
@@ -22,9 +22,8 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 @keyframes glow-breathe{0%,100%{opacity:.8;transform:translateY(0)}50%{opacity:1;transform:translateY(-16px)}}
 @keyframes grad-slide{to{background-position:200% 0}}
 .find,.contract-txt{position:relative;overflow:hidden}
-.find::before,.contract-txt::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,var(--orange) 18%,rgba(255,255,255,.85) 50%,var(--orange) 82%,transparent);background-size:200% 100%}
-@media (prefers-reduced-motion:no-preference){body::after{animation:glow-breathe 18s ease-in-out infinite}.find::before,.contract-txt::before{animation:grad-slide 5s linear infinite}}
-h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;line-height:1.15}
+@media (prefers-reduced-motion:no-preference){body::after{animation:glow-breathe 18s ease-in-out infinite}}
+h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;letter-spacing:-.025em;margin:0;line-height:1.12}
 .scales{color:var(--orange);flex:none}
 .btn{font:600 14px "Inter",sans-serif;border:0;border-radius:10px;padding:10px 16px;background:var(--orange-deep);color:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:transform .15s,filter .15s}
 .btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
@@ -38,7 +37,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 /* ---- Sidebar ---- */
 .side{position:relative;width:286px;flex:none;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
 .side-top{padding:16px 16px 10px}
-.logo{display:flex;align-items:center;gap:9px;font-family:"Playfair Display",Georgia,serif;font-weight:600;font-size:23px;color:var(--ink);text-decoration:none;margin-bottom:14px}
+.logo{display:flex;align-items:center;gap:9px;font-family:"Inter Tight","Inter",sans-serif;font-weight:800;letter-spacing:-.03em;font-size:22px;color:var(--ink);text-decoration:none;margin-bottom:14px}
 .logo .scales{width:23px;height:23px}
 #new{width:100%}
 .convos{flex:1;overflow-y:auto;padding:6px 10px}
@@ -131,7 +130,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 
 .sumbar{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 16px}
 .stat{flex:1 1 84px;background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:10px 13px}
-.stat b{display:block;font:700 22px "Playfair Display",Georgia,serif}
+.stat b{display:block;font:800 24px "Inter Tight","Inter",sans-serif;letter-spacing:-.02em}
 .stat.alto b{color:var(--alto)}.stat.medio b{color:var(--medio)}.stat.ok b{color:var(--ok)}.stat.apr b{color:var(--orange)}
 .stat span{font-size:11.5px;color:var(--gray)}
 .find{border:1px solid var(--line);border-left:3px solid var(--line);border-radius:10px;padding:13px;margin-bottom:11px;background:var(--card2)}
@@ -219,6 +218,8 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
 .navclose{display:none;position:absolute;z-index:3;top:calc(12px + env(safe-area-inset-top,0px));right:10px;width:36px;height:36px;align-items:center;justify-content:center;background:none;border:0;border-radius:9px;color:var(--gray);font-size:20px;cursor:pointer}
 .navclose:hover{background:var(--card);color:var(--ink)}
 @media (max-width:760px){
+  .msg:not(.you)>.ava.ai{display:none}
+
   .side{position:fixed;z-index:65;height:100%;transform:translateX(-100%);transition:transform .34s cubic-bezier(.22,.85,.25,1),box-shadow .34s}
   .app.nav-open .side{transform:none;box-shadow:24px 0 60px rgba(0,0,0,.5)}
   .menu-btn{display:flex}
@@ -242,14 +243,14 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   <aside class="side" id="side">
     <button class="navclose" id="navclose" aria-label="Fechar menu">✕</button>
     <div class="side-top">
-      <a class="logo" href="index.html">Clausa<svg class="scales" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></a>
+      <a class="logo" href="index.html">Clausa<svg class="scales" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="6.4" r="1.9" fill="currentColor" stroke="none"/><path d="M24 7.5 V37.5"/><path d="M9.5 14 H38.5"/><path d="M9.5 14 V17"/><path d="M4.8 17 Q9.5 23.6 14.2 17"/><path d="M38.5 14 V17"/><path d="M33.8 17 Q38.5 23.6 43.2 17"/><path d="M17.5 37.5 H30.5"/></svg></a>
       <button class="btn" id="new">+ Novo contrato</button>
     </div>
     <div class="convos" id="convos"></div>
     <div class="side-foot">
       <div class="side-acct" id="account"></div>
-      <button id="openrules">⚙️ Regras & modelos</button>
-      <a href="index.html">↗ Voltar ao site</a>
+      <button id="openrules"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="12" r="2"/><circle cx="15" cy="18" r="2"/></svg>Regras e modelos</button>
+      <a href="index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Voltar ao site</a>
     </div>
   </aside>
   <div class="navshade" id="navshade"></div>
@@ -331,7 +332,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     {id:"r15",on:true,sev:"ok",name:"Objeto do contrato",pat:"objeto do (contrato|presente)|objeto desta|tem por objeto|presente instrumento",reason:"Define o que está sendo contratado.",sugg:"Confirmar se o objeto está descrito de forma clara e completa."},
     {id:"r16",on:true,sev:"ok",name:"Obrigações das partes",pat:"obriga[çc][õo]es|obriga-se|compromete-se|dever[áa]|incumb",reason:"Descreve os deveres de cada parte.",sugg:"Verificar se as obrigações estão equilibradas entre as partes."},
     {id:"r17",on:true,sev:"medio",name:"Garantia",pat:"garantia|garant[ie]",reason:"Verifique o prazo, a cobertura e as condições da garantia.",sugg:"Confirmar o prazo e o escopo da garantia oferecida."},
-    {id:"r18",on:true,sev:"ok",name:"Identificação das partes",pat:"contratante|contratad[ao]|as partes|locador|locat[áa]rio|outorgante",reason:"Confira a correta qualificação das partes (nome, CNPJ/CPF, endereço).",sugg:"Conferir a qualificação completa de cada parte no preâmbulo."},
+    {id:"r18",on:true,sev:"ok",name:"Identificação das partes",pat:"doravante|denominad[oa]s?|qualificad[oa]s?|neste ato representad|t[êe]m entre si",reason:"Confira a correta qualificação das partes (nome, CNPJ/CPF, endereço).",sugg:"Conferir a qualificação completa de cada parte no preâmbulo."},
     {id:"r19",on:true,sev:"ok",name:"Qualificação das partes",pat:"\\bcpf\\b|\\bcnpj\\b|residente|domiciliad|inscrit[oa]|nacionalidade|estado civil|rg n|portador",reason:"Identificação e qualificação das partes (nome, CPF/CNPJ, endereço, estado civil).",sugg:"Conferir se a qualificação de cada parte está completa e correta."},
     {id:"r20",on:true,sev:"ok",name:"Dados de contato",pat:"endere[çc]o eletr[ôo]nico|e-mail|email|telefone",reason:"Dados de contato das partes, usados para notificações e intimações.",sugg:"Confirmar se os dados de contato estão atualizados e corretos."},
     {id:"r21",on:true,sev:"medio",name:"Ação / pedido (peça processual)",pat:"a[çc][ãa]o revisional|peti[çc][ãa]o inicial|requer|pedido de|tutela|liminar|danos morais|juros abusiv|revis[ãa]o (do|de)",reason:"Indica que o documento é uma peça processual, não um contrato; os pedidos merecem conferência.",sugg:"Revisar os pedidos e fundamentos da peça — o Clausa é otimizado para contratos, então confira manualmente."}
@@ -346,7 +347,19 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   function splitSents(t){return t.replace(/([.;])\s+/g,"$1\n").split(/\n+/)}
   function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
 
-  var RULES_VERSION=7;
+  // nome automático: "Contrato de locação · 24/11" a partir do texto; senão, a 1ª linha limpa
+  function pl(n,um,varios){return n+" "+(n===1?um:varios)}
+  function tituloDe(v){
+    var TIPOS=[[/loca[çc][ãa]o|locador|locat[áa]rio|aluguel/i,"Contrato de locação"],[/presta[çc][ãa]o de servi[çc]os|contratad[ao]/i,"Prestação de serviços"],
+      [/compra e venda|comprador|vendedor/i,"Compra e venda"],[/contrato de trabalho|empregad[oa]r?|CLT/,"Contrato de trabalho"],
+      [/confidencialidade|NDA\b/i,"Acordo de confidencialidade"],[/empr[ée]stimo|mutu[áa]rio|financiamento/i,"Empréstimo"],
+      [/sociedade|s[óo]cios|quotas/i,"Contrato social"],[/licen[çc]a de (uso|software)/i,"Licença de uso"]];
+    var dt=new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});
+    for(var i=0;i<TIPOS.length;i++)if(TIPOS[i][0].test(v))return TIPOS[i][1]+" · "+dt;
+    var first=(v.split("\n")[0]||"").replace(/^\s*cl[áa]usula\s+\S+\s*[.:–-]?\s*/i,"").trim();
+    return first?(first.length>42?first.slice(0,42)+"…":first):("Contrato · "+dt);
+  }
+  var RULES_VERSION=8;
   var rules;
   var savedV=load("clausa-rules-v"), savedRules=load("clausa-rules");
   if(savedV===RULES_VERSION){rules=savedRules||clone(DEFAULTS)}
@@ -357,6 +370,8 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     var r14=rules.filter(function(r){return r.id==="r14"})[0];
     if(r14&&r14.sev==="ok"&&r14.reason==="Define onde eventuais disputas serão resolvidas."){
       var d14=DEFAULTS.filter(function(d){return d.id==="r14"})[0];r14.sev=d14.sev;r14.reason=d14.reason}
+    var r18=rules.filter(function(r){return r.id==="r18"})[0];
+    if(r18&&r18.pat==="contratante|contratad[ao]|as partes|locador|locat[áa]rio|outorgante")r18.pat=DEFAULTS.filter(function(d){return d.id==="r18"})[0].pat;
     DEFAULTS.forEach(function(d){if(!rules.some(function(r){return r.id===d.id}))rules.push(clone(d))});
     save("clausa-rules",rules);save("clausa-rules-v",RULES_VERSION)}
   else{rules=clone(DEFAULTS);save("clausa-rules",rules);save("clausa-rules-v",RULES_VERSION)}
@@ -429,7 +444,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
         sb.auth.signOut().then(function(){location.href="entrar.html"});
       };
     }else{
-      a.innerHTML='<a class="acct-login" href="entrar.html">☁ Entrar para salvar na nuvem</a>';
+      a.innerHTML='<a class="acct-login" href="entrar.html">'+'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19a4.5 4.5 0 0 0 .5-8.97A6 6 0 0 0 6.34 9.5 4.75 4.75 0 0 0 6.5 19z"/></svg>'+'Entrar para salvar na nuvem</a>';
     }
   }
 
@@ -705,7 +720,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     byId("rep").onclick=function(){copyReport(c,found)};
     var dlb=byId("dl");if(dlb)dlb.onclick=function(){downloadReport(c,found)};
     updateApr(c,found);
-    typeWords(byId("typ"),"Revisei o contrato e encontrei "+found.length+" ponto(s) para a sua atenção:",typeIt,function(){var r=byId("rest");if(r)r.classList.add("show");byId("scroll").scrollTop=byId("scroll").scrollHeight});
+    typeWords(byId("typ"),"Revisei o contrato e encontrei "+found.length+(found.length===1?" ponto":" pontos")+" para a sua atenção:",typeIt,function(){var r=byId("rest");if(r)r.classList.add("show");byId("scroll").scrollTop=byId("scroll").scrollHeight});
   }
   function typeWords(elm,text,typeIt,done){
     if(!elm){if(done)done();return}
@@ -731,7 +746,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
   function buildReport(c,found){
     var cnt={alto:0,medio:0,ok:0},apr=0;found.forEach(function(f){cnt[f.sev]++;if(c.decisions[f.id]==="apr")apr++});
     var lines=["RELATÓRIO DE REVISÃO — CLAUSA","Contrato: "+(c.title||""),"Gerado em "+new Date().toLocaleString("pt-BR"),"",
-      "RESUMO: "+cnt.alto+" risco(s) alto(s) · "+cnt.medio+" ponto(s) de atenção · "+cnt.ok+" sem alerta · "+apr+" sugestão(ões) aprovada(s)",
+      "RESUMO: "+pl(cnt.alto,"risco alto","riscos altos")+" · "+pl(cnt.medio,"ponto de atenção","pontos de atenção")+" · "+cnt.ok+" sem alerta · "+pl(apr,"sugestão aprovada","sugestões aprovadas"),
       "----------------------------------------",""];
     found.forEach(function(f){var d=c.decisions[f.id];
       lines.push("["+LB[f.sev].toUpperCase()+"] "+f.name);
@@ -764,7 +779,7 @@ h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:600;margin:0;l
     var c=current?getConvo(current):null;
     if(!c){c={id:uid(),title:"",text:"",decisions:{},pinned:false,label:null,created:Date.now()};convos.unshift(c);current=c.id}
     c.text=v;c.decisions={};
-    var first=(v.split("\n")[0]||"").trim();c.title=(first.length>42?first.slice(0,42)+"…":first)||("Contrato "+new Date().toLocaleDateString("pt-BR"));
+    c.title=tituloDe(v);
     byId("input").value="";sizeInput();persistConvos();renderSidebar();renderMain(true);
   }
   function sizeInput(){var t=byId("input");t.style.height="auto";t.style.height=Math.min(t.scrollHeight,180)+"px"}
