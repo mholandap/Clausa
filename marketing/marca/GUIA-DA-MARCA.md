@@ -36,10 +36,11 @@ Tema claro do site: fundo `#EAEAEE`, texto `#1A1A1A`, laranja `#C2560A`.
 **Texto sobre laranja:** usar quase-preto `#140A05`, nunca branco.
 
 ## 4. Tipografia (todas gratuitas, Google Fonts, licença OFL)
-- **Site e app:** títulos em **Playfair Display** (600/700), texto em **Inter** (400–600).
+- **Site e app:** títulos em **Inter Tight** (700/800, espaçamento −0,03em), texto em **Inter** (400–600). Sem serifa: a mesma família dos vídeos.
+- **Imagens do site:** capturas reais do app (`img/`), em moldura de navegador e celular. Nada de banco de imagens genérico.
 - **Vídeos, carrosséis e Stories:** títulos em **Inter Tight Black (900)**, espaçamento apertado (−0,045em); texto em **Inter**.
   Motivo: título em serifa + laranja + fundo escuro lembrava a identidade do Claude; o sans pesado dá cara própria e de rede social.
-- Links: https://fonts.google.com/specimen/Inter · https://fonts.google.com/specimen/Inter+Tight · https://fonts.google.com/specimen/Playfair+Display
+- Links: https://fonts.google.com/specimen/Inter · https://fonts.google.com/specimen/Inter+Tight
 
 ## 5. Logo
 - Símbolo: **balança** com haste fina, bolinha no topo, travessão reto com as pontas descendo, pratos em arco raso e base curta. Traço laranja `#FF8A33`, pontas arredondadas.
