@@ -1,136 +1,171 @@
 <!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8">
-<!-- Anúncio para passar na tela do notebook (16:9). Renderizado quadro a quadro por render.js via window.render(t). -->
+<!-- Anúncio para passar na tela do notebook (16:9). Renderizado quadro a quadro por render.js via window.render(t).
+     Gramática visual: texto gigante no canto inferior esquerdo, tom sobre tom, macros do símbolo,
+     glifos gigantes (§, %) com o celular passando na frente, linha do tempo com arcos, palavras trocando sob o celular. -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Inter:wght@500;600;700&display=swap">
 <style>
 *{box-sizing:border-box;margin:0}
 html,body{width:1920px;height:1080px;overflow:hidden;background:#0B0B0C}
-#st{position:relative;width:1920px;height:1080px;overflow:hidden;background:#0B0B0C;font-family:"Inter Tight",sans-serif;perspective:1800px}
-.lay{position:absolute;inset:0;display:none}
-.big{font:900 230px/0.9 "Inter Tight";letter-spacing:-.035em;word-spacing:.14em;white-space:nowrap}
-.c{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center}
-.L{display:inline-block;will-change:transform}
-/* documento */
-.paper{position:absolute;left:50%;top:50%;width:1000px;height:1150px;margin:-500px 0 0 -500px;background:#F4EFE6;border-radius:18px;box-shadow:0 60px 120px rgba(0,0,0,.6);padding:90px 100px;transform-style:preserve-3d}
-.paper .h{font:700 26px Inter;letter-spacing:.14em;color:#8A8278;margin-bottom:40px}
-.paper .ln{height:22px;border-radius:11px;background:#D9D2C6;margin:0 0 26px}
-.paper .tx{font:600 46px/1.45 Inter;color:#2A2622;margin:30px 0}
-.paper .mk{background:linear-gradient(#FF8A33,#FF8A33) no-repeat 0 0/0% 100%;padding:2px 6px;border-radius:6px}
+#st{position:relative;width:1920px;height:1080px;overflow:hidden;background:#0B0B0C;perspective:2000px}
+.lay{position:absolute;inset:0;display:none;overflow:hidden}
+.or{background:#FF8A33}.dk{background:radial-gradient(70% 80% at 60% 45%,#1a120c,#0B0B0C 75%)}
+/* bloco de texto no canto inferior esquerdo */
+.bl{position:absolute;left:84px;bottom:58px;font-family:"Inter Tight";font-weight:900;letter-spacing:-.04em;line-height:.86;white-space:nowrap}
+.bl .clip{overflow:hidden;padding-top:.06em}
+.bl .pre{font-size:118px}.bl .main{font-size:290px}
+.bl span{display:inline-block}
+.tom{color:#8C3A06}            /* tom sobre tom no laranja */
+.br{color:#FAFAFA}
 /* celular */
-.phone{position:absolute;width:420px;height:862px;border-radius:64px;background:#000;border:12px solid #1E1E21;box-shadow:0 0 0 2px #2c2c30,0 60px 120px rgba(0,0,0,.55);overflow:hidden;transform-style:preserve-3d}
-.phone img{width:100%;height:100%;object-fit:cover;object-position:top}
-.phone::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.18),transparent 38%,transparent 70%,rgba(255,255,255,.06));pointer-events:none}
-.chip{position:absolute;font:700 34px Inter;padding:16px 30px;border-radius:40px;white-space:nowrap;box-shadow:0 20px 50px rgba(0,0,0,.45)}
-.notif{position:absolute;width:560px;background:rgba(30,30,33,.92);border:1px solid #333;border-radius:30px;padding:26px 30px;display:flex;gap:22px;align-items:center;box-shadow:0 30px 70px rgba(0,0,0,.5);font:500 28px/1.3 Inter;color:#ddd}
+.phone{position:absolute;width:400px;height:820px;border-radius:62px;background:#000;border:12px solid #1E1E21;box-shadow:0 0 0 2px #2c2c30,0 60px 120px rgba(0,0,0,.55);overflow:hidden;transform-style:preserve-3d}
+.phone img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.phone::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.2),transparent 36%,transparent 70%,rgba(255,255,255,.06));pointer-events:none}
+.chip{position:absolute;font:700 32px Inter;padding:15px 28px;border-radius:40px;white-space:nowrap;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+.ui{position:absolute;background:#F4EFE6;color:#2A2622;border-radius:22px;padding:22px 26px;font:600 26px/1.3 Inter;box-shadow:0 30px 60px rgba(0,0,0,.45)}
+.ui small{display:block;font:700 18px Inter;letter-spacing:.12em;color:#8A8278;margin-bottom:6px}
+.notif{position:absolute;width:540px;background:rgba(30,30,33,.94);border:1px solid #333;border-radius:30px;padding:24px 28px;display:flex;gap:20px;align-items:center;box-shadow:0 30px 70px rgba(0,0,0,.5);font:500 27px/1.3 Inter;color:#ddd}
 .notif b{display:block;color:#fff;font-weight:700}
-.notif .ic{width:72px;height:72px;border-radius:18px;background:#161617;display:grid;place-items:center;flex:none;color:#FF8A33}
-.wipe{position:absolute;top:-300px;bottom:-300px;width:3000px;background:#FF8A33;transform:skewX(-14deg)}
-.logo svg{width:190px;height:190px;color:#140A05}
+.notif .ic{width:68px;height:68px;border-radius:17px;background:#161617;display:grid;place-items:center;flex:none;color:#FF8A33}
+.glyph{position:absolute;font:900 1500px/1 "Inter Tight";letter-spacing:-.05em}
+.grid{position:absolute;inset:0;background-image:radial-gradient(rgba(20,10,5,.22) 2px,transparent 2.5px);background-size:36px 36px}
+.node{position:absolute;font:800 44px "Inter Tight";color:#140A05;letter-spacing:-.02em}
+.node small{display:block;font:600 22px Inter;color:#6b2c04;letter-spacing:0}
+.dot{position:absolute;width:22px;height:22px;margin:-11px;border-radius:50%;background:#140A05;box-shadow:0 0 0 8px rgba(20,10,5,.15)}
+#fade{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
 </style></head><body>
 <div id="st">
-  <!-- 0: ponto que cresce -->
-  <div class="lay" id="s0"><div id="dot" style="position:absolute;left:960px;top:540px;width:40px;height:40px;margin:-20px;border-radius:50%;background:#FF8A33"></div></div>
-  <!-- 1: SEU CONTRATO -->
-  <div class="lay" id="s1" style="background:#FF8A33"><div class="c big" style="color:#140A05" id="t1">SEU CONTRATO</div></div>
-  <!-- 2: TEM LETRAS MIÚDAS. -->
-  <div class="lay" id="s2"><div class="c big" style="color:#FF8A33;font-size:180px" id="t2">TEM LETRA MIÚDA.</div></div>
-  <!-- 3: documento com grifo -->
-  <div class="lay" id="s3" style="background:radial-gradient(60% 70% at 50% 45%,#2a1708,#0B0B0C)"><div class="paper" id="pp">
-    <div class="h">CLÁUSULA 7ª — DA RESCISÃO</div>
-    <div class="ln" style="width:92%"></div><div class="ln" style="width:84%"></div><div class="ln" style="width:88%"></div>
-    <div class="tx">A parte que rescindir pagará <span class="mk" id="mk">multa de 100% do valor restante</span> do contrato.</div>
-    <div class="ln" style="width:90%"></div><div class="ln" style="width:76%"></div><div class="ln" style="width:86%"></div><div class="ln" style="width:60%"></div>
-  </div></div>
-  <!-- 4: cortes rápidos -->
-  <div class="lay" id="s4"><div class="c big" id="t4" style="font-size:190px"></div></div>
-  <!-- 5: celular + chips -->
-  <div class="lay" id="s5" style="background:radial-gradient(55% 75% at 68% 50%,#3a1d08,#0B0B0C 70%)">
-    <div class="big" id="t5" style="position:absolute;left:130px;top:340px;color:#FAFAFA;font-size:170px;line-height:.95">A CLAUSA<br><span style="color:#FF8A33">APONTA.</span></div>
-    <div class="phone" id="ph5" style="left:1180px;top:110px"><img src="celular.jpg" alt=""></div>
-    <div class="chip" id="c1" style="background:#4A2B2B;color:#FFB4AE;left:1010px;top:250px">Risco alto</div>
-    <div class="chip" id="c2" style="background:#4A4420;color:#F1D58E;left:1560px;top:470px">Atenção</div>
-    <div class="chip" id="c3" style="background:#20423B;color:#9FDCBD;left:1060px;top:760px">Sem alerta</div>
-    <div class="notif" id="nt" style="left:1300px;top:60px"><div class="ic"><svg width="44" height="44" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="6.4" r="1.9" fill="currentColor" stroke="none"/><path d="M24 7.5 V37.5M9.5 14 H38.5M9.5 14 V17M4.8 17 Q9.5 23.6 14.2 17M38.5 14 V17M33.8 17 Q38.5 23.6 43.2 17M17.5 37.5 H30.5"/></svg></div><div><b>Clausa</b>3 pontos de atenção neste contrato</div></div>
+<svg width="0" height="0" style="position:absolute"><defs><symbol id="bal" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="6.4" r="1.9" fill="currentColor" stroke="none"/><path d="M24 7.5 V37.5M9.5 14 H38.5M9.5 14 V17M4.8 17 Q9.5 23.6 14.2 17M38.5 14 V17M33.8 17 Q38.5 23.6 43.2 17M17.5 37.5 H30.5"/></g></symbol></defs></svg>
+
+<!-- 0 ponto → esfera de luz → laranja -->
+<div class="lay" id="s0"><div id="orb" style="position:absolute;left:960px;top:560px;width:30px;height:30px;margin:-15px;border-radius:50%;background:radial-gradient(circle,#FFE2C4 0%,#FF8A33 35%,rgba(255,138,51,0) 70%)"></div>
+  <div id="smear" style="position:absolute;left:640px;top:600px;width:260px;height:40px;background:#E2590B;opacity:0;filter:blur(14px)"></div>
+  <div id="flood" style="position:absolute;inset:0;background:#FF8A33;opacity:0"></div></div>
+
+<!-- 1 SEU CONTRATO -->
+<div class="lay or" id="s1"><div class="bl tom" id="b1"><div class="clip"><span class="main" style="font-size:228px">SEU CONTRATO</span></div></div></div>
+
+<!-- 2 SEM / SURPRESAS. + linha cortando -->
+<div class="lay or" id="s2"><div class="bl tom" id="b2"><div class="clip"><span class="pre">SEM</span></div><div class="clip"><span class="main">SURPRESAS.</span></div>
+  <div id="cut" style="position:absolute;left:-84px;top:62%;height:5px;width:0;background:#140A05"></div></div></div>
+
+<!-- 3 faixa de luz -->
+<div class="lay" id="s3" style="background:#0B0B0C"><div id="band" style="position:absolute;left:0;right:0;top:50%;height:4px;background:#FF8A33;box-shadow:0 0 60px 20px rgba(255,138,51,.6)"></div></div>
+
+<!-- 4 macro do símbolo -->
+<div class="lay or" id="s4"><svg id="mac" style="position:absolute;left:50%;top:50%;width:2400px;height:2400px;margin:-1200px;color:rgba(20,10,5,.24)"><use href="#bal"/></svg>
+  <div style="position:absolute;inset:0;background:linear-gradient(100deg,rgba(255,255,255,0) 30%,rgba(255,240,220,.25) 50%,rgba(255,255,255,0) 70%)" id="sheen"></div></div>
+
+<!-- 5 macro § -->
+<div class="lay or" id="s5"><div class="glyph" id="g5" style="color:rgba(20,10,5,.2);top:-260px">§</div></div>
+
+<!-- 6 celular + anéis + UM APP / O CONTRATO INTEIRO -->
+<div class="lay dk" id="s6">
+  <svg id="rings" style="position:absolute;left:1390px;top:540px;width:1100px;height:1100px;margin:-550px" viewBox="0 0 100 100" fill="none" stroke="#FF8A33" stroke-width=".18" opacity=".55">
+    <circle cx="50" cy="50" r="46" stroke-dasharray="1 1.2"/><circle cx="50" cy="50" r="40"/><circle cx="50" cy="50" r="34" stroke-dasharray=".6 .8"/><circle cx="50" cy="50" r="28"/>
+    <path d="M4 50h92M50 4v92" stroke-dasharray=".5 1"/></svg>
+  <div class="phone" id="p6" style="left:1190px;top:130px"><img src="celular.jpg" alt=""></div>
+  <div class="bl br" id="b6a"><div class="clip"><span class="pre">UM</span></div><div class="clip"><span class="main">APP.</span></div></div>
+  <div class="bl br" id="b6b"><div class="clip"><span class="pre">O CONTRATO</span></div><div class="clip"><span class="main">INTEIRO.</span></div></div>
+</div>
+
+<!-- 7 % gigante com o celular na frente -->
+<div class="lay dk" id="s7"><div class="glyph" id="g7" style="color:#FF8A33;font-size:1250px;left:50%;top:50%">%</div>
+  <div class="phone" id="p7" style="left:760px;top:130px"><img src="celular.jpg" alt=""></div></div>
+
+<!-- 8 celular com avisos em volta -->
+<div class="lay dk" id="s8">
+  <div class="phone" id="p8" style="left:760px;top:130px"><img src="celular.jpg" alt=""></div>
+  <div class="chip" id="k1" style="background:#4A2B2B;color:#FFB4AE;left:470px;top:300px">Risco alto</div>
+  <div class="chip" id="k2" style="background:#4A4420;color:#F1D58E;left:1230px;top:520px">Atenção</div>
+  <div class="chip" id="k3" style="background:#20423B;color:#9FDCBD;left:520px;top:760px">Sem alerta</div>
+  <div class="notif" id="k4" style="left:1250px;top:150px"><div class="ic"><svg width="42" height="42"><use href="#bal"/></svg></div><div><b>Clausa</b>3 pontos de atenção neste contrato</div></div>
+  <div class="ui" id="k5" style="left:170px;top:520px"><small>CLÁUSULA 7ª</small>Multa de 100%</div>
+  <div class="ui" id="k6" style="left:1300px;top:780px"><small>CLÁUSULA 11ª</small>Renova sozinho</div>
+</div>
+
+<!-- 9 linha do tempo com arcos -->
+<div class="lay" id="s9" style="background:#FF9445"><div class="grid"></div>
+  <svg id="arcs" style="position:absolute;inset:0" width="1920" height="1080" fill="none" stroke="#140A05" stroke-width="4" stroke-linecap="round">
+    <path id="a1" pathLength="1" d="M300 470 Q 640 130 980 380"/><path id="a2" pathLength="1" d="M980 380 Q 1330 120 1640 330" stroke-dasharray=".012 .012"/></svg>
+  <div class="dot" id="d1" style="left:300px;top:470px"></div><div class="dot" id="d2" style="left:980px;top:380px"></div><div class="dot" id="d3" style="left:1640px;top:330px"></div>
+  <div class="node" id="n1" style="left:240px;top:500px">ASSINA<small>hoje</small></div>
+  <div class="node" id="n2" style="left:920px;top:410px">AVISO<small>60 dias antes</small></div>
+  <div class="node" id="n3" style="left:1560px;top:360px">RENOVA<small>mais 12 meses</small></div>
+  <div class="chip" id="n4" style="background:#140A05;color:#FFB070;left:1080px;top:210px;font-size:26px;padding:12px 22px">Renovação automática</div>
+  <div class="bl tom" id="b9"><div class="clip"><span class="pre">VEJA</span></div><div class="clip"><span class="main">O PRAZO.</span></div></div>
+</div>
+
+<!-- 10 palavras trocando sob o celular -->
+<div class="lay dk" id="s10">
+  <div id="w10" style="position:absolute;left:0;right:0;bottom:40px;text-align:center;font:900 330px/1 'Inter Tight';letter-spacing:-.045em;color:#FAFAFA"></div>
+  <div id="ln10" style="position:absolute;left:0;right:0;top:820px;height:3px;background:#FF8A33;opacity:.8"></div>
+  <div class="phone" id="p10" style="left:840px;top:330px;width:250px;height:512px;border-radius:40px;border-width:8px"><img src="celular.jpg" alt=""></div>
+</div>
+
+<!-- 11 final -->
+<div class="lay" id="s11" style="background:#FF9445">
+  <div class="phone" id="p11" style="left:1300px;top:120px;opacity:.3;filter:saturate(.2)"><img src="celular.jpg" alt=""></div>
+  <div style="position:absolute;left:170px;top:380px">
+    <div style="display:flex;align-items:center;gap:34px"><svg id="lgo" width="180" height="180" style="color:#140A05"><use href="#bal"/></svg>
+      <span id="wm" style="font:900 200px/1 'Inter Tight';letter-spacing:-.05em;color:#140A05">Clausa</span></div>
+    <div id="tg" style="font:700 54px Inter;color:#140A05;margin:34px 0 0 8px">Revise antes de assinar.</div>
+    <div id="ur" style="font:600 32px Inter;color:#140A05;margin:14px 0 0 8px">Teste grátis · mholandap.github.io/Clausa</div>
   </div>
-  <!-- 6: cortina laranja -->
-  <div class="lay" id="s6"><div class="c big" style="color:#FAFAFA;font-size:150px" id="t6">E VOCÊ DECIDE.</div><div class="wipe" id="wp"></div></div>
-  <!-- 7: LEIA ANTES DE ASSINAR -->
-  <div class="lay" id="s7" style="background:#FF8A33">
-    <div class="big" id="t7a" style="position:absolute;left:150px;top:250px;color:#140A05;font-size:120px">LEIA</div>
-    <div class="big" id="t7b" style="position:absolute;left:150px;top:390px;color:#140A05;font-size:250px">ANTES DE</div>
-    <div class="big" id="t7c" style="position:absolute;left:150px;top:620px;color:#FAFAFA;font-size:250px">ASSINAR.</div>
-  </div>
-  <!-- 8: REVISE. / APROVE. com o celular atravessando -->
-  <div class="lay" id="s8"><div class="c big" id="t8" style="color:#FAFAFA;font-size:330px"></div>
-    <div class="phone" id="ph8" style="width:300px;height:616px;border-radius:48px;border-width:9px;top:232px"><img src="celular.jpg" alt=""></div></div>
-  <!-- 9: final -->
-  <div class="lay" id="s9" style="background:#FF8A33">
-    <div id="fin" style="position:absolute;left:150px;top:300px">
-      <div class="logo" style="display:flex;align-items:center;gap:34px"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="6.4" r="1.9" fill="currentColor" stroke="none"/><path id="lg" pathLength="1" d="M24 7.5 V37.5M9.5 14 H38.5M9.5 14 V17M4.8 17 Q9.5 23.6 14.2 17M38.5 14 V17M33.8 17 Q38.5 23.6 43.2 17M17.5 37.5 H30.5"/></svg>
-        <span style="font:900 190px/1 'Inter Tight';letter-spacing:-.05em;color:#140A05" id="wm">Clausa</span></div>
-      <div id="sl" style="font:700 56px Inter;color:#140A05;margin:40px 0 0 6px">Revise antes de assinar.</div>
-      <div id="ur" style="font:600 36px Inter;color:#140A05;opacity:.7;margin:18px 0 0 6px">Teste grátis · mholandap.github.io/Clausa</div>
-    </div>
-    <div class="phone" id="ph9" style="left:1330px;top:150px;width:380px;height:780px;border-radius:58px"><img src="celular.jpg" alt=""></div>
-  </div>
+</div>
+<div id="fade"></div>
 </div>
 <script>
 const $=id=>document.getElementById(id);
-const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
-const seg=(t,a,b)=>cl((t-a)/(b-a));
-const eo=x=>1-Math.pow(1-x,3), eo5=x=>1-Math.pow(1-x,5), ei=x=>x*x*x;
-const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
-const back=x=>{const c=1.9;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
-const lerp=(a,b,p)=>a+(b-a)*p;
-// letras separadas para animar uma a uma
-function letras(el,txt){el.innerHTML=[...txt].map(ch=>ch===' '?'<span class="L" style="width:.28em"></span>':`<span class="L">${ch}</span>`).join('')}
-letras($('t1'),'SEU CONTRATO');
-const CENAS=[['s0',0,1],['s1',1,2.5],['s2',2.5,4],['s3',4,5.5],['s4',5.5,7],['s5',7,10],['s6',10,11],['s7',11,12.5],['s8',12.5,14.5],['s9',14.5,18.5]];
-window.DUR=18.5;
-const RAP=[['MULTA ALTA.','#FF8A33','#140A05'],['RENOVA SOZINHO.','#0B0B0C','#FF8A33'],['FORO LONGE.','#FAFAFA','#140A05']];
-function tremor(t,f,a){return Math.sin(t*f)*a}
+const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), seg=(t,a,b)=>cl((t-a)/(b-a)), lerp=(a,b,p)=>a+(b-a)*p;
+const eo=x=>1-Math.pow(1-x,3), eo5=x=>1-Math.pow(1-x,5), ei=x=>x*x*x, eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const back=x=>{const c=1.7;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const CENAS=[['s0',0,1],['s1',1,2.5],['s2',2.5,3.6],['s3',3.6,4],['s4',4,5],['s5',5,6],['s6',6,8],['s7',8,9],['s8',9,11],['s9',11,13],['s10',13,16.5],['s11',16.1,19.5]];
+window.DUR=19.5;
+// sobe as linhas de um bloco (cada .clip) com atraso, com desfoque de movimento
+function sobe(bl,t,t0,dt=.09,d=.42){[...$(bl).querySelectorAll('.clip>span')].forEach((s,i)=>{const p=eo5(seg(t,t0+i*dt,t0+i*dt+d));
+  s.style.transform=`translateY(${(1-p)*105}%)`;s.style.filter=`blur(${(1-p)*10}px)`;});}
+function desce(bl,t,t0,d=.18){[...$(bl).querySelectorAll('.clip>span')].forEach(s=>{const p=ei(seg(t,t0,t0+d));if(t>=t0){s.style.transform=`translateY(${p*110}%)`;s.style.filter=`blur(${p*8}px)`}});}
+function velBlur(el,v){el.style.filter=v>0.3?`blur(${Math.min(22,v*.9)}px)`:'none'}
 window.render=function(t){
   CENAS.forEach(([id,a,b])=>{$(id).style.display=(t>=a&&t<b)?'block':'none'});
-  // 0 — ponto pulsa e explode em laranja
-  if(t<1){const d=$('dot');const p=seg(t,.55,1);const pul=1+.25*Math.sin(seg(t,0,.55)*Math.PI*2);
-    const s=t<.55?pul*eo(seg(t,0,.25)):1+ei(p)*70; d.style.transform=`scale(${s})`;}
-  // 1 — letras sobem com atraso
-  if(t>=1&&t<2.5){[...$('t1').children].forEach((L,i)=>{const p=back(seg(t,1+i*.035,1.4+i*.035));L.style.transform=`translateY(${(1-p)*260}px)`;L.style.opacity=seg(t,1+i*.035,1.12+i*.035)});
-    const z=1+.08*seg(t,1.3,2.5);$('t1').style.transform=`translateY(-50%) scale(${z})`;}
-  // 2 — texto entra da direita com desfoque de movimento
-  if(t>=2.5&&t<4){const p=eo5(seg(t,2.5,3.05));const x=(1-p)*1700-seg(t,3.05,4)*140;const v=(1-seg(t,2.5,3.05));
-    $('t2').style.transform=`translate(${x}px,-50%)`;$('t2').style.filter=`blur(${v*v*26}px)`;}
-  // 3 — documento entra inclinado, câmera aproxima, grifo laranja
-  if(t>=4&&t<5.5){const p=eo(seg(t,4,4.6));const z=lerp(.7,1.18,eo(seg(t,4,5.5)));
-    $('pp').style.transform=`translateY(${(1-p)*700-lerp(0,60,eo(seg(t,4.4,5.5)))}px) rotateX(${(1-p)*35+6}deg) rotateZ(${lerp(-6,-2,p)}deg) scale(${z})`;
-    $('mk').style.backgroundSize=`${eo(seg(t,4.65,5.1))*100}% 100%`;}
-  // 4 — três cortes no ritmo
-  if(t>=5.5&&t<7){const i=Math.min(2,Math.floor((t-5.5)/.5)),lt=t-5.5-i*.5;const[w,bg,fg]=RAP[i];
-    $('s4').style.background=bg;const e=$('t4');e.textContent=w;e.style.color=fg;
-    const s=lerp(1.22,1,eo5(seg(lt,0,.18)))+lt*.08;e.style.transform=`translate(${tremor(lt,90,(1-seg(lt,0,.15))*14)}px,-50%) scale(${s})`;}
-  // 5 — celular gira, avisos aparecem
-  if(t>=7&&t<10){const lt=t-7;const p=eo(seg(lt,0,.8));
-    $('ph5').style.transform=`translateY(${(1-p)*900}px) rotateY(${lerp(-38,-12,eo(seg(lt,0,3)))}deg) rotateX(${lerp(14,4,p)}deg) rotateZ(${lerp(8,2,p)}deg)`;
-    const tx=$('t5');tx.style.transform=`translateX(${(1-eo5(seg(lt,.15,.7)))*-700}px)`;tx.style.opacity=seg(lt,.15,.4);
-    [['nt',.7],['c1',1.1],['c2',1.45],['c3',1.8]].forEach(([id,a])=>{const q=back(seg(lt,a,a+.35));const el=$(id);
-      el.style.transform=`scale(${q}) translateY(${Math.sin((lt-a)*2.2)*8}px)`;el.style.opacity=seg(lt,a,a+.12)});}
-  // 6 — cortina laranja atravessa
-  if(t>=10&&t<11){const p=eio(seg(t,10.15,10.95));$('wp').style.left=`${lerp(-3500,-560,p)}px`;
-    const z=1+.2*ei(seg(t,10,10.6));$('s6').style.background='#0B0B0C';}
-  // 7 — LEIA / ANTES DE / ASSINAR. em camadas
-  if(t>=11&&t<12.5){[['t7a',11],['t7b',11.18],['t7c',11.42]].forEach(([id,a])=>{const p=eo5(seg(t,a,a+.4));const el=$(id);
-      el.style.transform=`translateX(${(1-p)*-1600}px) skewX(${(1-p)*-12}deg)`;el.style.filter=`blur(${(1-p)*14}px)`});
-    $('s7').style.transform=`scale(${1+.05*seg(t,11.6,12.5)})`;}
-  // 8 — REVISE. / APROVE. e o celular cruzando as letras
-  if(t>=12.5&&t<14.5){const i=t<13.5?0:1,lt=t-12.5-i;const e=$('t8');e.textContent=['REVISE.','APROVE.'][i];
-    e.style.color=i?'#FF8A33':'#FAFAFA';const s=lerp(1.15,1,eo5(seg(lt,0,.2)));e.style.transform=`translateY(-50%) scale(${s})`;
-    const p=eio(seg(lt,.05,.95));const ph=$('ph8');ph.style.left=`${lerp(i?2000:-400,i?-400:2000,p)}px`;
-    ph.style.transform=`rotateY(${lerp(-40,40,p)*(i?-1:1)}deg) rotateZ(${lerp(-14,14,p)*(i?-1:1)}deg)`;}
-  // 9 — final com logo desenhando
-  if(t>=14.5){const lt=t-14.5;$('lg').style.strokeDasharray='1';$('lg').style.strokeDashoffset=String(1-eo(seg(lt,0,.9)));
-    const w=$('wm');w.style.transform=`translateY(${(1-eo5(seg(lt,.1,.6)))*120}px)`;w.style.opacity=seg(lt,.1,.3);
-    $('sl').style.opacity=seg(lt,.6,.9);$('sl').style.transform=`translateY(${(1-eo(seg(lt,.6,1)))*30}px)`;
-    $('ur').style.opacity=.7*seg(lt,1,1.3);
-    const p=eo(seg(lt,.2,1.1));$('ph9').style.transform=`translateY(${(1-p)*900}px) rotateY(${lerp(-30,-14,eo(seg(lt,.2,4)))}deg) rotateZ(${lerp(10,4,p)}deg)`;}
+  $('fade').style.opacity=seg(t,18.6,19.5)*.85;
+  if(t<1){const o=$('orb');const blink=t<.45?(Math.floor(t*8)%2?1:.35):1;
+    const s=t<.45?1:1+ei(seg(t,.45,.95))*60;o.style.transform=`scale(${s})`;o.style.opacity=blink;o.style.filter=`blur(${seg(t,.45,.9)*30}px)`;
+    $('smear').style.opacity=Math.sin(seg(t,.45,.8)*Math.PI)*.8;$('smear').style.transform=`translateX(${seg(t,.45,.8)*200}px)`;
+    $('flood').style.opacity=eo(seg(t,.82,1));}
+  if(t>=1&&t<2.5){sobe('b1',t,1.02);$('b1').style.transform=`scale(${1+.05*seg(t,1.2,2.5)})`;$('b1').style.transformOrigin='left bottom';}
+  if(t>=2.5&&t<3.6){sobe('b2',t,2.5);const c=$('cut');c.style.width=`${eo(seg(t,3.05,3.35))*2100}px`;
+    const x=-ei(seg(t,3.3,3.6))*700;$('b2').style.transform=`translateX(${x}px)`;$('b2').style.filter=`blur(${seg(t,3.3,3.6)*16}px)`;}
+  if(t>=3.6&&t<4){const p=ei(seg(t,3.62,4));$('band').style.height=`${lerp(4,1300,p)}px`;$('band').style.marginTop=`${-lerp(2,650,p)}px`;}
+  if(t>=4&&t<5){const lt=t-4,p=eo5(seg(lt,0,.35));$('mac').style.transform=`translate(${lerp(500,-120,eo(seg(lt,0,1)))}px,${lerp(260,40,p)}px) scale(${lerp(1.7,1.25,eo(seg(lt,0,1)))}) rotate(${lerp(-14,-4,eo(seg(lt,0,1)))}deg)`;
+    $('mac').style.filter=`blur(${(1-p)*18}px)`;$('sheen').style.transform=`translateX(${lerp(-1400,1400,seg(lt,.2,.9))}px)`;}
+  if(t>=5&&t<6){const lt=t-5;$('g5').style.left=`${lerp(1500,250,eo5(seg(lt,0,.5)))-lt*120}px`;$('g5').style.filter=`blur(${(1-eo5(seg(lt,0,.4)))*20}px)`;}
+  if(t>=6&&t<8){const lt=t-6,p=eo5(seg(lt,0,.55));
+    $('p6').style.transform=`translateX(${(1-p)*900}px) rotateY(${lerp(-60,-16,eo(seg(lt,0,2)))}deg) rotateZ(${lerp(14,5,p)}deg)`;velBlur($('p6'),(1-p)*25);
+    $('rings').style.transform=`rotate(${lt*14}deg) scale(${lerp(.7,1,eo(seg(lt,.1,.8)))})`;$('rings').style.opacity=.55*seg(lt,.1,.4);
+    sobe('b6a',t,6.1);desce('b6a',t,6.95);$('b6a').style.visibility=t<7.15?'visible':'hidden';
+    $('b6b').style.visibility=t>=7.0?'visible':'hidden';sobe('b6b',t,7.0);}
+  if(t>=8&&t<9){const lt=t-8;$('g7').style.transform=`translate(-50%,-52%) scale(${lerp(1.6,1,eo5(seg(lt,0,.4)))})`;$('g7').style.filter=`blur(${(1-eo5(seg(lt,0,.35)))*24}px)`;
+    const p=eio(seg(lt,.05,.7));$('p7').style.transform=`translateY(${lerp(1100,-40,p)}px) rotateY(${lerp(30,-20,p)}deg) rotateZ(${lerp(-20,-6,p)}deg)`;velBlur($('p7'),Math.sin(p*Math.PI)*14);
+    const w=ei(seg(lt,.78,1));$('s7').style.transform=`translateX(${-w*1900}px)`;$('s7').style.filter=`blur(${w*30}px)`;}
+  if(t>=9&&t<11){const lt=t-9,p=eo5(seg(lt,0,.5));$('p8').style.transform=`translateX(${(1-p)*1600}px) rotateY(${lerp(-40,-8,eo(seg(lt,0,2)))+Math.sin(lt*1.5)*3}deg) rotateZ(${lerp(-10,-3,p)}deg)`;velBlur($('p8'),(1-p)*30);
+    [['k4',.35],['k1',.55],['k5',.7],['k2',.85],['k6',1.0],['k3',1.15]].forEach(([id,a],i)=>{const q=back(seg(lt,a,a+.32));const e=$(id);
+      e.style.transform=`scale(${q}) translateY(${Math.sin((lt-a)*2+i)*9}px)`;e.style.opacity=seg(lt,a,a+.1)});}
+  if(t>=11&&t<13){const lt=t-11;$('a1').style.strokeDasharray='1';$('a1').style.strokeDashoffset=String(1-eio(seg(lt,.15,.75)));
+    $('a2').style.opacity=seg(lt,.7,.8);$('a2').style.clipPath=`inset(0 ${100-eio(seg(lt,.7,1.2))*100}% 0 0)`;
+    [['d1',.1],['d2',.7],['d3',1.15]].forEach(([id,a])=>{$(id).style.transform=`scale(${back(seg(lt,a,a+.25))})`});
+    [['n1',.15],['n2',.75],['n3',1.2],['n4',.95]].forEach(([id,a])=>{const e=$(id);e.style.opacity=seg(lt,a,a+.15);e.style.transform=`translateY(${(1-eo(seg(lt,a,a+.3)))*30}px)`});
+    sobe('b9',t,12.0);}
+  if(t>=13&&t<16.1){const lt=t-13,i=Math.min(2,Math.floor(lt)),ll=lt-i;const w=$('w10');w.textContent=['LEIA.','REVISE.','ASSINE.'][i];
+    w.style.color=i===2?'#FF8A33':'#FAFAFA';w.style.transform=`scale(${lerp(1.08,1,eo5(seg(ll,0,.2)))})`;
+    const pin=eo5(seg(lt,0,.5));const out=ei(seg(t,15.8,16.1));
+    $('p10').style.transform=`translateY(${(1-pin)*-900-out*1100}px) rotateZ(${-22+Math.sin(lt*1.6)*2}deg) rotateX(${12+Math.sin(lt*1.2)*3}deg) rotateY(${-14+Math.sin(lt)*4}deg)`;
+    velBlur($('p10'),(1-pin)*28+out*30);$('ln10').style.transform=`scaleX(${eo(seg(lt,.1,.6))})`;}
+  if(t>=16.1){const lt=t-16.1;$('s11').style.clipPath=`inset(${(1-eo5(seg(lt,0,.35)))*100}% 0 0 0)`;
+    $('lgo').style.transform=`scale(${back(seg(lt,.15,.55))}) rotate(${(1-eo(seg(lt,.15,.7)))*-30}deg)`;
+    $('wm').style.transform=`translateY(${(1-eo5(seg(lt,.25,.7)))*140}px)`;$('wm').style.opacity=seg(lt,.25,.4);
+    $('tg').style.opacity=seg(lt,.6,.9);$('tg').style.transform=`translateY(${(1-eo(seg(lt,.6,1)))*24}px)`;$('ur').style.opacity=.75*seg(lt,.9,1.2);
+    $('p11').style.transform=`translateY(${(1-eo(seg(lt,.2,1.2)))*300}px) rotateY(-16deg) rotateZ(6deg)`;}
 };
 </script></body></html>

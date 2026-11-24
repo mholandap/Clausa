@@ -5,7 +5,7 @@ import sys, wave
 import numpy as np
 
 SR = 48000
-DUR = 18.5
+DUR = 19.5
 N = int(SR * DUR)
 t_all = np.arange(N) / SR
 L = np.zeros(N); R = np.zeros(N)
@@ -93,9 +93,10 @@ put(pad([220, 261.6, 329.6], 1.2, .05), 0)
 put(riser(1.0), 0.0, gain=.9)
 put(pluck(880, .4, .1), 0.05)
 
-# 1–10 s: batida principal
-for k in range(int((10 - 1) / BEAT)):
+# 1–11 s: batida principal (respira na faixa de luz 3,6–4)
+for k in range(int((11 - 1) / BEAT)):
     tb = 1 + k * BEAT
+    if 3.5 <= tb < 4: continue
     put(kick(), tb)
     put(hat(), tb + BEAT / 2, pan=.3)
     put(hat(.04, .14), tb + BEAT * .75, pan=-.3)
@@ -103,33 +104,33 @@ for k in range(int((10 - 1) / BEAT)):
     root = PROG[(k // 2) % len(PROG)]
     put(bass(root * 2), tb + BEAT / 2)
     put(pluck(root * 8 * (1.5 if k % 4 == 2 else 1), .5), tb, pan=-.2 if k % 2 else .2)
-put(pad([220, 261.6, 329.6, 392], 9.2, .035), 1)
+put(pad([220, 261.6, 329.6, 392], 10.2, .035), 1)
+put(riser(.4), 3.6, gain=.9)
 
 # cortes rápidos 5,5–7: acentos extras
-for tb in (5.5, 6.0, 6.5):
+for tb in (8.0, 8.5):
     put(pluck(1318.5, .3, .12), tb); put(clap(), tb, gain=.6)
 
-# 10–11: respiro + whoosh para a cortina
-put(whoosh(.8), 10.1, gain=1.0)
-put(pad([174.6, 220, 261.6], 1.1, .05), 10)
+put(whoosh(.5), 8.6, gain=.9)
+put(whoosh(.5), 15.7, gain=.9)
 
-# 11–14,5: volta mais forte
-for k in range(int((14.5 - 11) / BEAT)):
+# 11–16,5: volta mais forte
+for k in range(int((16.5 - 11) / BEAT)):
     tb = 11 + k * BEAT
     put(kick(), tb); put(hat(), tb + .25, pan=.3); put(hat(.04, .14), tb + .375, pan=-.3)
     if k % 2 == 1: put(clap(), tb)
     root = [F, F, C, C, G, G, A][k % 7]
     put(bass(root * 2), tb + .25)
     put(pluck(root * 8, .45, .14), tb)
-put(riser(.9), 13.6, gain=.8)
+put(riser(.9), 12.1, gain=.8)
 
-# 14,5–18,5: final com acorde aberto
-put(pad([220, 329.6, 440, 523.3, 659.3], 4.0, .045), 14.5)
-put(pluck(440, 1.5, .18), 14.5); put(pluck(659.3, 1.5, .12), 14.5, pan=.3)
+# 16,5–19,5: final com acorde aberto
+put(pad([220, 329.6, 440, 523.3, 659.3], 3.0, .045), 16.5)
+put(pluck(440, 1.5, .18), 16.5); put(pluck(659.3, 1.5, .12), 16.5, pan=.3)
 
 # impactos em cada corte de cena
-for tc in (1.0, 2.5, 4.0, 7.0, 11.0, 12.5, 13.5, 14.5):
-    put(impact(), tc, gain=.55 if tc not in (1.0, 14.5) else .8)
+for tc in (1.0, 2.5, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 11.0, 13.0, 14.0, 15.0, 16.1):
+    put(impact(), tc, gain=.8 if tc in (1.0, 4.0, 13.0, 16.1) else .5)
 
 mix = np.stack([L, R], 1)
 fade = np.minimum(1, (DUR - t_all) / 1.5)[:, None]
