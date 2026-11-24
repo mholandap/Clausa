@@ -1,11 +1,11 @@
 // Renderiza uma página com window.render(t) quadro a quadro.
-// Uso: node render.js pagina.html pasta fps [preview t1 t2 ...]
+// Uso: node render.js pagina.html pasta fps [preview t1 t2 ...]   (LARG=1080 ALT=1920 para vertical)
 const { chromium } = require('playwright'); const fs=require('fs'), path=require('path');
 const [,, page, out, fps, modo, ...ts] = process.argv;
 (async () => {
-  const b = await chromium.launch(); const p = await b.newPage({ viewport:{width:1920,height:1080}, deviceScaleFactor:1 });
+  const b = await chromium.launch(); const p = await b.newPage({ viewport:{width:+(process.env.LARG||1920),height:+(process.env.ALT||1080)}, deviceScaleFactor:1 });
   await p.goto('file://'+path.resolve(page), { waitUntil:'networkidle' });
-  await p.evaluate(async()=>{await document.fonts.load('900 100px "Inter Tight"');await document.fonts.load('700 40px Inter');await document.fonts.ready});
+  await p.evaluate(async()=>{await document.fonts.load('900 100px "Inter Tight"');await document.fonts.load('700 40px Inter');await document.fonts.ready;if(window.pronto)await window.pronto});
   fs.mkdirSync(out,{recursive:true});
   const dur=await p.evaluate(()=>window.DUR); const F=+fps;
   const lista = modo==='preview' ? ts.map(Number) : Array.from({length:Math.round(dur*F)},(_,i)=>i/F);
