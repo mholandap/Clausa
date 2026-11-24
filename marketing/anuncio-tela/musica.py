@@ -1,6 +1,6 @@
-"""Trilha própria do anúncio de tela: leve e contínua, sem impactos nos cortes.
-Dó maior, 120 BPM, progressão C–G–Am–F, marimba com um refrão curto que gruda, piano elétrico,
-baixo redondo, batida suave e chocalho. Sem amostras de terceiros.
+"""Trilha própria do anúncio de tela: pop eletrônico leve e animado, contínua, sem impactos nos cortes.
+122 BPM, lá menor (Am–F–C–G), bumbo reto, chimbal no contratempo, palmas no 2 e 4, baixo sincopado,
+acordes curtos de sintetizador e um refrão brilhante. Sem amostras de terceiros.
 Uso: python3 musica.py saida.wav [duração]"""
 import sys, wave
 import numpy as np
@@ -9,10 +9,11 @@ SR = 48000
 DUR = float(sys.argv[2]) if len(sys.argv) > 2 else 17.5
 N = int(SR * DUR)
 L = np.zeros(N); R = np.zeros(N)
-rng = np.random.default_rng(3)
-B = 0.5            # um tempo a 120 BPM
+rng = np.random.default_rng(11)
+BPM = 122
+B = 60 / BPM
 BAR = 4 * B
-START = 1.0        # a batida entra quando a tela fica laranja
+START = 1.0  # a batida entra quando a tela fica laranja
 
 
 def put(sig, at, pan=0.0, gain=1.0):
@@ -25,79 +26,111 @@ def put(sig, at, pan=0.0, gain=1.0):
 def hz(n): return 440 * 2 ** ((n - 69) / 12)
 
 
+def lowpass(x, a):
+    y = np.empty_like(x); acc = 0.0
+    for i in range(len(x)):
+        acc += a * (x[i] - acc); y[i] = acc
+    return y
+
+
+def saw(f, t, harm=14, det=0.0):
+    s = np.zeros_like(t)
+    for k in range(1, harm + 1):
+        if f * k > SR / 2.2: break
+        s += np.sin(2 * np.pi * f * (1 + det) * k * t) / k
+    return s
+
+
 def env(n, a, d):
     t = np.arange(n) / SR
     return np.minimum(1, t / a) * np.exp(-t / d)
 
 
-def marimba(note, d=.7, g=.2):
+def kick(g=.85):
+    n = int(.35 * SR); t = np.arange(n) / SR
+    body = np.sin(2 * np.pi * np.cumsum(48 + 110 * np.exp(-t / .028)) / SR) * env(n, .001, .13)
+    click = rng.standard_normal(n) * np.exp(-t / .002) * .15
+    return (body + click) * g
+
+
+def clap(g=.3):
+    n = int(.22 * SR); t = np.arange(n) / SR; x = rng.standard_normal(n)
+    e = sum((t >= k * .01) * np.exp(-np.maximum(0, t - k * .01) / .01) for k in range(3)) + .6 * np.exp(-t / .07)
+    return lowpass(np.diff(np.concatenate([[0], x])), .6) * e * g
+
+
+def hat(op=False, g=.12):
+    n = int((.16 if op else .05) * SR); x = rng.standard_normal(n)
+    x = np.diff(np.concatenate([[0], np.diff(np.concatenate([[0], x]))]))
+    return x * env(n, .0005, .05 if op else .012) * g
+
+
+def bass(note, d, g=.34):
+    n = int(d * SR); t = np.arange(n) / SR
+    s = lowpass(saw(hz(note), t, 10), .08) * 2.2 + .5 * np.sin(2 * np.pi * hz(note) * t)
+    return s * env(n, .004, .18) * np.minimum(1, (d - t) / .02) * g
+
+
+def stab(notes, d=.18, g=.07):
+    n = int(d * SR); t = np.arange(n) / SR
+    s = sum(saw(hz(x), t, 12, .004) + saw(hz(x), t, 12, -.004) for x in notes)
+    return lowpass(s, .22) * env(n, .002, .07) * g
+
+
+def lead(note, d=.22, g=.11):
     n = int(d * SR); t = np.arange(n) / SR; f = hz(note)
-    s = np.sin(2 * np.pi * f * t) * np.exp(-t / .35) + .35 * np.sin(2 * np.pi * f * 4 * t) * np.exp(-t / .05) + .1 * np.sin(2 * np.pi * f * 9.9 * t) * np.exp(-t / .015)
-    return s * np.minimum(1, t / .002) * g
+    s = saw(f, t, 16, .003) + saw(f, t, 16, -.003) + .6 * np.sin(2 * np.pi * f * 2 * t)
+    cut = .12 + .35 * np.exp(-t / .05)            # abre e fecha rápido: som de "pluck" brilhante
+    y = np.empty_like(s); acc = 0.0
+    for i in range(n):
+        acc += cut[i] * (s[i] - acc); y[i] = acc
+    return y * env(n, .003, .16) * g
 
 
-def epiano(notes, d, g=.05):
+def pad(notes, d, g=.025):
     n = int(d * SR); t = np.arange(n) / SR
-    s = sum(np.sin(2 * np.pi * hz(x) * t + .6 * np.sin(2 * np.pi * hz(x) * 2 * t) * np.exp(-t / .3)) for x in notes)
-    e = np.minimum(1, t / .01) * np.exp(-t / 1.6) * np.minimum(1, (d - t) / .08)
-    return s * e * g
+    s = sum(saw(hz(x), t, 8, .006) + saw(hz(x), t, 8, -.006) for x in notes)
+    return lowpass(s, .05) * np.minimum(1, t / .3) * np.minimum(1, (d - t) / .3) * g
 
 
-def bass(note, d=.45, g=.28):
-    n = int(d * SR); t = np.arange(n) / SR
-    s = np.sin(2 * np.pi * hz(note) * t) + .15 * np.sin(2 * np.pi * hz(note) * 2 * t)
-    return s * env(n, .008, .3) * np.minimum(1, (d - t) / .03) * g
+# Am – F – C – G
+PROG = [(45, [57, 60, 64]), (41, [57, 60, 65]), (48, [55, 60, 64]), (43, [55, 59, 62])]
+# refrão em semicolcheias (None = pausa), 2 compassos
+HOOK = [76, None, 76, 79, None, 81, None, 79, 76, None, 74, None, 76, None, None, None,
+        72, None, 72, 74, None, 76, None, 74, 72, None, 71, None, 67, None, 69, None]
+BASSPAT = [0, None, 0, 12, None, 0, 12, None]  # colcheias, sincopado
 
-
-def kick(g=.5):
-    n = int(.3 * SR); t = np.arange(n) / SR
-    return np.sin(2 * np.pi * np.cumsum(50 + 70 * np.exp(-t / .03)) / SR) * env(n, .002, .09) * g
-
-
-def snap(g=.16):
-    n = int(.18 * SR); x = rng.standard_normal(n); x = np.diff(np.concatenate([[0], x]))
-    return x * env(n, .001, .03) * g
-
-
-def shaker(g=.05):
-    n = int(.08 * SR); x = rng.standard_normal(n); x = np.diff(np.concatenate([[0], x]))
-    t = np.arange(n) / SR
-    return x * np.sin(np.pi * np.minimum(1, t / .06)) * g
-
-
-# acordes: C, G, Am, F  (raiz para o baixo, tríade para o piano)
-PROG = [(48, [60, 64, 67]), (43, [59, 62, 67]), (45, [60, 64, 69]), (41, [60, 65, 69])]
-# refrão da marimba (colcheias, None = pausa), 2 compassos que se repetem
-HOOK = [76, None, 79, 76, 74, None, 72, 74, 76, None, 79, 81, 79, None, 76, None,
-        72, None, 74, 76, 74, None, 72, 69, 71, None, 72, 74, 72, None, None, None]
+# introdução: pad abrindo + refrão filtrado antes da batida
+put(pad([57, 60, 64, 69], 1.2, .03), 0)
+for i, nt in enumerate([76, 79, 81, 84]):
+    put(lead(nt, .2, .06), .15 + i * B / 2)
 
 nbars = int(np.ceil((DUR - START) / BAR)) + 1
-# introdução: só piano e a marimba suave antes da batida
-put(epiano([60, 64, 67, 72], 1.0, .045), 0.0)
-for i, nt in enumerate([72, 76, 79, 84]):
-    put(marimba(nt, .6, .12), .1 + i * .2)
-
 for b in range(nbars):
     t0 = START + b * BAR
     root, chord = PROG[b % 4]
-    put(epiano(chord, BAR, .05), t0)
+    put(pad(chord + [chord[0] + 12], BAR, .02), t0)
     for k in range(4):
         tb = t0 + k * B
         put(kick(), tb)
-        if k in (1, 3): put(snap(), tb, pan=.1)
-        put(bass(root if k % 2 == 0 else root + 12, .42), tb + (0 if k % 2 == 0 else .25))
-        for s in range(4):
-            put(shaker(.035 if s % 2 else .055), tb + s * B / 4, pan=.35)
-    # refrão a partir do 2º compasso
-    if b >= 1:
-        for i in range(16):
-            nt = HOOK[((b - 1) % 2) * 16 + i]
-            if nt: put(marimba(nt), t0 + i * B / 2, pan=-.2 if i % 2 else .15)
+        if k in (1, 3): put(clap(), tb, pan=.05)
+        put(hat(True), tb + B / 2, pan=.3)
+        put(hat(), tb + B / 4, pan=-.25); put(hat(g=.07), tb + 3 * B / 4, pan=-.25)
+        put(stab(chord), tb + B / 2, pan=-.15)          # acorde no contratempo
+    for i, off in enumerate(BASSPAT):
+        if off is not None: put(bass(root + off, B / 2 * .9), t0 + i * B / 2)
+    hk = HOOK[(b % 2) * 16:(b % 2) * 16 + 16]
+    for i, nt in enumerate(hk):
+        if nt: put(lead(nt), t0 + i * B / 4, pan=.15 if i % 2 else -.1)
 
 mix = np.stack([L, R], 1)
 t = np.arange(N) / SR
-mix *= np.minimum(1, (DUR - t) / 2.0)[:, None]          # some devagar no final
-mix = np.tanh(mix * 1.05) / np.tanh(1.05)
+# "sidechain" leve: o resto abaixa um pouco a cada bumbo, dá o balanço do pop eletrônico
+ph = ((t - START) % B) / B
+duck = np.where(t >= START, .78 + .22 * np.minimum(1, ph / .35), 1.0)
+mix *= duck[:, None]
+mix *= np.minimum(1, (DUR - t) / 1.8)[:, None]
+mix = np.tanh(mix * 1.2) / np.tanh(1.2)
 mix /= np.max(np.abs(mix)) / 0.89
 with wave.open(sys.argv[1], 'wb') as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
