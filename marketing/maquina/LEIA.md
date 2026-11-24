@@ -9,6 +9,7 @@ Você só aprova.
 cd marketing/maquina
 python3 maquina.py roteiros/teste-3palavras.json /caminho/de/trabalho          # vídeo completo
 python3 maquina.py roteiros/teste-3palavras.json /caminho/de/trabalho --previa # só 6 quadros de prévia
+python3 maquina.py roteiros/teste-3palavras.json /caminho/de/trabalho --reusar-quadros  # refaz só som/codificação/QC
 ```
 
 O vídeo sai em `saidas/` (definido em `"saida"` no roteiro) e o relatório de conferência em `qc.json` na pasta de trabalho.

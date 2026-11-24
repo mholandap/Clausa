@@ -155,8 +155,9 @@ function render(t){
       const nota=c.el.querySelector('.nota'); if(nota){const at=c.nota_em??(c.ini+1.2);const q=seg(t,at,at+.4);nota.style.opacity=eo(q);nota.style.transform=`scale(${.6+.4*spring(q)})`}
     }
   });
-  TL.frases.forEach(f=>{
-    const on=t>=f.ini-.05&&t<f.fim+.12; f.el.style.display=on?'block':'none';
+  let ult=-1; TL.frases.forEach((f,j)=>{ if(t>=f.ini-.05) ult=j; });   // só a frase mais recente aparece
+  TL.frases.forEach((f,j)=>{
+    const on=j===ult&&t<f.fim+.12; f.el.style.display=on?'block':'none';
     if(on){ const q=seg(t,f.ini-.05,f.ini+.2); f.el.style.opacity=eo(q); f.el.style.transform=`translateY(${(1-spring(q))*20}px)`;
       f.ws.forEach((w,k)=>{const wt=f.palavras[k].t0; w.style.opacity=t>=wt-.04?1:.35}); }
   });

@@ -184,12 +184,15 @@ def main():
     if previa:
         ts = [round((c['ini'] + c['fim']) / 2, 2) for c in tl['cenas']] + [round(tl['cenas'][1]['ini'] + .2, 2)]
         sh('node', os.path.join(AQUI, 'render.js'), tlp, os.path.join(trab, 'previa'), 'preview', *map(str, ts)); return
-    q = os.path.join(trab, 'quadros'); sh('node', os.path.join(AQUI, 'render.js'), tlp, q)
+    q = os.path.join(trab, 'quadros')
+    if not ('--reusar-quadros' in sys.argv and os.path.isdir(q)):  # pula o render se os quadros já existem
+        sh('node', os.path.join(AQUI, 'render.js'), tlp, q)
     voz = os.path.join(trab, 'voz.wav')
     sh('ffmpeg', '-nostdin', '-loglevel', 'error', '-y', '-i', audio, '-ar', str(SR), '-ac', '1', '-af',
        'highpass=f=80,acompressor=threshold=-18dB:ratio=2:attack=8:release=120:makeup=2,alimiter=limit=0.89', voz)
     tri = os.path.join(trab, 'trilha.wav'); trilha(voz, tl, tri)
     saida = os.path.join(base, rot.get('saida', 'video.mp4'))
+    os.makedirs(os.path.dirname(saida), exist_ok=True)
     sh('ffmpeg', '-nostdin', '-loglevel', 'error', '-y', '-framerate', '30', '-i', os.path.join(q, 'f%05d.jpg'), '-i', tri,
        '-filter_complex', '[0:v]format=yuv420p[v];[1:a]loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100[a]', '-map', '[v]', '-map', '[a]',
        '-c:v', 'libx264', '-preset', 'slow', '-crf', '19', '-profile:v', 'high', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', saida)
