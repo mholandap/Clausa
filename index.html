@@ -9,7 +9,6 @@
 <meta property="og:description" content="Aponta as cláusulas de risco e explica o motivo. Teste grátis, sem cadastro.">
 <meta property="og:image" content="https://mholandap.github.io/Clausa/img/app-revisao.jpg">
 <link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;1,400&display=swap">
 <style>
@@ -202,6 +201,14 @@ footer{border-top:1px solid var(--line2);padding:56px 0 40px;color:var(--gray);f
   .out{padding:28px}
 }
 </style>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0B0B0C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Clausa">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="img/icones/apple-touch-icon.png">
+<script src="js/instalar.js" defer></script>
 </head>
 <body>
 <div id="bar"></div>
@@ -220,7 +227,7 @@ footer{border-top:1px solid var(--line2);padding:56px 0 40px;color:var(--gray);f
     <span class="badge reveal"><i></i>Em desenvolvimento · teste grátis aberto</span>
     <h1>Saiba onde olhar <em>antes de assinar.</em></h1>
     <p class="lead reveal">A Clausa lê o contrato com você, aponta as cláusulas que merecem atenção e explica o motivo de cada uma. A decisão continua sendo sua, ou do seu advogado.</p>
-    <div class="ctas reveal"><a class="btn" href="app.html">Testar grátis <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn ghost" href="#como">Ver como funciona</a></div>
+    <div class="ctas reveal"><a class="btn" href="app.html">Testar grátis <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn ghost" href="#como">Ver como funciona</a><button class="btn ghost" type="button" data-instalar hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Instalar app</button></div>
     <ul class="trust reveal">
       <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Sem cadastro para testar</li>
       <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Sem login, o texto fica só no seu aparelho</li>
@@ -367,7 +374,7 @@ footer{border-top:1px solid var(--line2);padding:56px 0 40px;color:var(--gray);f
 <footer><div class="wrap">
   <div class="fgrid">
     <div><a class="logo" href="#topo" style="margin:0">Clausa<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="6.4" r="1.9" fill="currentColor" stroke="none"/><path d="M24 7.5 V37.5"/><path d="M9.5 14 H38.5"/><path d="M9.5 14 V17"/><path d="M4.8 17 Q9.5 23.6 14.2 17"/><path d="M38.5 14 V17"/><path d="M33.8 17 Q38.5 23.6 43.2 17"/><path d="M17.5 37.5 H30.5"/></svg></a><p>Revise antes de assinar. Projeto em desenvolvimento, feito no Brasil.</p></div>
-    <div><h4>Produto</h4><a href="app.html">Testar grátis</a><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="entrar.html">Entrar</a></div>
+    <div><h4>Produto</h4><a href="app.html">Testar grátis</a><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="entrar.html">Entrar</a><a href="#" data-instalar hidden>Instalar app</a></div>
     <div><h4>Contato</h4><a href="#lista">Piloto com escritórios</a><a href="https://clausa-fawn.vercel.app/" target="_blank" rel="noopener">Questionário ↗</a><a href="https://www.instagram.com/pedrom.holanda/" target="_blank" rel="noopener">Instagram ↗</a></div>
     <div><h4>Legal</h4><a href="privacidade.html">Privacidade</a><a href="termos.html">Termos de uso</a></div>
   </div>
