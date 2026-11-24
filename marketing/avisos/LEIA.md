@@ -19,3 +19,6 @@ ffmpeg -framerate 60 -i quadros/f%05d.jpg -i trilha.wav -af "loudnorm=I=-14.5:TP
 Cortados por base fraca ou discutível: consumação mínima, valor mínimo no cartão (Lei 13.455/2017 permite preço diferenciado).
 
 Sugestão: pedir revisão do estudante de Direito antes de publicar e convidá-lo como colaborador.
+
+## Versão narrada (voz Matheus, ElevenLabs)
+`avisos-narrado.html` + `locucao-matheus.mp3` → `avisos-narrado.mp4` (46,8 s). Tempos de cada placa e carimbo tirados da transcrição (Whisper large-v3); música abaixa sozinha quando a voz fala (sidechain). Marcar como conteúdo gerado por IA no Instagram.
