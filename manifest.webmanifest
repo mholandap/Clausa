@@ -1,0 +1,23 @@
+{
+  "name": "Clausa: revise antes de assinar",
+  "short_name": "Clausa",
+  "description": "Cole um contrato e veja as cláusulas que merecem atenção, com o motivo e uma sugestão.",
+  "lang": "pt-BR",
+  "start_url": "app.html?origem=app",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0B0C",
+  "theme_color": "#0B0B0C",
+  "categories": ["productivity", "business"],
+  "icons": [
+    {"src": "img/icones/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "img/icones/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "img/icones/icone-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable"},
+    {"src": "img/icones/icone-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "screenshots": [
+    {"src": "img/app-celular.jpg", "sizes": "780x1600", "type": "image/jpeg", "form_factor": "narrow", "label": "Revisão de um contrato no celular"},
+    {"src": "img/app-revisao.jpg", "sizes": "2560x1600", "type": "image/jpeg", "form_factor": "wide", "label": "Revisão de um contrato no computador"}
+  ]
+}
