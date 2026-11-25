@@ -71,7 +71,7 @@
   <canvas id="cvTr"></canvas>
   <div id="varredura"></div>
 
-  <div id="topo"><span class="ponto"></span><span id="hora">07:00</span><span id="data">QUA · 25 NOV</span><span>CLAUSA // PAINEL DO DIA</span><span class="esp"></span><span id="estado">SISTEMA ONLINE</span><span id="mic">MIC: DESLIGADO</span><span id="versao" style="color:#4a3426">V9</span></div>
+  <div id="topo"><span class="ponto"></span><span id="hora">07:00</span><span id="data">QUA · 25 NOV</span><span>CLAUSA // PAINEL DO DIA</span><span class="esp"></span><span id="estado">SISTEMA ONLINE</span><span id="mic">MIC: DESLIGADO</span><span id="versao" style="color:#4a3426">V10</span></div>
   <div id="ouviu" style="display:none;position:absolute;right:3vw;top:8vh;max-width:40vw;font:500 .9vw 'JetBrains Mono';color:#FFC08A;background:rgba(0,0,0,.6);padding:.4vw .7vw;border-radius:6px;z-index:9"></div>
 
   <svg width="0" height="0" style="position:absolute"><defs>
@@ -125,14 +125,14 @@ const $=s=>document.querySelector(s),NS='http://www.w3.org/2000/svg',ease=x=>x<=
 const el=(tag,attrs,pai)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);pai&&pai.appendChild(e);return e};
 
 // ---------- Linha do tempo: cada fala começa logo depois da anterior (duração real de cada áudio) ----------
-const DURA={'01':5.25,'02':10.68,'03':10.03,'04':7.16,'05':7.16,'07':10.45,'08':3.40,'09':3.71,'10':0.76,'11':3.71};
+const DURA={'01':5.25,'02':10.68,'03':10.03,'04':7.16,'05':7.16,'07':10.45,'08':3.40,'08b':1.9,'09':3.71,'10':0.76,'11':3.71};
 const G=.2; // pausa entre falas
 const T={};{let t=.15;
   T.acende=t;t+=DURA['01']+G; T.c0=t;t+=DURA['02']+G; T.c1=t;T.c2=t+5.1;t+=DURA['03']+G; T.c3=t;t+=DURA['04']+G;
-  T.c4=t;t+=DURA['05']+G; T.c6=t;t+=DURA['07']+G; T.c7=t;t+=DURA['08']; T.espera=t+.05;
+  T.c4=t;t+=DURA['05']+G; T.c6=t;t+=DURA['07']+G; T.c7=t;t+=DURA['08']+.35; T.c7b=t;t+=DURA['08b']; T.espera=t+.05;
   T.pronto=T.espera+1.1; T.pedro=T.pronto+DURA['09']+.9; T.f11=T.pedro+DURA['10']+1.0; T.fim=T.f11+DURA['11']+.3}
 window.DUR=T.fim+4;
-const FALAS=[[T.acende,'01'],[T.c0,'02'],[T.c1,'03'],[T.c3,'04'],[T.c4,'05'],[T.c6,'07'],[T.c7,'08'],[T.pronto,'09'],[T.pedro,'10'],[T.f11,'11']];
+const FALAS=[[T.acende,'01'],[T.c0,'02'],[T.c1,'03'],[T.c3,'04'],[T.c4,'05'],[T.c6,'07'],[T.c7,'08'],[T.c7b,'08b'],[T.pronto,'09'],[T.pedro,'10'],[T.f11,'11']];
 const audios=FALAS.map(([t,n])=>{const a=new Audio('audio/'+n+'.mp3');a.preload='auto';a.onerror=()=>{a.falhou=true};return {t,n,a,tocou:false}});
 const LEG={"01":[[["Bom",0.0],["dia,",0.22],["Pedro.",0.58]],[["O",1.42],["mundo",1.58],["não",1.86],["parou",2.2],["enquanto",2.74],["você",2.98],["dormia.",3.38]],[["Vamos",4.42],["lá.",4.72]]],"02":[[["Lá",0.0],["fora,",0.28],["em",1.12],["Brasília,",1.22],["faz",2.14],["23",2.32],["graus.",3.06]],[["Hoje",4.42],["vai",4.7],["de",4.92],["23",5.08],["a",5.74],["31.",5.96]],[["A",6.96],["chance",7.12],["de",7.32],["chuva",7.52],["é",7.98],["de",8.04],["43%.",8.14]]],"03":[[["No",0.0],["Instagram,",0.84],["o",1.62],["Reel",1.7],["de",1.9],["ontem",2.1],["teve",2.46]],[["69",2.68],["curtidas",3.5],["e",4.24],["28",4.46],["comentários.",5.04]],[["4",6.2],["em",6.5],["cada",6.68],["10",6.94],["pessoas",7.34],["que",7.78],["assistiram",7.96]],[["ainda",8.54],["não",8.86],["te",9.18],["seguem.",9.34]]],"04":[[["No",0.0],["LinkedIn,",0.18],["duas",1.14],["advogadas",1.5],["responderam.",2.14]],[["Uma",3.28],["vai",3.52],["testar",3.72],["o",4.1],["Clausa",4.14],["esta",4.54],["semana,",4.72]],[["a",5.68],["outra",5.84],["pediu",6.12],["o",6.56],["link.",6.66]]],"05":[[["Ontem",0.0],["foram",0.42],["15",0.66],["melhorias",1.14],["publicadas",1.78],["no",2.34],["Clausa.",2.48]],[["Agora",3.72],["ele",4.32],["instala",4.64],["no",5.02],["celular,",5.16],["como",5.8],["um",6.12]],[["aplicativo.",6.24]]],"07":[[["Agora,",0.0],["a",0.9],["dica",0.94],["do",1.24],["dia.",1.38]],[["Multa",2.8],["de",3.4],["contrato",3.5],["exagerada",4.0],["pode",4.68],["ser",4.94],["reduzida",5.22]],[["pelo",5.9],["juiz.",6.12]],[["Está",6.98],["no",7.32],["artigo",7.48],["413",7.84],["do",9.14],["Código",9.46],["Civil.",9.82]]],"08":[[["Quer",0.0],["que",0.18],["eu",0.36],["prepare",0.42],["a",0.76],["mensagem",0.9],["para",1.44]],[["a",1.74],["advogada",1.86],["que",2.42],["vai",2.54],["testar?",2.66]]],"09":[[["Pronto,",0.0],["Pedro.",0.58]],[["A",1.28],["mensagem",1.38],["está",1.9],["esperando",2.16],["a",2.58],["sua",2.82],["revisão.",2.96]]],"10":[[["Pedro?",0.0]]],"11":[[["Me",0.0],["deixou",0.32],["falando",0.78],["sozinho,",1.12],["de",2.6],["novo.",2.86]]]};
 const textoMsg='Oi! Só passando para saber se você conseguiu testar o Clausa. Qualquer impressão já me ajuda muito.';
@@ -220,7 +220,7 @@ window.render=(t,real=t)=>{
   mostra($('#c6'),t,T.c6,T.c7-.4);
   mostra($('#c7'),t,T.c7,T.pedro+2);
   const pisca='<span id="cursor" style="opacity:'+(Math.floor(real*2.5)%2?1:0)+'"></span>';
-  if(t<T.espera||esperando){$('#r7').textContent=esperando?'● OUVINDO…':'JARVIS';$('#t7').innerHTML='Quer que eu prepare a mensagem para a advogada que vai testar?'+pisca}
+  if(t<T.espera||esperando){$('#r7').textContent=esperando?'● OUVINDO…':'JARVIS';$('#t7').innerHTML='Quer que eu prepare a mensagem para a advogada que vai testar?'+(t>=T.c7b||esperando?'<br><span style="color:var(--claro)">O dia é seu, senhor.</span>':'')+pisca}
   else{const n=Math.max(0,Math.min(textoMsg.length,Math.floor((t-T.espera)*95)));$('#t7').innerHTML=textoMsg.slice(0,n)+pisca;
     $('#r7').textContent=t>=T.pronto?'✓ PRONTO PARA REVISAR':'RASCUNHO · MENSAGEM PARA A ADVOGADA'}
   $('#r7').style.color=t>=T.pronto?'var(--verde)':'var(--lar)';
