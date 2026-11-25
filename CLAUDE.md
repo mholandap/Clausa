@@ -29,6 +29,8 @@ Projeto do Pedro (GitHub `mholandap`, Instagram `@pedrom.holanda`). Clausa = app
 - Rascunho (não sai): anúncio com voz do Matheus "Comecei a construir uma coisa".
 
 ## Pendente
+- **Jarvis (resumo diário automático):** tarefa agendada que lê o Gmail conectado (cadastros do site, alertas do Supabase, avisos de conta, respostas do LinkedIn), o Metricool (posts de ontem, agenda de hoje) e o status do banco, e manda notificação no celular. Nunca envia e-mail (só rascunho), nunca publica, nunca apaga. Pendente do Pedro: horário (sugestão 8h) e apontar o Formspree para o mesmo e-mail que está conectado.
+- **Reel "Bom dia, Jarvis"** (referência no Drive, pasta `0 - Referências`, vídeo de 74 s enviado em 24/11): Pedro de lado/costas no escuro diz "Bom dia, Jarvis"; voz de IA (ElevenLabs, voz diferente do Matheus) lê o resumo REAL do dia; termina com "Me deixou falando sozinho de novo." Eu crio a tela HUD nas cores do Clausa para ele exibir no monitor, legenda palavra por palavra, "BOM DIA, JARVIS" fixo no topo. Pendente: Pedro topar gravar (ou falas só escritas) e gerar a voz.
 - Reel com foto/print do Claude trabalhando no LinkedIn: legenda sóbria nas cores do Clausa; Pedro vai mandar inspiração e a foto no Drive. Desfocar dados de terceiros.
 - Stories da semana (ideias: chamada para o post das 18h; enquete dos 5 avisos; "instale o app"; time-lapse). Figurinhas de link/enquete o Pedro adiciona à mão.
 - Time-lapse da gravação que o Pedro fez de si mesmo em 24/11 (ele vai mandar).
