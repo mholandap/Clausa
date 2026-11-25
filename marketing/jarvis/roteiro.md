@@ -23,7 +23,7 @@ Formato da referência (vídeo de 74 s no Drive, `0 - Referências`): quarto esc
 | 6 | **Jarvis** | Ontem foram quinze melhorias publicadas no Clausa. Agora ele instala no celular, como um aplicativo. | Contador subindo até 15; ícone do app. |
 | ~~7~~ | **Jarvis** | *(cortada na gravação de 25/11)* Hoje, às dez e cinco, sai o Reel dos cinco avisos que não valem nada. | Cartão "AGENDA": 10:05, 5 avisos. |
 | 8 | **Jarvis** | Agora, a dica do dia. Multa de contrato exagerada pode ser reduzida pelo juiz. Está no artigo quatrocentos e treze do Código Civil. | Cartão "DICA": art. 413 do Código Civil. |
-| 9 | **Jarvis** | Quer que eu prepare a mensagem para a advogada que vai testar? | Cursor piscando num rascunho. |
+| 9 | **Jarvis** | Quer que eu prepare a mensagem para a advogada que vai testar? O dia é seu, senhor. | Cursor piscando num rascunho. |
 | 10 | **Pedro** | Prepara. E me lembra às seis de responder os comentários. Valeu. | Pedro pega o café e se levanta. |
 | 11 | **Jarvis** | Pronto, Pedro. A mensagem está esperando a sua revisão. | Rascunho "PRONTO PARA REVISAR". |
 | 12 | **Jarvis** | Pedro? | Cadeira vazia. |
@@ -75,6 +75,10 @@ Agora, a dica do dia. Multa de contrato exagerada pode ser reduzida pelo juiz. E
 ```
 Quer que eu prepare a mensagem para a advogada que vai testar?
 ```
+```
+O dia é seu, senhor.
+```
+(salvar como `08b.mp3`)
 ```
 Pronto, Pedro. A mensagem está esperando a sua revisão.
 ```
