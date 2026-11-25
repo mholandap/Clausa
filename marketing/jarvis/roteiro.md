@@ -49,7 +49,7 @@ Formato da referência (vídeo de 74 s no Drive, `0 - Referências`): quarto esc
 
 ## Texto só do Jarvis (para colar no ElevenLabs)
 
-Gerar cada bloco separado: fica mais fácil encaixar as pausas.
+Gerar cada bloco separado e salvar como `01.mp3`, `02.mp3`… na ordem abaixo.
 
 ```
 Bom dia, Pedro. O mundo não parou enquanto você dormia. Vamos lá.
@@ -90,7 +90,19 @@ Números por extenso de propósito: a voz lê melhor.
 ---
 
 ## Tela do monitor
-Abrir no notebook: https://mholandap.github.io/Clausa/marketing/jarvis/tela.html, apertar **F11** (tela cheia) e depois **espaço** para começar (**R** reinicia). Ela anda sozinha, no ritmo do roteiro (~69 s): saudação, Instagram, LinkedIn, Clausa, agenda, dica, rascunho e logo no fim. A hora é a real do computador. Aperte espaço logo depois de dizer "Bom dia, Jarvis".
+Link: https://mholandap.github.io/Clausa/marketing/jarvis/tela.html (usar o **Chrome**).
+
+1. Abra o link e **clique uma vez** na tela. O Chrome pede o microfone: permita. No topo aparece "● OUVINDO".
+2. Aperte **F11** (tela cheia).
+3. Comece a gravar no celular e diga **"Bom dia, Jarvis"**: a tela acende sozinha.
+4. Ela anda no ritmo do roteiro e **para na pergunta** ("Quer que eu prepare a mensagem…?"), mostrando "OUVINDO…".
+5. Diga **"Prepara…"**: ela continua, digita a mensagem, mostra "PRONTO PARA REVISAR", chama "Pedro?" e fecha com o logo.
+
+Sem microfone, o **espaço** faz as duas coisas (começar e continuar). **R** reinicia.
+
+**Voz ao vivo:** gere as 11 falas no ElevenLabs e salve em `marketing/jarvis/audio/` como `01.mp3` a `11.mp3`, na ordem dos blocos abaixo (ou me mande e eu coloco). Aí o Jarvis fala pelo alto-falante na hora certa. Na edição eu troco pelo áudio limpo, sem eco do quarto.
+
+Limites: ele só reconhece essas duas frases. As respostas são gravadas, não é conversa livre.
 
 ## Como gravar (Pedro)
 1. Quarto escuro, só o monitor e uma luz quente pequena de lado (abajur ou luminária). A referência funciona porque o rosto quase não aparece.
