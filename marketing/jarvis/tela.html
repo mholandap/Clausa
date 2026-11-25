@@ -1,0 +1,103 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Jarvis</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700;900&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#0B0B0C;--card:#161617;--linha:#2A2A2D;--txt:#FAFAFA;--cinza:#9B9B9E;--lar:#FF8A33;--selo:#E2590B;--verde:#5FB58C}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:Inter,sans-serif;overflow:hidden;cursor:none}
+#palco{position:fixed;inset:0}
+.grade{position:absolute;inset:0;background-image:linear-gradient(rgba(255,138,51,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,138,51,.05) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%)}
+#topo{position:absolute;left:4vw;top:4vh;display:flex;gap:2.4vw;align-items:center;font:600 1.1vw Inter;color:var(--cinza);letter-spacing:.12em}
+#hora{font:700 2.6vw "Inter Tight";color:var(--txt);letter-spacing:-.02em}
+.ponto{width:.7vw;height:.7vw;border-radius:50%;background:var(--lar);box-shadow:0 0 14px var(--lar)}
+#nucleo{position:absolute;left:50%;top:50%;width:34vh;height:34vh;transform:translate(-50%,-50%)}
+#nucleo svg{width:100%;height:100%;overflow:visible}
+#saud{position:absolute;left:50%;top:calc(50% + 22vh);transform:translateX(-50%);font:900 3.4vw/1 "Inter Tight";letter-spacing:-.045em;white-space:nowrap}
+#saud b{color:var(--lar)}
+.card{position:absolute;width:24vw;padding:1.6vw 1.8vw;background:rgba(22,22,23,.88);border:1px solid var(--linha);border-radius:18px;opacity:0}
+.card::before{content:"";position:absolute;left:0;top:18%;bottom:18%;width:3px;border-radius:3px;background:var(--lar)}
+.rot{font:600 .85vw Inter;letter-spacing:.16em;color:var(--lar);margin-bottom:.8vw}
+.num{font:900 3.6vw/1 "Inter Tight";letter-spacing:-.04em}
+.sub{font:500 1vw/1.4 Inter;color:var(--cinza);margin-top:.5vw}
+.linha2{display:flex;gap:2vw}
+.barra{height:.8vw;border-radius:1vw;background:var(--linha);overflow:hidden;margin-top:1vw;display:flex}
+.barra i{display:block;height:100%}
+.e{left:4vw}.d{right:4vw}
+#c1{top:16vh}#c2{top:46vh}#c3{top:16vh}#c4{top:46vh}#c5{top:76vh}#c6,#c7{left:50%;top:68vh;width:46vw;text-align:center}#c6::before,#c7::before{display:none}
+#c6 .lei{font-size:2.3vw}#c7 .lei{font-size:1.5vw!important}
+.lei{font:700 1.5vw/1.3 "Inter Tight";letter-spacing:-.01em}
+#cursor{display:inline-block;width:.15vw;height:1.2vw;background:var(--lar);vertical-align:-.15vw;margin-left:.2vw}
+#fim{position:absolute;inset:0;background:var(--bg);opacity:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5vw}
+#fim .marca{font:900 4vw "Inter Tight";letter-spacing:-.045em}
+#fim .arroba{font:500 1.3vw Inter;color:var(--cinza)}
+#dica{position:absolute;bottom:2vh;left:50%;transform:translateX(-50%);font:500 .9vw Inter;color:#55555a}
+</style></head><body>
+<div id="palco">
+  <div class="grade"></div>
+  <div id="topo"><span class="ponto"></span><span id="hora">07:00</span><span id="data">QUA · 25 NOV</span><span>CLAUSA · PAINEL DO DIA</span></div>
+  <div id="nucleo"><svg viewBox="-200 -200 400 400">
+    <circle r="190" fill="none" stroke="#2A2A2D" stroke-width="1"/>
+    <g id="anel1"><circle r="170" fill="none" stroke="#FF8A33" stroke-width="3" stroke-dasharray="4 14" opacity=".7"/></g>
+    <g id="anel2"><circle r="145" fill="none" stroke="#FF8A33" stroke-width="10" stroke-dasharray="120 60 30 60" opacity=".35"/></g>
+    <circle id="onda" r="120" fill="none" stroke="#FF8A33" stroke-width="2"/>
+    <circle r="112" fill="#161617" stroke="#2A2A2D"/>
+    <g id="balanca" transform="translate(-256,-250)" fill="none" stroke="#FF8A33" stroke-width="13" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M256 160V330"/><path d="M220 330H292"/><path d="M175 216V196H337V216"/><path d="M150 212Q176 252 202 212"/><path d="M310 212Q336 252 362 212"/>
+      <circle cx="256" cy="150" r="10" fill="#FF8A33" stroke="none"/></g>
+  </svg></div>
+  <div id="saud">Bom dia, <b>Pedro</b>.</div>
+
+  <div class="card e" id="c1"><div class="rot">INSTAGRAM · REEL DE ONTEM</div>
+    <div class="linha2"><div><div class="num" data-n="41">0</div><div class="sub">curtidas</div></div><div><div class="num" data-n="21">0</div><div class="sub">comentários</div></div></div></div>
+  <div class="card e" id="c2"><div class="rot">QUEM ASSISTIU</div>
+    <div class="linha2"><div><div class="num">59%</div><div class="sub">seguidores</div></div><div><div class="num" style="color:var(--lar)">41%</div><div class="sub">ainda não seguem</div></div></div>
+    <div class="barra"><i id="b1" style="background:#9B9B9E;width:0"></i><i id="b2" style="background:var(--lar);width:0"></i></div></div>
+  <div class="card d" id="c3"><div class="rot">LINKEDIN · RESPOSTAS</div>
+    <div class="num" data-n="2">0</div><div class="sub">advogadas responderam<br>1 vai testar esta semana · 1 pediu o link</div></div>
+  <div class="card d" id="c4"><div class="rot">CLAUSA · ONTEM</div>
+    <div class="num" data-n="15">0</div><div class="sub">melhorias publicadas<br>agora instala no celular, como app</div></div>
+  <div class="card d" id="c5"><div class="rot">AGENDA · HOJE</div>
+    <div class="num">10:05</div><div class="sub">Reel "5 avisos que não valem nada"</div></div>
+  <div class="card" id="c6"><div class="rot">DICA DO DIA</div>
+    <div class="lei">Multa de contrato exagerada pode ser reduzida pelo juiz.</div><div class="sub">Código Civil, art. 413</div></div>
+  <div class="card" id="c7"><div class="rot" id="r7">RASCUNHO</div>
+    <div class="lei" style="font-size:1.1vw" id="t7"></div></div>
+  <div id="fim"><svg viewBox="100 100 312 270" style="width:7vw"><g fill="none" stroke="#FF8A33" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"><path d="M256 146V345"/><path d="M212 345H300"/><path d="M157 212V186H355V212"/><path d="M128 207Q160 258 192 207"/><path d="M320 207Q352 258 384 207"/></g><circle cx="256" cy="136" r="12" fill="#FF8A33"/></svg>
+    <div class="marca">Clausa</div><div class="arroba">@pedrom.holanda</div></div>
+  <div id="dica">Tela cheia: F11 · Começar: espaço · Reiniciar: R</div>
+</div>
+<script>
+// Linha do tempo (segundos) casada com o roteiro.md. A voz do Jarvis é encaixada depois nestes tempos.
+const T={acende:1.5,c1:6,c2:11,c3:15.5,c4:22,c5:28.5,c6:33.5,c7:43,pronto:51,pedro:55,fim:59};
+window.DUR=64;
+const $=s=>document.querySelector(s),ease=x=>x<=0?0:x>=1?1:1-Math.pow(1-x,3);
+const textoMsg='Oi! Só passando para saber se você conseguiu testar o Clausa. Qualquer impressão já me ajuda muito.';
+function mostra(el,t,ini,fimT){let k=ease((t-ini)/.6);if(fimT!==undefined)k*=1-ease((t-fimT)/.6);el.style.opacity=k;
+  const base=(el.id==='c6'||el.id==='c7')?'translateX(-50%) ':'';el.style.transform=base+`translateY(${(1-k)*20}px)`;return k}
+function conta(el,t,ini){el.querySelectorAll('[data-n]').forEach(n=>{n.textContent=Math.round(+n.dataset.n*ease((t-ini-.2)/1.2))})}
+window.render=t=>{
+  const luz=ease((t-T.acende)/1.2)*(1-ease((t-T.fim)/1.5));
+  $('#nucleo').style.opacity=.25+.75*luz;
+  $('#anel1').setAttribute('transform',`rotate(${t*12})`);$('#anel2').setAttribute('transform',`rotate(${-t*7})`);
+  const p=(t*.9)%1;$('#onda').setAttribute('r',112+p*80*luz);$('#onda').style.opacity=(1-p)*.8*luz;
+  const s=$('#saud');s.style.opacity=ease((t-T.acende-.3)/.8)*(1-ease((t-T.c1)/.6));
+  mostra($('#c1'),t,T.c1,T.c6-1);conta($('#c1'),t,T.c1);
+  mostra($('#c2'),t,T.c2,T.c6-1);$('#b1').style.width=59*ease((t-T.c2-.3)/1.2)+'%';$('#b2').style.width=41*ease((t-T.c2-.3)/1.2)+'%';
+  mostra($('#c3'),t,T.c3,T.c6-1);conta($('#c3'),t,T.c3);
+  mostra($('#c4'),t,T.c4,T.c6-1);conta($('#c4'),t,T.c4);
+  mostra($('#c5'),t,T.c5,T.c6-1);
+  mostra($('#c6'),t,T.c6,T.c7-.5);
+  mostra($('#c7'),t,T.c7,T.pedro);
+  const n=Math.max(0,Math.min(textoMsg.length,Math.floor((t-T.c7-.6)*22)));
+  $('#t7').innerHTML=textoMsg.slice(0,n)+'<span id="cursor" style="opacity:'+(Math.floor(t*2)%2?1:0)+'"></span>';
+  $('#r7').textContent=t>=T.pronto?'✓ PRONTO PARA REVISAR':'RASCUNHO · MENSAGEM PARA A ADVOGADA';
+  $('#r7').style.color=t>=T.pronto?'var(--verde)':'var(--lar)';
+  $('#fim').style.opacity=ease((t-T.fim)/1.5);
+  const d=new Date();$('#data').textContent=d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'}).replace(/\./g,'').replace(',',' ·').toUpperCase();$('#hora').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+};
+let t0=null;
+function loop(){render(t0===null?0:(performance.now()-t0)/1000);requestAnimationFrame(loop)}
+addEventListener('keydown',e=>{if(e.code==='Space'&&t0===null){t0=performance.now();$('#dica').style.display='none'}
+  if(e.key==='r'||e.key==='R'){t0=null;$('#dica').style.display=''}});
+addEventListener('click',()=>{if(t0===null){t0=performance.now();$('#dica').style.display='none'}});
+if(!navigator.webdriver)loop();else render(0);
+</script></body></html>

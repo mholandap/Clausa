@@ -84,6 +84,9 @@ Números por extenso de propósito: a voz lê melhor.
 
 ---
 
+## Tela do monitor
+Abrir no notebook: https://mholandap.github.io/Clausa/marketing/jarvis/tela.html, apertar **F11** (tela cheia) e depois **espaço** para começar (**R** reinicia). Ela anda sozinha, no ritmo do roteiro (~64 s): saudação, Instagram, LinkedIn, Clausa, agenda, dica, rascunho e logo no fim. A hora é a real do computador. Aperte espaço logo depois de dizer "Bom dia, Jarvis".
+
 ## Como gravar (Pedro)
 1. Quarto escuro, só o monitor e uma luz quente pequena de lado (abajur ou luminária). A referência funciona porque o rosto quase não aparece.
 2. Celular **na vertical**, apoiado, atrás e um pouco acima do ombro, pegando você de lado e o monitor inteiro.
