@@ -16,6 +16,7 @@ Formato da referência (vídeo de 74 s no Drive, `0 - Referências`): quarto esc
 |---|---|---|---|
 | 1 | **Pedro** | Bom dia, Jarvis. | Pedro entra no quadro, de lado, e liga o monitor. A tela acende. |
 | 2 | **Jarvis** | Bom dia, Pedro. O mundo não parou enquanto você dormia. Vamos lá. | Círculo central pulsando (a balança do Clausa no meio). |
+| 2b | **Jarvis** | Lá fora, em Brasília, faz vinte e três graus. Hoje vai de vinte e três a trinta e um. A chance de chuva é de quarenta e três por cento. | Cartão "BRASÍLIA": 23°, 23–31°, 43%. |
 | 3 | **Jarvis** | No Instagram, o Reel de ontem teve quarenta e uma curtidas e vinte e um comentários. | Cartão "INSTAGRAM": 41 curtidas, 21 comentários. |
 | 4 | **Jarvis** | Quatro em cada dez pessoas que assistiram ainda não te seguem. | Barra 59% seguidores / 41% não seguidores. |
 | 5 | **Jarvis** | No LinkedIn, duas advogadas responderam. Uma vai testar o Clausa esta semana. A outra pediu o link. | Cartão "LINKEDIN": 2 respostas. **Sem nomes.** |
@@ -32,11 +33,12 @@ Formato da referência (vídeo de 74 s no Drive, `0 - Referências`): quarto esc
 - 41 curtidas, 21 comentários e 59/41%: print dos Insights que o Pedro mandou em 24/11, às 19h.
 - Duas advogadas: retornos que o Pedro contou em 24/11 (uma vai testar na semana, uma advogada solo pediu o link).
 - 15 melhorias: 15 mudanças (pull requests #11 a #25) publicadas no `main` em 24/11, incluindo o app instalável (#22 e #23).
+- Clima: previsão de Brasília (wttr.in) às 8h de 25/11: 23 °C agora, mínima 23, máxima 31, até 43% de chance de chuva. **Muda todo dia: conferir na hora de gravar.**
 - Agenda: Metricool, "5 avisos" agendado para 25/11, às 10h05.
 - Dica: Código Civil, art. 413: "A penalidade deve ser reduzida equitativamente pelo juiz se a obrigação principal tiver sido cumprida em parte, ou se o montante da penalidade for manifestamente excessivo". https://www.planalto.gov.br/ccivil_03/leis/2002/l10406compilada.htm
 - Mensagem para a advogada: está pronta em `mensagem-acompanhamento.md`, ou seja, a fala 11 também é verdade.
 
-**Se gravar em outro dia:** atualizar as falas 3 a 7 com os números do dia (eu refaço em 5 minutos). A fala 8 pode trocar por outra dica com artigo (sugestões abaixo).
+**Se gravar em outro dia:** atualizar as falas 2b a 7 com os números do dia (eu refaço em 5 minutos). A fala 8 pode trocar por outra dica com artigo (sugestões abaixo).
 
 ### Dicas reserva (todas com fonte)
 - "Comprou pela internet? Você tem sete dias para desistir. Artigo quarenta e nove do Código de Defesa do Consumidor."
@@ -51,6 +53,9 @@ Gerar cada bloco separado: fica mais fácil encaixar as pausas.
 
 ```
 Bom dia, Pedro. O mundo não parou enquanto você dormia. Vamos lá.
+```
+```
+Lá fora, em Brasília, faz vinte e três graus. Hoje vai de vinte e três a trinta e um. A chance de chuva é de quarenta e três por cento.
 ```
 ```
 No Instagram, o Reel de ontem teve quarenta e uma curtidas e vinte e um comentários. Quatro em cada dez pessoas que assistiram ainda não te seguem.
@@ -85,7 +90,7 @@ Números por extenso de propósito: a voz lê melhor.
 ---
 
 ## Tela do monitor
-Abrir no notebook: https://mholandap.github.io/Clausa/marketing/jarvis/tela.html, apertar **F11** (tela cheia) e depois **espaço** para começar (**R** reinicia). Ela anda sozinha, no ritmo do roteiro (~64 s): saudação, Instagram, LinkedIn, Clausa, agenda, dica, rascunho e logo no fim. A hora é a real do computador. Aperte espaço logo depois de dizer "Bom dia, Jarvis".
+Abrir no notebook: https://mholandap.github.io/Clausa/marketing/jarvis/tela.html, apertar **F11** (tela cheia) e depois **espaço** para começar (**R** reinicia). Ela anda sozinha, no ritmo do roteiro (~69 s): saudação, Instagram, LinkedIn, Clausa, agenda, dica, rascunho e logo no fim. A hora é a real do computador. Aperte espaço logo depois de dizer "Bom dia, Jarvis".
 
 ## Como gravar (Pedro)
 1. Quarto escuro, só o monitor e uma luz quente pequena de lado (abajur ou luminária). A referência funciona porque o rosto quase não aparece.

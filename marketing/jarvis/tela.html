@@ -22,7 +22,8 @@
 .barra{height:.8vw;border-radius:1vw;background:var(--linha);overflow:hidden;margin-top:1vw;display:flex}
 .barra i{display:block;height:100%}
 .e{left:4vw}.d{right:4vw}
-#c1{top:16vh}#c2{top:46vh}#c3{top:16vh}#c4{top:46vh}#c5{top:76vh}#c6,#c7{left:50%;top:68vh;width:46vw;text-align:center}#c6::before,#c7::before{display:none}
+#c1{top:16vh}#c2{top:46vh}#c3{top:16vh}#c4{top:46vh}#c5{top:76vh}#c0{left:50%;top:68vh;width:46vw}#c0 .linha2{justify-content:center;gap:4vw}#c0::before{display:none}#c0 .rot{text-align:center}
+#c6,#c7{left:50%;top:68vh;width:46vw;text-align:center}#c6::before,#c7::before{display:none}
 #c6 .lei{font-size:2.3vw}#c7 .lei{font-size:1.5vw!important}
 .lei{font:700 1.5vw/1.3 "Inter Tight";letter-spacing:-.01em}
 #cursor{display:inline-block;width:.15vw;height:1.2vw;background:var(--lar);vertical-align:-.15vw;margin-left:.2vw}
@@ -46,6 +47,8 @@
   </svg></div>
   <div id="saud">Bom dia, <b>Pedro</b>.</div>
 
+  <div class="card" id="c0"><div class="rot">BRASÍLIA · AGORA</div>
+    <div class="linha2"><div><div class="num"><span data-n="23">0</span>°</div><div class="sub">agora</div></div><div><div class="num">23–31°</div><div class="sub">hoje</div></div><div><div class="num" style="color:var(--lar)"><span data-n="43">0</span>%</div><div class="sub">chance de chuva</div></div></div></div>
   <div class="card e" id="c1"><div class="rot">INSTAGRAM · REEL DE ONTEM</div>
     <div class="linha2"><div><div class="num" data-n="41">0</div><div class="sub">curtidas</div></div><div><div class="num" data-n="21">0</div><div class="sub">comentários</div></div></div></div>
   <div class="card e" id="c2"><div class="rot">QUEM ASSISTIU</div>
@@ -67,19 +70,20 @@
 </div>
 <script>
 // Linha do tempo (segundos) casada com o roteiro.md. A voz do Jarvis é encaixada depois nestes tempos.
-const T={acende:1.5,c1:6,c2:11,c3:15.5,c4:22,c5:28.5,c6:33.5,c7:43,pronto:51,pedro:55,fim:59};
-window.DUR=64;
+const T={acende:1.5,c0:6,c1:11,c2:16,c3:20.5,c4:27,c5:33.5,c6:38.5,c7:48,pronto:56,pedro:60,fim:64};
+window.DUR=69;
 const $=s=>document.querySelector(s),ease=x=>x<=0?0:x>=1?1:1-Math.pow(1-x,3);
 const textoMsg='Oi! Só passando para saber se você conseguiu testar o Clausa. Qualquer impressão já me ajuda muito.';
 function mostra(el,t,ini,fimT){let k=ease((t-ini)/.6);if(fimT!==undefined)k*=1-ease((t-fimT)/.6);el.style.opacity=k;
-  const base=(el.id==='c6'||el.id==='c7')?'translateX(-50%) ':'';el.style.transform=base+`translateY(${(1-k)*20}px)`;return k}
+  const base=(el.id==='c6'||el.id==='c7'||el.id==='c0')?'translateX(-50%) ':'';el.style.transform=base+`translateY(${(1-k)*20}px)`;return k}
 function conta(el,t,ini){el.querySelectorAll('[data-n]').forEach(n=>{n.textContent=Math.round(+n.dataset.n*ease((t-ini-.2)/1.2))})}
 window.render=t=>{
   const luz=ease((t-T.acende)/1.2)*(1-ease((t-T.fim)/1.5));
   $('#nucleo').style.opacity=.25+.75*luz;
   $('#anel1').setAttribute('transform',`rotate(${t*12})`);$('#anel2').setAttribute('transform',`rotate(${-t*7})`);
   const p=(t*.9)%1;$('#onda').setAttribute('r',112+p*80*luz);$('#onda').style.opacity=(1-p)*.8*luz;
-  const s=$('#saud');s.style.opacity=ease((t-T.acende-.3)/.8)*(1-ease((t-T.c1)/.6));
+  const s=$('#saud');s.style.opacity=ease((t-T.acende-.3)/.8)*(1-ease((t-T.c0)/.6));
+  mostra($('#c0'),t,T.c0,T.c1-.6);conta($('#c0'),t,T.c0);
   mostra($('#c1'),t,T.c1,T.c6-1);conta($('#c1'),t,T.c1);
   mostra($('#c2'),t,T.c2,T.c6-1);$('#b1').style.width=59*ease((t-T.c2-.3)/1.2)+'%';$('#b2').style.width=41*ease((t-T.c2-.3)/1.2)+'%';
   mostra($('#c3'),t,T.c3,T.c6-1);conta($('#c3'),t,T.c3);
