@@ -1,132 +1,240 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Jarvis</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700;900&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-:root{--bg:#0B0B0C;--card:#161617;--linha:#2A2A2D;--txt:#FAFAFA;--cinza:#9B9B9E;--lar:#FF8A33;--selo:#E2590B;--verde:#5FB58C}
+:root{--bg:#060607;--card:#161617;--linha:#2A2A2D;--txt:#FAFAFA;--cinza:#9B9B9E;--lar:#FF8A33;--claro:#FFC08A;--selo:#E2590B;--verde:#5FB58C}
 *{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:Inter,sans-serif;overflow:hidden;cursor:none}
-#palco{position:fixed;inset:0}
-.grade{position:absolute;inset:0;background-image:linear-gradient(rgba(255,138,51,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,138,51,.05) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%)}
-#topo{position:absolute;left:4vw;top:4vh;display:flex;gap:2.4vw;align-items:center;font:600 1.1vw Inter;color:var(--cinza);letter-spacing:.12em}
-#hora{font:700 2.6vw "Inter Tight";color:var(--txt);letter-spacing:-.02em}
-.ponto{width:.7vw;height:.7vw;border-radius:50%;background:var(--lar);box-shadow:0 0 14px var(--lar)}
-#nucleo{position:absolute;left:50%;top:50%;width:34vh;height:34vh;transform:translate(-50%,-50%)}
+#palco{position:fixed;inset:0;background:radial-gradient(ellipse 60% 70% at 50% 45%,#1d1009 0%,#0d0907 38%,#060607 75%)}
+.mono{font-family:"JetBrains Mono",monospace}
+#fundo,#trilhas{position:absolute;inset:0;width:100%;height:100%}
+#varredura{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 4px);pointer-events:none}
+#vinheta{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.75) 100%);pointer-events:none}
+#topo{position:absolute;left:3vw;right:3vw;top:3.2vh;display:flex;align-items:center;gap:2vw;font:600 .8vw "JetBrains Mono";color:var(--cinza);letter-spacing:.14em}
+#topo .ponto{width:.6vw;height:.6vw;border-radius:50%;background:var(--lar);box-shadow:0 0 12px var(--lar),0 0 30px var(--selo)}
+#hora{font:700 2.4vw "Inter Tight";letter-spacing:-.02em;background:linear-gradient(180deg,#fff,var(--claro));-webkit-background-clip:text;background-clip:text;color:transparent}
+#topo .esp{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,138,51,.5),transparent 60%)}
+#mic{color:var(--cinza)}
+#nucleo{position:absolute;left:50%;top:45%;width:58vh;height:58vh;transform:translate(-50%,-50%)}
 #nucleo svg{width:100%;height:100%;overflow:visible}
-#saud{position:absolute;left:50%;top:calc(50% + 22vh);transform:translateX(-50%);font:900 3.4vw/1 "Inter Tight";letter-spacing:-.045em;white-space:nowrap}
-#saud b{color:var(--lar)}
-.card{position:absolute;width:24vw;padding:1.6vw 1.8vw;background:rgba(22,22,23,.88);border:1px solid var(--linha);border-radius:18px;opacity:0}
-.card::before{content:"";position:absolute;left:0;top:18%;bottom:18%;width:3px;border-radius:3px;background:var(--lar)}
-.rot{font:600 .85vw Inter;letter-spacing:.16em;color:var(--lar);margin-bottom:.8vw}
-.num{font:900 3.6vw/1 "Inter Tight";letter-spacing:-.04em}
-.sub{font:500 1vw/1.4 Inter;color:var(--cinza);margin-top:.5vw}
-.linha2{display:flex;gap:2vw}
-.barra{height:.8vw;border-radius:1vw;background:var(--linha);overflow:hidden;margin-top:1vw;display:flex}
+#saud{position:absolute;left:50%;top:79vh;transform:translateX(-50%);font:900 3.6vw/1 "Inter Tight";letter-spacing:-.045em;white-space:nowrap}
+#saud b{background:linear-gradient(90deg,var(--claro),var(--lar) 50%,var(--selo));-webkit-background-clip:text;background-clip:text;color:transparent}
+.card{position:absolute;width:25vw;padding:1.5vw 1.7vw 1.4vw;opacity:0;
+  background:
+   linear-gradient(var(--lar),var(--lar)) left top/1.1vw 2px no-repeat,linear-gradient(var(--lar),var(--lar)) left top/2px 1.1vw no-repeat,
+   linear-gradient(var(--lar),var(--lar)) right top/1.1vw 2px no-repeat,linear-gradient(var(--lar),var(--lar)) right top/2px 1.1vw no-repeat,
+   linear-gradient(var(--lar),var(--lar)) left bottom/1.1vw 2px no-repeat,linear-gradient(var(--lar),var(--lar)) left bottom/2px 1.1vw no-repeat,
+   linear-gradient(var(--lar),var(--lar)) right bottom/1.1vw 2px no-repeat,linear-gradient(var(--lar),var(--lar)) right bottom/2px 1.1vw no-repeat,
+   linear-gradient(135deg,rgba(255,138,51,.16) 0%,rgba(22,22,23,.82) 38%,rgba(12,12,13,.9) 100%);
+  border:1px solid rgba(255,138,51,.16);box-shadow:0 0 40px rgba(255,138,51,.08),inset 0 0 30px rgba(255,138,51,.05);backdrop-filter:blur(6px)}
+.rot{display:flex;align-items:center;gap:.6vw;font:600 .72vw "JetBrains Mono";letter-spacing:.16em;color:var(--lar);margin-bottom:.9vw}
+.rot .id{color:#6b4a33}.rot::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,138,51,.45),transparent)}
+.num{font:900 3.7vw/1 "Inter Tight";letter-spacing:-.04em;background:linear-gradient(180deg,#fff 30%,var(--claro));-webkit-background-clip:text;background-clip:text;color:transparent}
+.num.l{background:linear-gradient(180deg,var(--claro),var(--lar) 55%,var(--selo));-webkit-background-clip:text;background-clip:text}
+.num span{background:inherit;-webkit-background-clip:text;background-clip:text}
+.sub{font:500 .95vw/1.4 Inter;color:var(--cinza);margin-top:.45vw}
+.linha2{display:flex;gap:2.2vw}
+.barra{height:.55vw;border-radius:1vw;background:#222;overflow:hidden;margin-top:1vw;display:flex}
 .barra i{display:block;height:100%}
-.e{left:4vw}.d{right:4vw}
-#c1{top:16vh}#c2{top:46vh}#c3{top:16vh}#c4{top:46vh}#c5{top:76vh}#c0{left:50%;top:68vh;width:46vw}#c0 .linha2{justify-content:center;gap:4vw}#c0::before{display:none}#c0 .rot{text-align:center}
-#c6,#c7{left:50%;top:68vh;width:46vw;text-align:center}#c6::before,#c7::before{display:none}
-#c6 .lei{font-size:2.3vw}#c7 .lei{font-size:1.5vw!important}
-.lei{font:700 1.5vw/1.3 "Inter Tight";letter-spacing:-.01em}
-#cursor{display:inline-block;width:.15vw;height:1.2vw;background:var(--lar);vertical-align:-.15vw;margin-left:.2vw}
-#fim{position:absolute;inset:0;background:var(--bg);opacity:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5vw}
-#fim .marca{font:900 4vw "Inter Tight";letter-spacing:-.045em}
-#fim .arroba{font:500 1.3vw Inter;color:var(--cinza)}
-#dica{position:absolute;bottom:2vh;left:50%;transform:translateX(-50%);font:500 .9vw Inter;color:#55555a}
+.e{left:3.5vw}.d{right:3.5vw}
+#c1,#c3{top:15vh}#c2,#c4{top:46vh}
+#c0,#c6,#c7{left:50%;top:76vh;width:48vw;text-align:center}
+#c0 .linha2{justify-content:center;gap:4vw}#c0 .rot,#c6 .rot,#c7 .rot{justify-content:center}#c0 .rot::after,#c6 .rot::after,#c7 .rot::after{display:none}
+.lei{font:700 2.2vw/1.25 "Inter Tight";letter-spacing:-.015em}
+#t7{font-size:1.45vw}
+#cursor{display:inline-block;width:.18vw;height:1.3vw;background:var(--lar);vertical-align:-.15vw;margin-left:.2vw;box-shadow:0 0 8px var(--lar)}
+#fluxo{position:absolute;left:3vw;bottom:3vh;font:400 .7vw/1.5 "JetBrains Mono";color:#3d2a1e;white-space:pre}
+#fluxo2{position:absolute;right:3vw;bottom:3vh;font:400 .7vw/1.5 "JetBrains Mono";color:#3d2a1e;text-align:right;white-space:pre}
+#fim{position:absolute;inset:0;background:radial-gradient(ellipse at center,#1d1009,#060607 60%);opacity:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vw}
+#fim .marca{font:900 4.4vw "Inter Tight";letter-spacing:-.045em}
+#fim .arroba{font:500 1.2vw "JetBrains Mono";color:var(--cinza);letter-spacing:.08em}
+#dica{position:absolute;bottom:1.2vh;left:50%;transform:translateX(-50%);font:500 .8vw Inter;color:#5a5a60;white-space:nowrap}
 </style></head><body>
 <div id="palco">
-  <div class="grade"></div>
-  <div id="topo"><span class="ponto"></span><span id="hora">07:00</span><span id="data">QUA · 25 NOV</span><span>CLAUSA · PAINEL DO DIA</span><span id="mic">MICROFONE DESLIGADO</span></div>
-  <div id="nucleo"><svg viewBox="-200 -200 400 400">
-    <circle r="190" fill="none" stroke="#2A2A2D" stroke-width="1"/>
-    <g id="anel1"><circle r="170" fill="none" stroke="#FF8A33" stroke-width="3" stroke-dasharray="4 14" opacity=".7"/></g>
-    <g id="anel2"><circle r="145" fill="none" stroke="#FF8A33" stroke-width="10" stroke-dasharray="120 60 30 60" opacity=".35"/></g>
-    <circle id="onda" r="120" fill="none" stroke="#FF8A33" stroke-width="2"/>
-    <circle r="112" fill="#161617" stroke="#2A2A2D"/>
-    <g id="balanca" transform="translate(-256,-250)" fill="none" stroke="#FF8A33" stroke-width="13" stroke-linecap="round" stroke-linejoin="round">
+  <svg id="fundo" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+    <defs><pattern id="hex" width="56" height="97" patternUnits="userSpaceOnUse" patternTransform="scale(.8)">
+      <path d="M28 0L56 16V48L28 64L0 48V16Z M28 64V97" fill="none" stroke="#FF8A33" stroke-width="1"/></pattern>
+      <radialGradient id="mascara" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+      <mask id="m"><rect width="1920" height="1080" fill="url(#mascara)"/></mask></defs>
+    <g mask="url(#m)" opacity=".07"><rect id="hexr" x="-100" y="-100" width="2120" height="1280" fill="url(#hex)"/></g>
+  </svg>
+  <svg id="trilhas" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+    <defs><linearGradient id="gTr" x1="0" x2="1"><stop offset="0" stop-color="#FF8A33" stop-opacity=".1"/><stop offset=".5" stop-color="#FF8A33" stop-opacity=".55"/><stop offset="1" stop-color="#FF8A33" stop-opacity=".1"/></linearGradient>
+      <filter id="brilho" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <g id="tr" fill="none" stroke-linecap="round" stroke-linejoin="round"></g>
+  </svg>
+  <div id="varredura"></div>
+
+  <div id="topo"><span class="ponto"></span><span id="hora">07:00</span><span id="data">QUA · 25 NOV</span><span>CLAUSA // PAINEL DO DIA</span><span class="esp"></span><span id="estado">SISTEMA ONLINE</span><span id="mic">MIC: DESLIGADO</span></div>
+
+  <div id="nucleo"><svg viewBox="-300 -300 600 600">
+    <defs>
+      <radialGradient id="gBrilho"><stop offset="0" stop-color="#FF8A33" stop-opacity=".55"/><stop offset=".45" stop-color="#E2590B" stop-opacity=".18"/><stop offset="1" stop-color="#E2590B" stop-opacity="0"/></radialGradient>
+      <radialGradient id="gDisco" cx="50%" cy="40%"><stop offset="0" stop-color="#2a170c"/><stop offset=".6" stop-color="#140c08"/><stop offset="1" stop-color="#0a0807"/></radialGradient>
+      <linearGradient id="gArco" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFC08A"/><stop offset=".45" stop-color="#FF8A33"/><stop offset="1" stop-color="#E2590B" stop-opacity="0"/></linearGradient>
+      <linearGradient id="gArco2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A33" stop-opacity="0"/><stop offset=".5" stop-color="#FF8A33"/><stop offset="1" stop-color="#FFC08A"/></linearGradient>
+      <linearGradient id="gVarre" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF8A33" stop-opacity="0"/><stop offset="1" stop-color="#FF8A33" stop-opacity=".35"/></linearGradient>
+      <filter id="neon" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <circle id="halo" r="300" fill="url(#gBrilho)"/>
+    <g id="bisel"></g>
+    <g id="arcoA"><circle r="252" fill="none" stroke="url(#gArco)" stroke-width="5" stroke-dasharray="380 120 60 100 220 803" filter="url(#neon)"/></g>
+    <g id="arcoB"><circle r="232" fill="none" stroke="url(#gArco2)" stroke-width="2" stroke-dasharray="2 8"/></g>
+    <g id="arcoC"><circle r="216" fill="none" stroke="#FF8A33" stroke-width="12" stroke-opacity=".22" stroke-dasharray="60 30 10 30 140 90 20 300"/></g>
+    <g id="varre"><path d="M0 0 L210 0 A210 210 0 0 0 148 -148 Z" fill="url(#gVarre)"/></g>
+    <g id="eq"></g>
+    <g id="iris"></g>
+    <circle r="112" fill="url(#gDisco)" stroke="#FF8A33" stroke-opacity=".55" stroke-width="1.5"/>
+    <circle id="pulso" r="112" fill="none" stroke="#FF8A33" stroke-width="2"/>
+    <g id="balanca" transform="translate(-256,-250) " fill="none" stroke="#FF8A33" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" filter="url(#neon)">
       <path d="M256 160V330"/><path d="M220 330H292"/><path d="M175 216V196H337V216"/><path d="M150 212Q176 252 202 212"/><path d="M310 212Q336 252 362 212"/>
       <circle cx="256" cy="150" r="10" fill="#FF8A33" stroke="none"/></g>
+    <text id="rotulo" y="285" text-anchor="middle" font-family="JetBrains Mono" font-size="13" letter-spacing="5" fill="#FF8A33" opacity=".8">J.A.R.V.I.S // EM ESPERA</text>
   </svg></div>
   <div id="saud">Bom dia, <b>Pedro</b>.</div>
 
-  <div class="card" id="c0"><div class="rot">BRASÍLIA · AGORA</div>
-    <div class="linha2"><div><div class="num"><span data-n="23">0</span>°</div><div class="sub">agora</div></div><div><div class="num">23–31°</div><div class="sub">hoje</div></div><div><div class="num" style="color:var(--lar)"><span data-n="43">0</span>%</div><div class="sub">chance de chuva</div></div></div></div>
-  <div class="card e" id="c1"><div class="rot">INSTAGRAM · REEL DE ONTEM</div>
-    <div class="linha2"><div><div class="num" data-n="69">0</div><div class="sub">curtidas</div></div><div><div class="num" data-n="28">0</div><div class="sub">comentários</div></div></div></div>
-  <div class="card e" id="c2"><div class="rot">QUEM ASSISTIU</div>
-    <div class="linha2"><div><div class="num">59%</div><div class="sub">seguidores</div></div><div><div class="num" style="color:var(--lar)">41%</div><div class="sub">ainda não seguem</div></div></div>
-    <div class="barra"><i id="b1" style="background:#9B9B9E;width:0"></i><i id="b2" style="background:var(--lar);width:0"></i></div></div>
-  <div class="card d" id="c3"><div class="rot">LINKEDIN · RESPOSTAS</div>
-    <div class="num" data-n="2">0</div><div class="sub">advogadas responderam<br>1 vai testar esta semana · 1 pediu o link</div></div>
-  <div class="card d" id="c4"><div class="rot">CLAUSA · ONTEM</div>
+  <div class="card" id="c0"><div class="rot"><span class="id">01 //</span>BRASÍLIA · AGORA</div>
+    <div class="linha2"><div><div class="num"><span data-n="23">0</span>°</div><div class="sub">agora</div></div><div><div class="num">23–31°</div><div class="sub">hoje</div></div><div><div class="num l"><span data-n="43">0</span>%</div><div class="sub">chance de chuva</div></div></div></div>
+  <div class="card e" id="c1"><div class="rot"><span class="id">02 //</span>INSTAGRAM · REEL DE ONTEM</div>
+    <div class="linha2"><div><div class="num" data-n="69">0</div><div class="sub">curtidas</div></div><div><div class="num l" data-n="28">0</div><div class="sub">comentários</div></div></div></div>
+  <div class="card e" id="c2"><div class="rot"><span class="id">03 //</span>QUEM ASSISTIU</div>
+    <div class="linha2"><div><div class="num">59%</div><div class="sub">seguidores</div></div><div><div class="num l">41%</div><div class="sub">ainda não seguem</div></div></div>
+    <div class="barra"><i id="b1" style="background:linear-gradient(90deg,#555,#9B9B9E);width:0"></i><i id="b2" style="background:linear-gradient(90deg,#E2590B,#FF8A33,#FFC08A);width:0;box-shadow:0 0 10px #FF8A33"></i></div></div>
+  <div class="card d" id="c3"><div class="rot"><span class="id">04 //</span>LINKEDIN · RESPOSTAS</div>
+    <div class="num l" data-n="2">0</div><div class="sub">advogadas responderam<br>1 vai testar esta semana · 1 pediu o link</div></div>
+  <div class="card d" id="c4"><div class="rot"><span class="id">05 //</span>CLAUSA · ONTEM</div>
     <div class="num" data-n="15">0</div><div class="sub">melhorias publicadas<br>agora instala no celular, como app</div></div>
-  <div class="card d" id="c5"><div class="rot">AGENDA · HOJE</div>
-    <div class="num">10:05</div><div class="sub">Reel "5 avisos que não valem nada"</div></div>
-  <div class="card" id="c6"><div class="rot">DICA DO DIA</div>
+  <div class="card" id="c6"><div class="rot"><span class="id">06 //</span>DICA DO DIA</div>
     <div class="lei">Multa de contrato exagerada pode ser reduzida pelo juiz.</div><div class="sub">Código Civil, art. 413</div></div>
-  <div class="card" id="c7"><div class="rot" id="r7">RASCUNHO</div>
-    <div class="lei" style="font-size:1.1vw" id="t7"></div></div>
-  <div id="fim"><svg viewBox="100 100 312 270" style="width:7vw"><g fill="none" stroke="#FF8A33" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"><path d="M256 146V345"/><path d="M212 345H300"/><path d="M157 212V186H355V212"/><path d="M128 207Q160 258 192 207"/><path d="M320 207Q352 258 384 207"/></g><circle cx="256" cy="136" r="12" fill="#FF8A33"/></svg>
+  <div class="card" id="c7"><div class="rot" id="r7">JARVIS</div><div class="lei" id="t7"></div></div>
+
+  <div id="fluxo" class="mono"></div><div id="fluxo2" class="mono"></div>
+  <div id="vinheta"></div>
+  <div id="fim"><svg viewBox="100 100 312 270" style="width:7vw;filter:drop-shadow(0 0 18px #FF8A33)"><g fill="none" stroke="#FF8A33" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"><path d="M256 146V345"/><path d="M212 345H300"/><path d="M157 212V186H355V212"/><path d="M128 207Q160 258 192 207"/><path d="M320 207Q352 258 384 207"/></g><circle cx="256" cy="136" r="12" fill="#FF8A33"/></svg>
     <div class="marca">Clausa</div><div class="arroba">@pedrom.holanda</div></div>
-  <div id="dica">Clique uma vez para ligar o microfone · F11: tela cheia · Diga "Bom dia, Jarvis" (ou espaço) · R reinicia</div>
+  <div id="dica">Clique uma vez para ligar o microfone e o som · F11: tela cheia · Diga "Bom dia, Jarvis" (ou espaço) · R reinicia</div>
 </div>
 <script>
-// Linha do tempo (segundos) casada com o roteiro.md.
-// Tempos casados com a duração de cada fala gravada (audio/*.mp3). Agenda (06) saiu: sem áudio.
-const T={acende:1.5,c0:7.5,c1:18.9,c2:23.5,c3:29.6,c4:37.5,c5:1e9,c6:45.4,c7:56.5,espera:60.2,pronto:64.2,pedro:69,fim:76};
-window.DUR=81;
-// Áudios do Jarvis (ElevenLabs): audio/01.mp3 ... audio/11.mp3. Se o arquivo não existir, a tela segue em silêncio.
-const FALAS=[[T.acende,'01'],[T.c0,'02'],[T.c1,'03'],[T.c3,'04'],[T.c4,'05'],[T.c5,'06'],[T.c6,'07'],[T.c7,'08'],[T.pronto,'09'],[T.pedro,'10'],[T.pedro+2.2,'11']];
-const audios=FALAS.map(([t,n])=>{const a=new Audio('audio/'+n+'.mp3');a.preload='auto';a.onerror=()=>{a.falhou=true};return {t,a,tocou:false}});
-const $=s=>document.querySelector(s),ease=x=>x<=0?0:x>=1?1:1-Math.pow(1-x,3);
+const $=s=>document.querySelector(s),NS='http://www.w3.org/2000/svg',ease=x=>x<=0?0:x>=1?1:1-Math.pow(1-x,3);
+const el=(tag,attrs,pai)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);pai&&pai.appendChild(e);return e};
+
+// ---------- Linha do tempo: cada fala começa logo depois da anterior (duração real de cada áudio) ----------
+const DURA={'01':5.25,'02':10.68,'03':10.03,'04':7.16,'05':7.16,'07':10.45,'08':3.40,'09':3.71,'10':0.76,'11':3.71};
+const G=.2; // pausa entre falas
+const T={};{let t=.15;
+  T.acende=t;t+=DURA['01']+G; T.c0=t;t+=DURA['02']+G; T.c1=t;T.c2=t+5.1;t+=DURA['03']+G; T.c3=t;t+=DURA['04']+G;
+  T.c4=t;t+=DURA['05']+G; T.c6=t;t+=DURA['07']+G; T.c7=t;t+=DURA['08']; T.espera=t+.05;
+  T.pronto=T.espera+1.1; T.pedro=T.pronto+DURA['09']+.9; T.f11=T.pedro+DURA['10']+1.0; T.fim=T.f11+DURA['11']+.3}
+window.DUR=T.fim+4;
+const FALAS=[[T.acende,'01'],[T.c0,'02'],[T.c1,'03'],[T.c3,'04'],[T.c4,'05'],[T.c6,'07'],[T.c7,'08'],[T.pronto,'09'],[T.pedro,'10'],[T.f11,'11']];
+const audios=FALAS.map(([t,n])=>{const a=new Audio('audio/'+n+'.mp3');a.preload='auto';a.onerror=()=>{a.falhou=true};return {t,n,a,tocou:false}});
 const textoMsg='Oi! Só passando para saber se você conseguiu testar o Clausa. Qualquer impressão já me ajuda muito.';
-function mostra(el,t,ini,fimT){let k=ease((t-ini)/.6);if(fimT!==undefined)k*=1-ease((t-fimT)/.6);el.style.opacity=k;
-  const base=(el.id==='c6'||el.id==='c7'||el.id==='c0')?'translateX(-50%) ':'';el.style.transform=base+`translateY(${(1-k)*20}px)`;return k}
-function conta(el,t,ini){el.querySelectorAll('[data-n]').forEach(n=>{n.textContent=Math.round(+n.dataset.n*ease((t-ini-.2)/1.2))})}
+
+// ---------- Peças geradas ----------
+const bisel=$('#bisel');for(let i=0;i<120;i++){const a=i*3*Math.PI/180,L=i%10===0?16:i%5===0?10:5;
+  el('line',{x1:272*Math.cos(a),y1:272*Math.sin(a),x2:(272-L)*Math.cos(a),y2:(272-L)*Math.sin(a),stroke:'#FF8A33','stroke-opacity':i%10===0?.9:.35,'stroke-width':i%10===0?2:1},bisel)}
+el('circle',{r:280,fill:'none',stroke:'#FF8A33','stroke-opacity':.18},bisel);
+const iris=$('#iris');for(let i=0;i<48;i++){const a=i*7.5*Math.PI/180;
+  el('line',{x1:118*Math.cos(a),y1:118*Math.sin(a),x2:(i%4?138:150)*Math.cos(a),y2:(i%4?138:150)*Math.sin(a),stroke:'#FF8A33','stroke-opacity':i%4?.25:.7,'stroke-width':i%4?1:2},iris)}
+el('circle',{r:155,fill:'none',stroke:'#FF8A33','stroke-opacity':.4,'stroke-dasharray':'1 5'},iris);
+const N=72,barras=[];const eq=$('#eq');for(let i=0;i<N;i++){const a=(i/N)*2*Math.PI-Math.PI/2;
+  barras.push({a,l:el('line',{x1:0,y1:0,x2:0,y2:0,stroke:'url(#gArco)','stroke-width':3.2,'stroke-linecap':'round'},eq)})}
+// Trilhas de circuito (coordenadas 1920×1080): núcleo → cartões e bordas
+const TR=[
+ ['c1','M760 300 H660 L620 260 H575'],['c2','M705 520 H640 L600 580 H575'],
+ ['c3','M1160 300 H1260 L1300 260 H1345'],['c4','M1215 520 H1280 L1320 580 H1345'],
+ ['c0','M960 800 V822'],['c6','M960 800 V822'],['c7','M960 800 V822'],
+ [null,'M0 150 H230 L280 200 H430 L470 160 H560'],[null,'M1920 150 H1690 L1640 200 H1490 L1450 160 H1360'],
+ [null,'M0 930 H210 L260 880 H420'],[null,'M1920 930 H1710 L1660 880 H1500'],
+ [null,'M960 175 V120 L1000 80 H1120'],[null,'M960 175 V120 L920 80 H800'],
+ [null,'M470 160 V110 H520'],[null,'M1450 160 V110 H1400']];
+const trG=$('#tr'),trilhas=TR.map(([card,d],i)=>{const g=el('g',{},trG);
+  const base=el('path',{d,stroke:'url(#gTr)','stroke-width':1.4},g);
+  const p=el('path',{d,stroke:'#FFC08A','stroke-width':2.4,filter:'url(#brilho)'},g);
+  const len=base.getTotalLength();p.setAttribute('stroke-dasharray',`18 ${len+40}`);
+  const m=d.match(/[\d.]+ [\d.]+|[HV] ?[\d.]+/g);const ult=base.getPointAtLength(len);
+  el('rect',{x:ult.x-4,y:ult.y-4,width:8,height:8,fill:'none',stroke:'#FF8A33','stroke-opacity':.7},g);
+  return {card,g,p,len,fase:i*.37}});
+
+// ---------- Áudio: analisador para as barras reagirem à voz ----------
+let actx=null,analisador=null,bins=null;
+function ligarAudio(){if(actx)return;try{actx=new (window.AudioContext||window.webkitAudioContext)();analisador=actx.createAnalyser();analisador.fftSize=256;bins=new Uint8Array(analisador.frequencyBinCount);
+  audios.forEach(x=>{try{const s=actx.createMediaElementSource(x.a);s.connect(analisador);analisador.connect(actx.destination)}catch(_){}})}catch(_){}}
+function falandoEm(t){for(const [ini,n] of FALAS){if(t>=ini&&t<ini+DURA[n])return true}return false}
+
+// ---------- Desenho ----------
+function mostra(e,t,ini,fimT){if(!e)return 0;let k=ease((t-ini)/.45);if(fimT!==undefined)k*=1-ease((t-fimT)/.45);e.style.opacity=k;
+  const c=(e.id==='c0'||e.id==='c6'||e.id==='c7');e.style.transform=(c?'translateX(-50%) ':'')+`translateY(${(1-k)*14}px)`;
+  e.style.clipPath=`inset(0 ${(1-ease((t-ini)/.35))*100}% 0 0)`;return k}
+function conta(e,t,ini){e.querySelectorAll('[data-n]').forEach(n=>{n.textContent=Math.round(+n.dataset.n*ease((t-ini-.15)/.9))})}
+const hexa=()=>Math.random().toString(16).slice(2,10).toUpperCase();let ultFluxo=0;
 let esperando=false;
 window.render=(t,real=t)=>{
-  const luz=ease((t-T.acende)/1.2)*(1-ease((t-T.fim)/1.5));
-  $('#nucleo').style.opacity=.25+.75*luz;
-  $('#anel1').setAttribute('transform',`rotate(${real*12})`);$('#anel2').setAttribute('transform',`rotate(${-real*7})`);
-  const p=(real*.9)%1;$('#onda').setAttribute('r',112+p*80*luz);$('#onda').style.opacity=(1-p)*.8*luz;
-  const s=$('#saud');s.style.opacity=ease((t-T.acende-.3)/.8)*(1-ease((t-T.c0)/.6));
-  mostra($('#c0'),t,T.c0,T.c1-.6);conta($('#c0'),t,T.c0);
-  mostra($('#c1'),t,T.c1,T.c6-1);conta($('#c1'),t,T.c1);
-  mostra($('#c2'),t,T.c2,T.c6-1);$('#b1').style.width=59*ease((t-T.c2-.3)/1.2)+'%';$('#b2').style.width=41*ease((t-T.c2-.3)/1.2)+'%';
-  mostra($('#c3'),t,T.c3,T.c6-1);conta($('#c3'),t,T.c3);
-  mostra($('#c4'),t,T.c4,T.c6-1);conta($('#c4'),t,T.c4);
-  mostra($('#c5'),t,T.c5,T.c6-1);
-  mostra($('#c6'),t,T.c6,T.c7-.5);
-  mostra($('#c7'),t,T.c7,T.pedro);
-  const pisca='<span id="cursor" style="opacity:'+(Math.floor(real*2)%2?1:0)+'"></span>';
-  if(t<T.espera||esperando){$('#r7').textContent=esperando?'OUVINDO…':'JARVIS';$('#t7').innerHTML='Quer que eu prepare a mensagem para a advogada que vai testar?'+pisca}
-  else{const n=Math.max(0,Math.min(textoMsg.length,Math.floor((t-T.espera)*24)));$('#t7').innerHTML=textoMsg.slice(0,n)+pisca;
+  const luz=ease((t-T.acende)/.8)*(1-ease((t-T.fim)/1.2));
+  $('#nucleo').style.opacity=.35+.65*luz;
+  $('#arcoA').setAttribute('transform',`rotate(${real*14})`);$('#arcoB').setAttribute('transform',`rotate(${-real*9})`);
+  $('#arcoC').setAttribute('transform',`rotate(${real*4})`);$('#varre').setAttribute('transform',`rotate(${real*55})`);$('#varre').style.opacity=.3+.7*luz;
+  $('#iris').setAttribute('transform',`rotate(${-real*6})`);$('#bisel').setAttribute('transform',`rotate(${real*1.5})`);
+  // voz: barras radiais
+  let niv=[];const fala=falandoEm(t)&&luz>0;
+  if(analisador&&fala){analisador.getByteFrequencyData(bins);let soma=0;for(const b of bins)soma+=b;if(soma>0)niv=barras.map((_,i)=>bins[2+Math.floor(Math.abs((i/N)*2-1)*60)]/255)}
+  if(!niv.length)niv=barras.map((_,i)=>fala?(.25+.6*Math.abs(Math.sin(real*9+i*.7)*Math.sin(real*3.3+i*.23))):(.05+.03*Math.sin(real*2+i)));
+  let media=0;barras.forEach((b,i)=>{const v=niv[i];media+=v;const r1=162,r2=r1+8+v*46;b.l.setAttribute('x1',r1*Math.cos(b.a));b.l.setAttribute('y1',r1*Math.sin(b.a));
+    b.l.setAttribute('x2',r2*Math.cos(b.a));b.l.setAttribute('y2',r2*Math.sin(b.a));b.l.setAttribute('stroke-opacity',.25+.75*v*luz)});media/=N;
+  $('#halo').setAttribute('opacity',(.45+media*1.2)*luz+.1);
+  const p=(real*1.1)%1;$('#pulso').setAttribute('r',112+p*48);$('#pulso').setAttribute('stroke-opacity',(1-p)*.9*luz);
+  $('#balanca').style.opacity=.55+.45*luz+media*.3;
+  $('#rotulo').textContent=t<T.acende?'J.A.R.V.I.S // EM ESPERA':esperando?'J.A.R.V.I.S // OUVINDO':fala?'J.A.R.V.I.S // FALANDO':'J.A.R.V.I.S // ONLINE';
+  $('#hexr').setAttribute('transform',`translate(${(real*6)%45},${(real*3)%78})`);
+  // trilhas: acendem com o cartão ativo
+  const ativo={c0:[T.c0,T.c1],c1:[T.c1,T.c6],c2:[T.c2,T.c6],c3:[T.c3,T.c6],c4:[T.c4,T.c6],c6:[T.c6,T.c7],c7:[T.c7,T.pedro+2]};
+  trilhas.forEach(tr=>{let on=.35*luz;if(tr.card){const [a,b]=ativo[tr.card];on=ease((t-a)/.4)*(1-ease((t-b)/.4))}
+    tr.g.style.opacity=tr.card?.15+.85*on:.25+.5*luz;
+    tr.p.setAttribute('stroke-dashoffset',-(((real*.55+tr.fase)%1)*(tr.len+40)));tr.p.style.opacity=tr.card?on:.6*luz});
+  const s=$('#saud');s.style.opacity=ease((t-T.acende-.2)/.6)*(1-ease((t-T.c0)/.45));
+  mostra($('#c0'),t,T.c0,T.c1-.45);conta($('#c0'),t,T.c0);
+  mostra($('#c1'),t,T.c1,T.c6-.6);conta($('#c1'),t,T.c1);
+  mostra($('#c2'),t,T.c2,T.c6-.6);$('#b1').style.width=59*ease((t-T.c2-.2)/1)+'%';$('#b2').style.width=41*ease((t-T.c2-.2)/1)+'%';
+  mostra($('#c3'),t,T.c3,T.c6-.6);conta($('#c3'),t,T.c3);
+  mostra($('#c4'),t,T.c4,T.c6-.6);conta($('#c4'),t,T.c4);
+  mostra($('#c6'),t,T.c6,T.c7-.4);
+  mostra($('#c7'),t,T.c7,T.pedro+2);
+  const pisca='<span id="cursor" style="opacity:'+(Math.floor(real*2.5)%2?1:0)+'"></span>';
+  if(t<T.espera||esperando){$('#r7').textContent=esperando?'● OUVINDO…':'JARVIS';$('#t7').innerHTML='Quer que eu prepare a mensagem para a advogada que vai testar?'+pisca}
+  else{const n=Math.max(0,Math.min(textoMsg.length,Math.floor((t-T.espera)*95)));$('#t7').innerHTML=textoMsg.slice(0,n)+pisca;
     $('#r7').textContent=t>=T.pronto?'✓ PRONTO PARA REVISAR':'RASCUNHO · MENSAGEM PARA A ADVOGADA'}
   $('#r7').style.color=t>=T.pronto?'var(--verde)':'var(--lar)';
-  $('#fim').style.opacity=ease((t-T.fim)/1.5);
-  const d=new Date();$('#data').textContent=d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'}).replace(/\./g,'').replace(',',' ·').toUpperCase();$('#hora').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  $('#fim').style.opacity=ease((t-T.fim)/1.2);
+  if(real-ultFluxo>.25){ultFluxo=real;const l=()=>`0x${hexa()}  ${hexa()}  ${(Math.random()*999).toFixed(0).padStart(3,'0')}`;
+    $('#fluxo').textContent=[l(),l(),l(),l()].join('\n');$('#fluxo2').textContent=[l(),l(),l(),l()].join('\n')}
+  const d=new Date();$('#data').textContent=d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'}).replace(/\./g,'').replace(',',' ·').toUpperCase();
+  $('#hora').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
 };
-// Relógio virtual: para em T.espera até ouvir "prepara" (ou espaço).
+
+// ---------- Relógio: para na pergunta até ouvir "prepara" (ou espaço) ----------
 let rodando=false,base=0,marco=0;
 const agora=()=>performance.now()/1000;
-function tempo(){if(!rodando)return 0;let t=base+(agora()-marco);if(esperando||(t>=T.espera&&base<T.espera)){if(!esperando){esperando=true}return T.espera}return t}
-function comecar(){if(rodando)return;rodando=true;base=0;marco=agora();$('#dica').style.display='none'}
+function tempo(){if(!rodando)return 0;const t=base+(agora()-marco);if(esperando||(t>=T.espera&&base<T.espera)){esperando=true;return T.espera}return t}
+function comecar(){if(rodando)return;rodando=true;base=0;marco=agora();$('#dica').style.display='none';if(actx&&actx.state==='suspended')actx.resume()}
 function continuar(){if(!esperando)return;esperando=false;base=T.espera;marco=agora()}
 function reiniciar(){rodando=false;esperando=false;audios.forEach(x=>{x.tocou=false;x.a.pause();x.a.currentTime=0});$('#dica').style.display=''}
 function loop(){const t=tempo();render(t,agora());
-  audios.forEach(x=>{if(rodando&&!x.tocou&&t>=x.t){x.tocou=true;if(!x.a.falhou)x.a.play().catch(()=>{})}});
+  audios.forEach(x=>{if(rodando&&!x.tocou&&t>=x.t){x.tocou=true;if(!x.a.falhou){x.a.currentTime=0;x.a.play().catch(()=>{})}}});
   requestAnimationFrame(loop)}
 addEventListener('keydown',e=>{if(e.code==='Space'){rodando?continuar():comecar()}if(e.key==='r'||e.key==='R')reiniciar()});
-// Microfone (Chrome): "Bom dia, Jarvis" começa; "Prepara" continua.
+
+// ---------- Microfone (Chrome): "Bom dia, Jarvis" começa; "Prepara" continua ----------
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,micLigado=false;
 const limpa=x=>x.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
-function ligarMic(){if(!SR){$('#mic').textContent='MICROFONE: USE O CHROME';return}if(micLigado)return;
+function ligarMic(){if(!SR){$('#mic').textContent='MIC: USE O CHROME';return}if(micLigado)return;
   rec=new SR();rec.lang='pt-BR';rec.continuous=true;rec.interimResults=true;
   rec.onresult=e=>{let txt='';for(let i=e.resultIndex;i<e.results.length;i++)txt+=e.results[i][0].transcript+' ';txt=limpa(txt);
-    if(!rodando&&/jarvis|jarves|bom dia/.test(txt))comecar();
+    if(!rodando&&/jarvis|jarves|djarvis|bom dia/.test(txt))comecar();
     else if(esperando&&/prepar|pode|sim|manda|faz/.test(txt))continuar()};
-  rec.onstart=()=>{micLigado=true;$('#mic').textContent='● OUVINDO';$('#mic').style.color='var(--lar)'};
-  rec.onerror=e=>{if(e.error==='not-allowed'){micLigado=false;$('#mic').textContent='MICROFONE BLOQUEADO'}};
+  rec.onstart=()=>{micLigado=true;$('#mic').textContent='● MIC: OUVINDO';$('#mic').style.color='var(--lar)'};
+  rec.onerror=e=>{if(e.error==='not-allowed'){micLigado=false;$('#mic').textContent='MIC: BLOQUEADO'}};
   rec.onend=()=>{if(micLigado)try{rec.start()}catch(_){}};
   try{rec.start()}catch(_){}}
-addEventListener('click',()=>{ligarMic();audios.forEach(x=>{if(!x.a.falhou){x.a.muted=true;x.a.play().then(()=>{x.a.pause();x.a.currentTime=0;x.a.muted=false}).catch(()=>{x.a.muted=false})}})});
+addEventListener('click',()=>{ligarMic();ligarAudio();if(actx&&actx.state==='suspended')actx.resume();
+  audios.forEach(x=>{if(!x.a.falhou&&!x.destravado){x.destravado=true;x.a.muted=true;x.a.play().then(()=>{x.a.pause();x.a.currentTime=0;x.a.muted=false}).catch(()=>{x.a.muted=false})}})});
 if(!navigator.webdriver)loop();else render(0);
 </script></body></html>

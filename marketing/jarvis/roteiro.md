@@ -95,7 +95,7 @@ Link: https://mholandap.github.io/Clausa/marketing/jarvis/tela.html (usar o **Ch
 1. Abra o link e **clique uma vez** na tela. O Chrome pede o microfone: permita. No topo aparece "● OUVINDO".
 2. Aperte **F11** (tela cheia).
 3. Comece a gravar no celular e diga **"Bom dia, Jarvis"**: a tela acende sozinha.
-4. Ela anda no ritmo do roteiro e **para na pergunta** ("Quer que eu prepare a mensagem…?"), mostrando "OUVINDO…".
+4. Cada fala começa logo depois da anterior (pausa de 0,2 s; ~67 s no total) e a tela **para na pergunta** ("Quer que eu prepare a mensagem…?"), mostrando "OUVINDO…".
 5. Diga **"Prepara…"**: ela continua, digita a mensagem, mostra "PRONTO PARA REVISAR", chama "Pedro?" e fecha com o logo.
 
 Sem microfone, o **espaço** faz as duas coisas (começar e continuar). **R** reinicia.
