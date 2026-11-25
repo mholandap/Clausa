@@ -14,9 +14,9 @@
 #hora{font:700 2.4vw "Inter Tight";letter-spacing:-.02em;background:linear-gradient(180deg,#fff,var(--claro));-webkit-background-clip:text;background-clip:text;color:transparent}
 #topo .esp{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,138,51,.5),transparent 60%)}
 #mic{color:var(--cinza)}
-#nucleo{position:absolute;left:50%;top:45%;width:58vh;height:58vh;transform:translate(-50%,-50%)}
+#nucleo{position:absolute;left:50%;top:42%;width:54vh;height:54vh;transform:translate(-50%,-50%)}
 #nucleo svg{width:100%;height:100%;overflow:visible}
-#saud{position:absolute;left:50%;top:79vh;transform:translateX(-50%);font:900 3.6vw/1 "Inter Tight";letter-spacing:-.045em;white-space:nowrap}
+#saud{position:absolute;left:50%;top:80vh;transform:translateX(-50%);font:900 3.6vw/1 "Inter Tight";letter-spacing:-.045em;white-space:nowrap}
 #saud b{background:linear-gradient(90deg,var(--claro),var(--lar) 50%,var(--selo));-webkit-background-clip:text;background-clip:text;color:transparent}
 .card{position:absolute;width:25vw;padding:1.5vw 1.7vw 1.4vw;opacity:0;
   background:
@@ -37,13 +37,16 @@
 .barra i{display:block;height:100%}
 .e{left:3.5vw}.d{right:3.5vw}
 #c1,#c3{top:15vh}#c2,#c4{top:46vh}
-#c0,#c6,#c7{left:50%;top:76vh;width:48vw;text-align:center}
+#c0,#c6,#c7{left:50%;top:78.5vh;width:46vw;padding:1.1vw 1.6vw 1vw;text-align:center}
 #c0 .linha2{justify-content:center;gap:4vw}#c0 .rot,#c6 .rot,#c7 .rot{justify-content:center}#c0 .rot::after,#c6 .rot::after,#c7 .rot::after{display:none}
-.lei{font:700 2.2vw/1.25 "Inter Tight";letter-spacing:-.015em}
-#t7{font-size:1.45vw}
+#c0 .num{font-size:2.9vw}#c0 .rot,#c6 .rot,#c7 .rot{margin-bottom:.6vw}
+.lei{font:700 1.75vw/1.22 "Inter Tight";letter-spacing:-.015em}
+#t7{font-size:1.3vw}
 #cursor{display:inline-block;width:.18vw;height:1.3vw;background:var(--lar);vertical-align:-.15vw;margin-left:.2vw;box-shadow:0 0 8px var(--lar)}
 #fluxo{position:absolute;left:3vw;bottom:3vh;font:400 .7vw/1.5 "JetBrains Mono";color:#3d2a1e;white-space:pre}
 #fluxo2{position:absolute;right:3vw;bottom:3vh;font:400 .7vw/1.5 "JetBrains Mono";color:#3d2a1e;text-align:right;white-space:pre}
+#leg{position:absolute;left:50%;top:70.5vh;transform:translateX(-50%);max-width:64vw;text-align:center;font:800 2.2vw/1.25 "Inter Tight";letter-spacing:-.02em;white-space:nowrap;text-shadow:0 2px 14px rgba(0,0,0,.9),0 0 2px #000}
+#leg .p{color:rgba(250,250,250,.32);transition:none}#leg .p.dita{color:#FAFAFA}#leg .p.agora{background:linear-gradient(180deg,var(--claro),var(--lar));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 10px rgba(255,138,51,.6))}
 #fim{position:absolute;inset:0;background:radial-gradient(ellipse at center,#1d1009,#060607 60%);opacity:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vw}
 #fim .marca{font:900 4.4vw "Inter Tight";letter-spacing:-.045em}
 #fim .arroba{font:500 1.2vw "JetBrains Mono";color:var(--cinza);letter-spacing:.08em}
@@ -107,7 +110,7 @@
     <div class="lei">Multa de contrato exagerada pode ser reduzida pelo juiz.</div><div class="sub">Código Civil, art. 413</div></div>
   <div class="card" id="c7"><div class="rot" id="r7">JARVIS</div><div class="lei" id="t7"></div></div>
 
-  <div id="fluxo" class="mono"></div><div id="fluxo2" class="mono"></div>
+  <div id="leg"></div><div id="fluxo" class="mono"></div><div id="fluxo2" class="mono"></div>
   <div id="vinheta"></div>
   <div id="fim"><svg viewBox="100 100 312 270" style="width:7vw;filter:drop-shadow(0 0 18px #FF8A33)"><g fill="none" stroke="#FF8A33" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"><path d="M256 146V345"/><path d="M212 345H300"/><path d="M157 212V186H355V212"/><path d="M128 207Q160 258 192 207"/><path d="M320 207Q352 258 384 207"/></g><circle cx="256" cy="136" r="12" fill="#FF8A33"/></svg>
     <div class="marca">Clausa</div><div class="arroba">@pedrom.holanda</div></div>
@@ -127,6 +130,7 @@ const T={};{let t=.15;
 window.DUR=T.fim+4;
 const FALAS=[[T.acende,'01'],[T.c0,'02'],[T.c1,'03'],[T.c3,'04'],[T.c4,'05'],[T.c6,'07'],[T.c7,'08'],[T.pronto,'09'],[T.pedro,'10'],[T.f11,'11']];
 const audios=FALAS.map(([t,n])=>{const a=new Audio('audio/'+n+'.mp3');a.preload='auto';a.onerror=()=>{a.falhou=true};return {t,n,a,tocou:false}});
+const LEG={"01":[[["Bom",0.0],["dia,",0.22],["Pedro.",0.58]],[["O",1.42],["mundo",1.58],["não",1.86],["parou",2.2],["enquanto",2.74],["você",2.98],["dormia.",3.38]],[["Vamos",4.42],["lá.",4.72]]],"02":[[["Lá",0.0],["fora,",0.28],["em",1.12],["Brasília,",1.22],["faz",2.14],["23",2.32],["graus.",3.06]],[["Hoje",4.42],["vai",4.7],["de",4.92],["23",5.08],["a",5.74],["31.",5.96]],[["A",6.96],["chance",7.12],["de",7.32],["chuva",7.52],["é",7.98],["de",8.04],["43%.",8.14]]],"03":[[["No",0.0],["Instagram,",0.84],["o",1.62],["Reel",1.7],["de",1.9],["ontem",2.1],["teve",2.46]],[["69",2.68],["curtidas",3.5],["e",4.24],["28",4.46],["comentários.",5.04]],[["4",6.2],["em",6.5],["cada",6.68],["10",6.94],["pessoas",7.34],["que",7.78],["assistiram",7.96]],[["ainda",8.54],["não",8.86],["te",9.18],["seguem.",9.34]]],"04":[[["No",0.0],["LinkedIn,",0.18],["duas",1.14],["advogadas",1.5],["responderam.",2.14]],[["Uma",3.28],["vai",3.52],["testar",3.72],["o",4.1],["Clausa",4.14],["esta",4.54],["semana,",4.72]],[["a",5.68],["outra",5.84],["pediu",6.12],["o",6.56],["link.",6.66]]],"05":[[["Ontem",0.0],["foram",0.42],["15",0.66],["melhorias",1.14],["publicadas",1.78],["no",2.34],["Clausa.",2.48]],[["Agora",3.72],["ele",4.32],["instala",4.64],["no",5.02],["celular,",5.16],["como",5.8],["um",6.12]],[["aplicativo.",6.24]]],"07":[[["Agora,",0.0],["a",0.9],["dica",0.94],["do",1.24],["dia.",1.38]],[["Multa",2.8],["de",3.4],["contrato",3.5],["exagerada",4.0],["pode",4.68],["ser",4.94],["reduzida",5.22]],[["pelo",5.9],["juiz.",6.12]],[["Está",6.98],["no",7.32],["artigo",7.48],["413",7.84],["do",9.14],["Código",9.46],["Civil.",9.82]]],"08":[[["Quer",0.0],["que",0.18],["eu",0.36],["prepare",0.42],["a",0.76],["mensagem",0.9],["para",1.44]],[["a",1.74],["advogada",1.86],["que",2.42],["vai",2.54],["testar?",2.66]]],"09":[[["Pronto,",0.0],["Pedro.",0.58]],[["A",1.28],["mensagem",1.38],["está",1.9],["esperando",2.16],["a",2.58],["sua",2.82],["revisão.",2.96]]],"10":[[["Pedro?",0.0]]],"11":[[["Me",0.0],["deixou",0.32],["falando",0.78],["sozinho,",1.12],["de",2.6],["novo.",2.86]]]};
 const textoMsg='Oi! Só passando para saber se você conseguiu testar o Clausa. Qualquer impressão já me ajuda muito.';
 
 // ---------- Peças geradas ----------
@@ -142,10 +146,10 @@ const N=72,barras=[];const eq=$('#eq');for(let i=0;i<N;i++){const a=(i/N)*2*Math
 const TR=[
  ['c1','M760 300 H660 L620 260 H575'],['c2','M705 520 H640 L600 580 H575'],
  ['c3','M1160 300 H1260 L1300 260 H1345'],['c4','M1215 520 H1280 L1320 580 H1345'],
- ['c0','M960 800 V822'],['c6','M960 800 V822'],['c7','M960 800 V822'],
+ ['c0','M960 818 V846'],['c6','M960 818 V846'],['c7','M960 818 V846'],
  [null,'M0 150 H230 L280 200 H430 L470 160 H560'],[null,'M1920 150 H1690 L1640 200 H1490 L1450 160 H1360'],
  [null,'M0 930 H210 L260 880 H420'],[null,'M1920 930 H1710 L1660 880 H1500'],
- [null,'M960 175 V120 L1000 80 H1120'],[null,'M960 175 V120 L920 80 H800'],
+ [null,'M960 165 V120 L1000 80 H1120'],[null,'M960 165 V120 L920 80 H800'],
  [null,'M470 160 V110 H520'],[null,'M1450 160 V110 H1400']];
 const trG=$('#tr'),trilhas=TR.map(([card,d],i)=>{const g=el('g',{},trG);
   const base=el('path',{d,stroke:'url(#gTr)','stroke-width':1.4},g);
@@ -167,6 +171,12 @@ function mostra(e,t,ini,fimT){if(!e)return 0;let k=ease((t-ini)/.45);if(fimT!==u
   e.style.clipPath=`inset(0 ${(1-ease((t-ini)/.35))*100}% 0 0)`;return k}
 function conta(e,t,ini){e.querySelectorAll('[data-n]').forEach(n=>{n.textContent=Math.round(+n.dataset.n*ease((t-ini-.15)/.9))})}
 const hexa=()=>Math.random().toString(16).slice(2,10).toUpperCase();let ultFluxo=0;
+let ultLeg='';
+function legenda(t){let html='';
+  for(const [ini,n] of FALAS){const lt=t-ini;if(lt<0||lt>DURA[n]+.35||!LEG[n])continue;
+    const bl=LEG[n];let b=bl[0];for(const x of bl){if(lt>=x[0][1]-.05)b=x}
+    html=b.map(([w,s],i)=>{const prox=b[i+1]?b[i+1][1]:s+.6;const c=lt>=prox-.02?'p dita':lt>=s-.05?'p agora':'p';return `<span class="${c}">${w}</span>`}).join(' ')}
+  if(html!==ultLeg){$('#leg').innerHTML=html;ultLeg=html}}
 let esperando=false;
 window.render=(t,real=t)=>{
   const luz=ease((t-T.acende)/.8)*(1-ease((t-T.fim)/1.2));
@@ -203,6 +213,7 @@ window.render=(t,real=t)=>{
   else{const n=Math.max(0,Math.min(textoMsg.length,Math.floor((t-T.espera)*95)));$('#t7').innerHTML=textoMsg.slice(0,n)+pisca;
     $('#r7').textContent=t>=T.pronto?'✓ PRONTO PARA REVISAR':'RASCUNHO · MENSAGEM PARA A ADVOGADA'}
   $('#r7').style.color=t>=T.pronto?'var(--verde)':'var(--lar)';
+  legenda(t);
   $('#fim').style.opacity=ease((t-T.fim)/1.2);
   if(real-ultFluxo>.25){ultFluxo=real;const l=()=>`0x${hexa()}  ${hexa()}  ${(Math.random()*999).toFixed(0).padStart(3,'0')}`;
     $('#fluxo').textContent=[l(),l(),l(),l()].join('\n');$('#fluxo2').textContent=[l(),l(),l(),l()].join('\n')}
