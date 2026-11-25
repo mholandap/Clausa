@@ -34,7 +34,7 @@
 </style></head><body>
 <div id="palco">
   <div class="grade"></div>
-  <div id="topo"><span class="ponto"></span><span id="hora">07:00</span><span id="data">QUA · 25 NOV</span><span>CLAUSA · PAINEL DO DIA</span></div>
+  <div id="topo"><span class="ponto"></span><span id="hora">07:00</span><span id="data">QUA · 25 NOV</span><span>CLAUSA · PAINEL DO DIA</span><span id="mic">MICROFONE DESLIGADO</span></div>
   <div id="nucleo"><svg viewBox="-200 -200 400 400">
     <circle r="190" fill="none" stroke="#2A2A2D" stroke-width="1"/>
     <g id="anel1"><circle r="170" fill="none" stroke="#FF8A33" stroke-width="3" stroke-dasharray="4 14" opacity=".7"/></g>
@@ -66,22 +66,26 @@
     <div class="lei" style="font-size:1.1vw" id="t7"></div></div>
   <div id="fim"><svg viewBox="100 100 312 270" style="width:7vw"><g fill="none" stroke="#FF8A33" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"><path d="M256 146V345"/><path d="M212 345H300"/><path d="M157 212V186H355V212"/><path d="M128 207Q160 258 192 207"/><path d="M320 207Q352 258 384 207"/></g><circle cx="256" cy="136" r="12" fill="#FF8A33"/></svg>
     <div class="marca">Clausa</div><div class="arroba">@pedrom.holanda</div></div>
-  <div id="dica">Tela cheia: F11 · Começar: espaço · Reiniciar: R</div>
+  <div id="dica">Clique uma vez para ligar o microfone · F11: tela cheia · Diga "Bom dia, Jarvis" (ou espaço) · R reinicia</div>
 </div>
 <script>
-// Linha do tempo (segundos) casada com o roteiro.md. A voz do Jarvis é encaixada depois nestes tempos.
-const T={acende:1.5,c0:6,c1:11,c2:16,c3:20.5,c4:27,c5:33.5,c6:38.5,c7:48,pronto:56,pedro:60,fim:64};
+// Linha do tempo (segundos) casada com o roteiro.md.
+const T={acende:1.5,c0:6,c1:11,c2:16,c3:20.5,c4:27,c5:33.5,c6:38.5,c7:48,espera:51.5,pronto:56,pedro:60,fim:64};
 window.DUR=69;
+// Áudios do Jarvis (ElevenLabs): audio/01.mp3 ... audio/11.mp3. Se o arquivo não existir, a tela segue em silêncio.
+const FALAS=[[T.acende,'01'],[T.c0,'02'],[T.c1,'03'],[T.c3,'04'],[T.c4,'05'],[T.c5,'06'],[T.c6,'07'],[T.c7,'08'],[T.pronto,'09'],[T.pedro,'10'],[T.pedro+2.5,'11']];
+const audios=FALAS.map(([t,n])=>{const a=new Audio('audio/'+n+'.mp3');a.preload='auto';a.onerror=()=>{a.falhou=true};return {t,a,tocou:false}});
 const $=s=>document.querySelector(s),ease=x=>x<=0?0:x>=1?1:1-Math.pow(1-x,3);
 const textoMsg='Oi! Só passando para saber se você conseguiu testar o Clausa. Qualquer impressão já me ajuda muito.';
 function mostra(el,t,ini,fimT){let k=ease((t-ini)/.6);if(fimT!==undefined)k*=1-ease((t-fimT)/.6);el.style.opacity=k;
   const base=(el.id==='c6'||el.id==='c7'||el.id==='c0')?'translateX(-50%) ':'';el.style.transform=base+`translateY(${(1-k)*20}px)`;return k}
 function conta(el,t,ini){el.querySelectorAll('[data-n]').forEach(n=>{n.textContent=Math.round(+n.dataset.n*ease((t-ini-.2)/1.2))})}
-window.render=t=>{
+let esperando=false;
+window.render=(t,real=t)=>{
   const luz=ease((t-T.acende)/1.2)*(1-ease((t-T.fim)/1.5));
   $('#nucleo').style.opacity=.25+.75*luz;
-  $('#anel1').setAttribute('transform',`rotate(${t*12})`);$('#anel2').setAttribute('transform',`rotate(${-t*7})`);
-  const p=(t*.9)%1;$('#onda').setAttribute('r',112+p*80*luz);$('#onda').style.opacity=(1-p)*.8*luz;
+  $('#anel1').setAttribute('transform',`rotate(${real*12})`);$('#anel2').setAttribute('transform',`rotate(${-real*7})`);
+  const p=(real*.9)%1;$('#onda').setAttribute('r',112+p*80*luz);$('#onda').style.opacity=(1-p)*.8*luz;
   const s=$('#saud');s.style.opacity=ease((t-T.acende-.3)/.8)*(1-ease((t-T.c0)/.6));
   mostra($('#c0'),t,T.c0,T.c1-.6);conta($('#c0'),t,T.c0);
   mostra($('#c1'),t,T.c1,T.c6-1);conta($('#c1'),t,T.c1);
@@ -91,17 +95,37 @@ window.render=t=>{
   mostra($('#c5'),t,T.c5,T.c6-1);
   mostra($('#c6'),t,T.c6,T.c7-.5);
   mostra($('#c7'),t,T.c7,T.pedro);
-  const n=Math.max(0,Math.min(textoMsg.length,Math.floor((t-T.c7-.6)*22)));
-  $('#t7').innerHTML=textoMsg.slice(0,n)+'<span id="cursor" style="opacity:'+(Math.floor(t*2)%2?1:0)+'"></span>';
-  $('#r7').textContent=t>=T.pronto?'✓ PRONTO PARA REVISAR':'RASCUNHO · MENSAGEM PARA A ADVOGADA';
+  const pisca='<span id="cursor" style="opacity:'+(Math.floor(real*2)%2?1:0)+'"></span>';
+  if(t<T.espera||esperando){$('#r7').textContent=esperando?'OUVINDO…':'JARVIS';$('#t7').innerHTML='Quer que eu prepare a mensagem para a advogada que vai testar?'+pisca}
+  else{const n=Math.max(0,Math.min(textoMsg.length,Math.floor((t-T.espera)*24)));$('#t7').innerHTML=textoMsg.slice(0,n)+pisca;
+    $('#r7').textContent=t>=T.pronto?'✓ PRONTO PARA REVISAR':'RASCUNHO · MENSAGEM PARA A ADVOGADA'}
   $('#r7').style.color=t>=T.pronto?'var(--verde)':'var(--lar)';
   $('#fim').style.opacity=ease((t-T.fim)/1.5);
   const d=new Date();$('#data').textContent=d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'}).replace(/\./g,'').replace(',',' ·').toUpperCase();$('#hora').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
 };
-let t0=null;
-function loop(){render(t0===null?0:(performance.now()-t0)/1000);requestAnimationFrame(loop)}
-addEventListener('keydown',e=>{if(e.code==='Space'&&t0===null){t0=performance.now();$('#dica').style.display='none'}
-  if(e.key==='r'||e.key==='R'){t0=null;$('#dica').style.display=''}});
-addEventListener('click',()=>{if(t0===null){t0=performance.now();$('#dica').style.display='none'}});
+// Relógio virtual: para em T.espera até ouvir "prepara" (ou espaço).
+let rodando=false,base=0,marco=0;
+const agora=()=>performance.now()/1000;
+function tempo(){if(!rodando)return 0;let t=base+(agora()-marco);if(esperando||(t>=T.espera&&base<T.espera)){if(!esperando){esperando=true}return T.espera}return t}
+function comecar(){if(rodando)return;rodando=true;base=0;marco=agora();$('#dica').style.display='none'}
+function continuar(){if(!esperando)return;esperando=false;base=T.espera;marco=agora()}
+function reiniciar(){rodando=false;esperando=false;audios.forEach(x=>{x.tocou=false;x.a.pause();x.a.currentTime=0});$('#dica').style.display=''}
+function loop(){const t=tempo();render(t,agora());
+  audios.forEach(x=>{if(rodando&&!x.tocou&&t>=x.t){x.tocou=true;if(!x.a.falhou)x.a.play().catch(()=>{})}});
+  requestAnimationFrame(loop)}
+addEventListener('keydown',e=>{if(e.code==='Space'){rodando?continuar():comecar()}if(e.key==='r'||e.key==='R')reiniciar()});
+// Microfone (Chrome): "Bom dia, Jarvis" começa; "Prepara" continua.
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,micLigado=false;
+const limpa=x=>x.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+function ligarMic(){if(!SR){$('#mic').textContent='MICROFONE: USE O CHROME';return}if(micLigado)return;
+  rec=new SR();rec.lang='pt-BR';rec.continuous=true;rec.interimResults=true;
+  rec.onresult=e=>{let txt='';for(let i=e.resultIndex;i<e.results.length;i++)txt+=e.results[i][0].transcript+' ';txt=limpa(txt);
+    if(!rodando&&/jarvis|jarves|bom dia/.test(txt))comecar();
+    else if(esperando&&/prepar|pode|sim|manda|faz/.test(txt))continuar()};
+  rec.onstart=()=>{micLigado=true;$('#mic').textContent='● OUVINDO';$('#mic').style.color='var(--lar)'};
+  rec.onerror=e=>{if(e.error==='not-allowed'){micLigado=false;$('#mic').textContent='MICROFONE BLOQUEADO'}};
+  rec.onend=()=>{if(micLigado)try{rec.start()}catch(_){}};
+  try{rec.start()}catch(_){}}
+addEventListener('click',()=>{ligarMic();audios.forEach(x=>{if(!x.a.falhou){x.a.muted=true;x.a.play().then(()=>{x.a.pause();x.a.currentTime=0;x.a.muted=false}).catch(()=>{x.a.muted=false})}})});
 if(!navigator.webdriver)loop();else render(0);
 </script></body></html>
