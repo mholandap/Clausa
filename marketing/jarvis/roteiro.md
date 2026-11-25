@@ -98,7 +98,7 @@ Link: https://mholandap.github.io/Clausa/marketing/jarvis/tela.html (usar o **Ch
 4. Cada fala começa logo depois da anterior (pausa de 0,2 s; ~67 s no total) e a tela **para na pergunta** ("Quer que eu prepare a mensagem…?"), mostrando "OUVINDO…".
 5. Diga **"Prepara…"**: ela continua, digita a mensagem, mostra "PRONTO PARA REVISAR", chama "Pedro?" e fecha com o logo.
 
-Sem microfone, o **espaço** faz as duas coisas (começar e continuar). **R** reinicia.
+O **espaço** só começa. Para continuar depois da pergunta é **preciso dizer "Prepara"** (ele ignora a própria voz e palavras como "sim" ou "pode"). Emergência, se o microfone falhar: tecla **C**. **R** reinicia. A tela não tem legenda: a legenda entra na edição do vídeo.
 
 **Voz ao vivo:** gere as 11 falas no ElevenLabs e salve em `marketing/jarvis/audio/` como `01.mp3` a `11.mp3`, na ordem dos blocos abaixo (ou me mande e eu coloco). Aí o Jarvis fala pelo alto-falante na hora certa. Na edição eu troco pelo áudio limpo, sem eco do quarto.
 
