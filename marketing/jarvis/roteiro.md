@@ -17,11 +17,11 @@ Formato da referência (vídeo de 74 s no Drive, `0 - Referências`): quarto esc
 | 1 | **Pedro** | Bom dia, Jarvis. | Pedro entra no quadro, de lado, e liga o monitor. A tela acende. |
 | 2 | **Jarvis** | Bom dia, Pedro. O mundo não parou enquanto você dormia. Vamos lá. | Círculo central pulsando (a balança do Clausa no meio). |
 | 2b | **Jarvis** | Lá fora, em Brasília, faz vinte e três graus. Hoje vai de vinte e três a trinta e um. A chance de chuva é de quarenta e três por cento. | Cartão "BRASÍLIA": 23°, 23–31°, 43%. |
-| 3 | **Jarvis** | No Instagram, o Reel de ontem teve quarenta e uma curtidas e vinte e um comentários. | Cartão "INSTAGRAM": 41 curtidas, 21 comentários. |
+| 3 | **Jarvis** | No Instagram, o Reel de ontem teve sessenta e nove curtidas e vinte e oito comentários. | Cartão "INSTAGRAM": 69 curtidas, 28 comentários. |
 | 4 | **Jarvis** | Quatro em cada dez pessoas que assistiram ainda não te seguem. | Barra 59% seguidores / 41% não seguidores. |
 | 5 | **Jarvis** | No LinkedIn, duas advogadas responderam. Uma vai testar o Clausa esta semana. A outra pediu o link. | Cartão "LINKEDIN": 2 respostas. **Sem nomes.** |
 | 6 | **Jarvis** | Ontem foram quinze melhorias publicadas no Clausa. Agora ele instala no celular, como um aplicativo. | Contador subindo até 15; ícone do app. |
-| 7 | **Jarvis** | Hoje, às dez e cinco, sai o Reel dos cinco avisos que não valem nada. | Cartão "AGENDA": 10:05, 5 avisos. |
+| ~~7~~ | **Jarvis** | *(cortada na gravação de 25/11)* Hoje, às dez e cinco, sai o Reel dos cinco avisos que não valem nada. | Cartão "AGENDA": 10:05, 5 avisos. |
 | 8 | **Jarvis** | Agora, a dica do dia. Multa de contrato exagerada pode ser reduzida pelo juiz. Está no artigo quatrocentos e treze do Código Civil. | Cartão "DICA": art. 413 do Código Civil. |
 | 9 | **Jarvis** | Quer que eu prepare a mensagem para a advogada que vai testar? | Cursor piscando num rascunho. |
 | 10 | **Pedro** | Prepara. E me lembra às seis de responder os comentários. Valeu. | Pedro pega o café e se levanta. |
@@ -30,7 +30,7 @@ Formato da referência (vídeo de 74 s no Drive, `0 - Referências`): quarto esc
 | 13 | **Jarvis** | Me deixou falando sozinho. De novo. | A tela escurece devagar. Logo do Clausa e @pedrom.holanda. |
 
 ### Por que cada fala é verdade
-- 41 curtidas, 21 comentários e 59/41%: print dos Insights que o Pedro mandou em 24/11, às 19h.
+- 69 curtidas e 28 comentários: números atualizados pelo Pedro na manhã de 25/11 (às 19h de 24/11 eram 41 e 21). 4 em cada 10 não seguidores: Insights de 24/11.
 - Duas advogadas: retornos que o Pedro contou em 24/11 (uma vai testar na semana, uma advogada solo pediu o link).
 - 15 melhorias: 15 mudanças (pull requests #11 a #25) publicadas no `main` em 24/11, incluindo o app instalável (#22 e #23).
 - Clima: previsão de Brasília (wttr.in) às 8h de 25/11: 23 °C agora, mínima 23, máxima 31, até 43% de chance de chuva. **Muda todo dia: conferir na hora de gravar.**
@@ -58,7 +58,7 @@ Bom dia, Pedro. O mundo não parou enquanto você dormia. Vamos lá.
 Lá fora, em Brasília, faz vinte e três graus. Hoje vai de vinte e três a trinta e um. A chance de chuva é de quarenta e três por cento.
 ```
 ```
-No Instagram, o Reel de ontem teve quarenta e uma curtidas e vinte e um comentários. Quatro em cada dez pessoas que assistiram ainda não te seguem.
+No Instagram, o Reel de ontem teve sessenta e nove curtidas e vinte e oito comentários. Quatro em cada dez pessoas que assistiram ainda não te seguem.
 ```
 ```
 No LinkedIn, duas advogadas responderam. Uma vai testar o Clausa esta semana. A outra pediu o link.
