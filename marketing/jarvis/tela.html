@@ -71,7 +71,8 @@
   <canvas id="cvTr"></canvas>
   <div id="varredura"></div>
 
-  <div id="topo"><span class="ponto"></span><span id="hora">07:00</span><span id="data">QUA · 25 NOV</span><span>CLAUSA // PAINEL DO DIA</span><span class="esp"></span><span id="estado">SISTEMA ONLINE</span><span id="mic">MIC: DESLIGADO</span></div>
+  <div id="topo"><span class="ponto"></span><span id="hora">07:00</span><span id="data">QUA · 25 NOV</span><span>CLAUSA // PAINEL DO DIA</span><span class="esp"></span><span id="estado">SISTEMA ONLINE</span><span id="mic">MIC: DESLIGADO</span><span id="versao" style="color:#4a3426">V9</span></div>
+  <div id="ouviu" style="display:none;position:absolute;right:3vw;top:8vh;max-width:40vw;font:500 .9vw 'JetBrains Mono';color:#FFC08A;background:rgba(0,0,0,.6);padding:.4vw .7vw;border-radius:6px;z-index:9"></div>
 
   <svg width="0" height="0" style="position:absolute"><defs>
       <linearGradient id="gArco" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFC08A"/><stop offset=".45" stop-color="#FF8A33"/><stop offset="1" stop-color="#E2590B" stop-opacity="0"/></linearGradient>
@@ -244,7 +245,7 @@ function tempo(){if(!rodando)return 0;let t=base+(agora()-marco);
   if(esperando)return T.espera;
   return t}
 // Na pergunta: liga o microfone só agora (descarta o que ouviu antes)
-function aoEsperar(){ouvirDesde=agora()+.4;ouvir(true)}
+function aoEsperar(){ouvirDesde=agora()+.4;sessaoEspera=sessao+1;ouvir(true)}
 function comecar(){if(rodando)return;rodando=true;base=0;marco=agora();$('#dica').style.display='none';ouvir(false)}
 function continuar(){if(!esperando)return;esperando=false;base=T.espera;marco=agora();ouvir(false)}
 function reiniciar(){rodando=false;esperando=false;audios.forEach(x=>{x.tocou=false;x.a.pause();x.a.currentTime=0});$('#dica').style.display='';ouvir(true)}
@@ -255,11 +256,11 @@ function loop(){let t=tempo();
     else{prox.tocou=true;if(!prox.a.falhou){prox.a.currentTime=0;prox.a.play().catch(()=>{prox.a.falhou=true})}}}
   render(t,agora());requestAnimationFrame(loop)}
 // Espaço só começa. Para continuar é preciso dizer "Prepara" (emergência, se o microfone falhar: tecla C).
-addEventListener('keydown',e=>{if(e.code==='Space'&&!rodando)comecar();if(e.key==='c'||e.key==='C')continuar();if(e.key==='r'||e.key==='R')reiniciar()});
+addEventListener('keydown',e=>{if(e.key==='d'||e.key==='D'){const o=$('#ouviu');o.style.display=o.style.display==='none'?'block':'none'}if(e.code==='Space'&&!rodando)comecar();if(e.key==='c'||e.key==='C')continuar();if(e.key==='r'||e.key==='R')reiniciar()});
 
 // ---------- Microfone (Chrome): fica ligado só antes de começar e na pergunta ----------
 // Enquanto o Jarvis fala o microfone fica desligado: evita eco e o Windows abaixar/engasgar o som.
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,querOuvir=true,permitido=false,ativo=false;
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,querOuvir=true,permitido=false,ativo=false,sessao=0,sessaoEspera=-1;
 const limpa=x=>x.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
 function rotuloMic(){$('#mic').textContent=!SR?'MIC: USE O CHROME':!permitido?'MIC: DESLIGADO':querOuvir?'● MIC: OUVINDO':'MIC: EM PAUSA';$('#mic').style.color=permitido&&querOuvir?'var(--lar)':''}
 function ouvir(sim){querOuvir=sim;rotuloMic();if(!rec||!permitido)return;
@@ -267,10 +268,14 @@ function ouvir(sim){querOuvir=sim;rotuloMic();if(!rec||!permitido)return;
   else{try{rec.abort()}catch(_){}}}
 function ligarMic(){if(!SR){rotuloMic();return}if(rec)return;
   rec=new SR();rec.lang='pt-BR';rec.continuous=true;rec.interimResults=true;
-  rec.onresult=e=>{if(!querOuvir)return;let txt='';for(let i=e.resultIndex;i<e.results.length;i++)txt+=e.results[i][0].transcript+' ';txt=limpa(txt);
+  rec.onresult=e=>{const minha=rec._sessao;let txt='',fim=false;for(let i=e.resultIndex;i<e.results.length;i++){txt+=e.results[i][0].transcript+' ';if(e.results[i].isFinal)fim=true}txt=limpa(txt);
+    console.log('[mic]',fim?'final':'parcial','sessão',minha,'→',txt);
+    const o=$('#ouviu');o.textContent='ouviu ('+(fim?'final':'parcial')+'): '+txt;
+    if(!querOuvir)return;
     if(!rodando&&/jarvis|jarves|djarvis|bom dia/.test(txt))comecar();
-    else if(esperando&&agora()>=ouvirDesde&&/\bprepara(r)?\b/.test(txt))continuar()};
-  rec.onstart=()=>{ativo=true;permitido=true;rotuloMic()};
+    // para continuar: só resultado FINAL, de uma sessão aberta depois da pergunta, com a palavra "prepara"
+    else if(esperando&&fim&&minha>=sessaoEspera&&agora()>=ouvirDesde&&/\bprepara(r)?\b/.test(txt))continuar()};
+  rec.onstart=()=>{ativo=true;permitido=true;sessao++;rec._sessao=sessao;rotuloMic()};
   rec.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){permitido=false;rotuloMic();$('#mic').textContent='MIC: BLOQUEADO'}};
   rec.onend=()=>{ativo=false;if(querOuvir&&permitido)setTimeout(()=>{if(querOuvir&&!ativo)try{rec.start()}catch(_){}},150)};
   permitido=true;try{rec.start()}catch(_){}}

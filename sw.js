@@ -1,7 +1,7 @@
 // Service worker do Clausa: deixa o app abrir mesmo sem internet.
-// Páginas: tenta a rede primeiro (sempre a versão mais nova) e cai no cache se estiver offline.
+// Páginas: tenta a rede primeiro, sempre conferindo com o servidor (nunca a cópia velha do navegador) e cai no cache se estiver offline.
 // Nunca guarda chamadas ao Supabase nem a outros sites: só arquivos do próprio Clausa.
-const VERSAO = 'clausa-v3';
+const VERSAO = 'clausa-v4';
 const BASE = ['./', 'index.html', 'app.html', 'entrar.html', 'privacidade.html', 'termos.html',
   'favicon.png', 'manifest.webmanifest', 'js/clausa-config.js', 'img/icones/icone-192.png', 'img/icones/icone-512.png'];
 
@@ -18,7 +18,7 @@ self.addEventListener('fetch', e => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;          // Supabase, fontes, CDN: direto na rede
   e.respondWith(
-    fetch(req).then(res => {
+    fetch(req, req.mode === 'navigate' ? { cache: 'no-cache' } : undefined).then(res => {
       if (res.ok && res.type === 'basic') { const copia = res.clone(); caches.open(VERSAO).then(c => c.put(req, copia)); }
       return res;
     }).catch(() => caches.match(req, { ignoreSearch: true }).then(r => r || caches.match('app.html')))
