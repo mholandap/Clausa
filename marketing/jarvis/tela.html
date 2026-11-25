@@ -71,7 +71,7 @@
   <canvas id="cvTr"></canvas>
   <div id="varredura"></div>
 
-  <div id="topo"><span class="ponto"></span><span id="hora">07:00</span><span id="data">QUA · 25 NOV</span><span>CLAUSA // PAINEL DO DIA</span><span class="esp"></span><span id="estado">SISTEMA ONLINE</span><span id="mic">MIC: DESLIGADO</span><span id="versao" style="color:#4a3426">V12</span></div>
+  <div id="topo"><span class="ponto"></span><span id="hora">07:00</span><span id="data">QUA · 25 NOV</span><span>CLAUSA // PAINEL DO DIA</span><span class="esp"></span><span id="estado">SISTEMA ONLINE</span><span id="mic">MIC: DESLIGADO</span><span id="versao" style="color:#4a3426">V13</span></div>
   <div id="ouviu" style="display:none;position:absolute;right:3vw;top:8vh;max-width:40vw;font:500 .9vw 'JetBrains Mono';color:#FFC08A;background:rgba(0,0,0,.6);padding:.4vw .7vw;border-radius:6px;z-index:9"></div>
 
   <svg width="0" height="0" style="position:absolute"><defs>
@@ -118,7 +118,7 @@
   <div id="vinheta"></div>
   <div id="fim"><svg viewBox="100 100 312 270" style="width:7vw;filter:drop-shadow(0 0 18px #FF8A33)"><g fill="none" stroke="#FF8A33" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"><path d="M256 146V345"/><path d="M212 345H300"/><path d="M157 212V186H355V212"/><path d="M128 207Q160 258 192 207"/><path d="M320 207Q352 258 384 207"/></g><circle cx="256" cy="136" r="12" fill="#FF8A33"/></svg>
     <div class="marca">Clausa</div><div class="arroba">@pedrom.holanda</div></div>
-  <div id="dica">Clique uma vez para ligar o microfone e o som · F11: tela cheia · Diga "Bom dia, Jarvis" (ou espaço) · R reinicia</div>
+  <div id="dica">Clique uma vez para ligar o microfone e o som · F (ou clique duplo): tela cheia · Diga "Bom dia, Jarvis" (ou espaço) · R reinicia</div>
 </div>
 <script>
 const $=s=>document.querySelector(s),NS='http://www.w3.org/2000/svg',ease=x=>x<=0?0:x>=1?1:1-Math.pow(1-x,3);
@@ -256,7 +256,9 @@ function loop(){let t=tempo();
     else{prox.tocou=true;if(!prox.a.falhou){prox.a.currentTime=0;prox.a.play().catch(()=>{prox.a.falhou=true})}}}
   render(t,agora());requestAnimationFrame(loop)}
 // Espaço só começa. Para continuar é preciso dizer "Prepara" (emergência, se o microfone falhar: tecla C).
-addEventListener('keydown',e=>{if(e.key==='h'||e.key==='H'){const h=$('#hora');h.style.display=h.style.display==='none'?'':'none'}if(e.key==='d'||e.key==='D'){const o=$('#ouviu');o.style.display=o.style.display==='none'?'block':'none'}if(e.code==='Space'&&!rodando)comecar();if(e.key==='c'||e.key==='C')continuar();if(e.key==='r'||e.key==='R')reiniciar()});
+function telaCheia(){if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen().catch(()=>{})}
+addEventListener('dblclick',telaCheia);
+addEventListener('keydown',e=>{if(e.key==='f'||e.key==='F')telaCheia();if(e.key==='h'||e.key==='H'){const h=$('#hora');h.style.display=h.style.display==='none'?'':'none'}if(e.key==='d'||e.key==='D'){const o=$('#ouviu');o.style.display=o.style.display==='none'?'block':'none'}if(e.code==='Space'&&!rodando)comecar();if(e.key==='c'||e.key==='C')continuar();if(e.key==='r'||e.key==='R')reiniciar()});
 
 // ---------- Microfone (Chrome): fica ligado só antes de começar e na pergunta ----------
 // Enquanto o Jarvis fala o microfone fica desligado: evita eco e o Windows abaixar/engasgar o som.
