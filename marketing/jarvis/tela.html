@@ -113,7 +113,7 @@
     <div class="lei">Multa de contrato exagerada pode ser reduzida pelo juiz.</div><div class="sub">Código Civil, art. 413</div></div>
   <div class="card" id="c7"><div class="rot" id="r7">JARVIS</div><div class="lei" id="t7"></div></div>
 
-  <div id="leg"></div><div id="fluxo" class="mono"></div><div id="fluxo2" class="mono"></div>
+  <div id="fluxo" class="mono"></div><div id="fluxo2" class="mono"></div>
   <div id="vinheta"></div>
   <div id="fim"><svg viewBox="100 100 312 270" style="width:7vw;filter:drop-shadow(0 0 18px #FF8A33)"><g fill="none" stroke="#FF8A33" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"><path d="M256 146V345"/><path d="M212 345H300"/><path d="M157 212V186H355V212"/><path d="M128 207Q160 258 192 207"/><path d="M320 207Q352 258 384 207"/></g><circle cx="256" cy="136" r="12" fill="#FF8A33"/></svg>
     <div class="marca">Clausa</div><div class="arroba">@pedrom.holanda</div></div>
@@ -224,7 +224,6 @@ window.render=(t,real=t)=>{
   else{const n=Math.max(0,Math.min(textoMsg.length,Math.floor((t-T.espera)*95)));$('#t7').innerHTML=textoMsg.slice(0,n)+pisca;
     $('#r7').textContent=t>=T.pronto?'✓ PRONTO PARA REVISAR':'RASCUNHO · MENSAGEM PARA A ADVOGADA'}
   $('#r7').style.color=t>=T.pronto?'var(--verde)':'var(--lar)';
-  legenda(t);
   $('#fim').style.opacity=ease((t-T.fim)/1.2);
   if(real-ultFluxo>.25){ultFluxo=real;const l=()=>`0x${hexa()}  ${hexa()}  ${(Math.random()*999).toFixed(0).padStart(3,'0')}`;
     $('#fluxo').textContent=[l(),l(),l(),l()].join('\n');$('#fluxo2').textContent=[l(),l(),l(),l()].join('\n')}
@@ -232,17 +231,21 @@ window.render=(t,real=t)=>{
   $('#hora').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
 };
 
-// ---------- Relógio: para na pergunta até ouvir "prepara" (ou espaço) ----------
+// ---------- Relógio: para na pergunta e só continua quando ouvir "Prepara" na sua voz ----------
 let rodando=false,base=0,marco=0;
 const agora=()=>performance.now()/1000;
-function tempo(){if(!rodando)return 0;const t=base+(agora()-marco);if(esperando||(t>=T.espera&&base<T.espera)){esperando=true;return T.espera}return t}
+let ouvirDesde=0;
+function tempo(){if(!rodando)return 0;const t=base+(agora()-marco);if(esperando||(t>=T.espera&&base<T.espera)){if(!esperando){esperando=true;aoEsperar()}return T.espera}return t}
+// Ao começar a esperar: joga fora tudo o que o microfone ouviu antes (inclusive a própria voz do Jarvis dizendo "prepare")
+function aoEsperar(){ouvirDesde=agora()+.6;if(rec&&micLigado){try{rec.abort()}catch(_){}}}
 function comecar(){if(rodando)return;rodando=true;base=0;marco=agora();$('#dica').style.display='none';if(actx&&actx.state==='suspended')actx.resume()}
 function continuar(){if(!esperando)return;esperando=false;base=T.espera;marco=agora()}
 function reiniciar(){rodando=false;esperando=false;audios.forEach(x=>{x.tocou=false;x.a.pause();x.a.currentTime=0});$('#dica').style.display=''}
 function loop(){const t=tempo();render(t,agora());
   audios.forEach(x=>{if(rodando&&!x.tocou&&t>=x.t){x.tocou=true;if(!x.a.falhou){x.a.currentTime=0;x.a.play().catch(()=>{})}}});
   requestAnimationFrame(loop)}
-addEventListener('keydown',e=>{if(e.code==='Space'){rodando?continuar():comecar()}if(e.key==='r'||e.key==='R')reiniciar()});
+// Espaço só começa. Para continuar é preciso dizer "Prepara" (emergência, se o microfone falhar: tecla C).
+addEventListener('keydown',e=>{if(e.code==='Space'&&!rodando)comecar();if(e.key==='c'||e.key==='C')continuar();if(e.key==='r'||e.key==='R')reiniciar()});
 
 // ---------- Microfone (Chrome): "Bom dia, Jarvis" começa; "Prepara" continua ----------
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,micLigado=false;
@@ -251,7 +254,7 @@ function ligarMic(){if(!SR){$('#mic').textContent='MIC: USE O CHROME';return}if(
   rec=new SR();rec.lang='pt-BR';rec.continuous=true;rec.interimResults=true;
   rec.onresult=e=>{let txt='';for(let i=e.resultIndex;i<e.results.length;i++)txt+=e.results[i][0].transcript+' ';txt=limpa(txt);
     if(!rodando&&/jarvis|jarves|djarvis|bom dia/.test(txt))comecar();
-    else if(esperando&&/prepar|pode|sim|manda|faz/.test(txt))continuar()};
+    else if(esperando&&agora()>=ouvirDesde&&/\bprepara(r)?\b/.test(txt))continuar()};
   rec.onstart=()=>{micLigado=true;$('#mic').textContent='● MIC: OUVINDO';$('#mic').style.color='var(--lar)'};
   rec.onerror=e=>{if(e.error==='not-allowed'){micLigado=false;$('#mic').textContent='MIC: BLOQUEADO'}};
   rec.onend=()=>{if(micLigado)try{rec.start()}catch(_){}};
