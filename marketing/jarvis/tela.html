@@ -71,7 +71,7 @@
   <canvas id="cvTr"></canvas>
   <div id="varredura"></div>
 
-  <div id="topo"><span class="ponto"></span><span id="hora">07:00</span><span id="data">QUA · 25 NOV</span><span>CLAUSA // PAINEL DO DIA</span><span class="esp"></span><span id="estado">SISTEMA ONLINE</span><span id="mic">MIC: DESLIGADO</span><span id="versao" style="color:#4a3426">V11</span></div>
+  <div id="topo"><span class="ponto"></span><span id="hora">07:00</span><span id="data">QUA · 25 NOV</span><span>CLAUSA // PAINEL DO DIA</span><span class="esp"></span><span id="estado">SISTEMA ONLINE</span><span id="mic">MIC: DESLIGADO</span><span id="versao" style="color:#4a3426">V12</span></div>
   <div id="ouviu" style="display:none;position:absolute;right:3vw;top:8vh;max-width:40vw;font:500 .9vw 'JetBrains Mono';color:#FFC08A;background:rgba(0,0,0,.6);padding:.4vw .7vw;border-radius:6px;z-index:9"></div>
 
   <svg width="0" height="0" style="position:absolute"><defs>
@@ -256,7 +256,7 @@ function loop(){let t=tempo();
     else{prox.tocou=true;if(!prox.a.falhou){prox.a.currentTime=0;prox.a.play().catch(()=>{prox.a.falhou=true})}}}
   render(t,agora());requestAnimationFrame(loop)}
 // Espaço só começa. Para continuar é preciso dizer "Prepara" (emergência, se o microfone falhar: tecla C).
-addEventListener('keydown',e=>{if(e.key==='d'||e.key==='D'){const o=$('#ouviu');o.style.display=o.style.display==='none'?'block':'none'}if(e.code==='Space'&&!rodando)comecar();if(e.key==='c'||e.key==='C')continuar();if(e.key==='r'||e.key==='R')reiniciar()});
+addEventListener('keydown',e=>{if(e.key==='h'||e.key==='H'){const h=$('#hora');h.style.display=h.style.display==='none'?'':'none'}if(e.key==='d'||e.key==='D'){const o=$('#ouviu');o.style.display=o.style.display==='none'?'block':'none'}if(e.code==='Space'&&!rodando)comecar();if(e.key==='c'||e.key==='C')continuar();if(e.key==='r'||e.key==='R')reiniciar()});
 
 // ---------- Microfone (Chrome): fica ligado só antes de começar e na pergunta ----------
 // Enquanto o Jarvis fala o microfone fica desligado: evita eco e o Windows abaixar/engasgar o som.
