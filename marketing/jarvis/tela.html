@@ -25,7 +25,7 @@
    linear-gradient(var(--lar),var(--lar)) left bottom/1.1vw 2px no-repeat,linear-gradient(var(--lar),var(--lar)) left bottom/2px 1.1vw no-repeat,
    linear-gradient(var(--lar),var(--lar)) right bottom/1.1vw 2px no-repeat,linear-gradient(var(--lar),var(--lar)) right bottom/2px 1.1vw no-repeat,
    linear-gradient(135deg,rgba(255,138,51,.16) 0%,rgba(22,22,23,.82) 38%,rgba(12,12,13,.9) 100%);
-  border:1px solid rgba(255,138,51,.16);box-shadow:0 0 40px rgba(255,138,51,.08),inset 0 0 30px rgba(255,138,51,.05);backdrop-filter:blur(6px)}
+  border:1px solid rgba(255,138,51,.16);box-shadow:0 0 40px rgba(255,138,51,.08),inset 0 0 30px rgba(255,138,51,.05)}
 .rot{display:flex;align-items:center;gap:.6vw;font:600 .72vw "JetBrains Mono";letter-spacing:.16em;color:var(--lar);margin-bottom:.9vw}
 .rot .id{color:#6b4a33}.rot::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,138,51,.45),transparent)}
 .num{font:900 3.7vw/1 "Inter Tight";letter-spacing:-.04em;background:linear-gradient(180deg,#fff 30%,var(--claro));-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -80,7 +80,7 @@
     </defs>
     <circle id="halo" r="300" fill="url(#gBrilho)"/>
     <g id="bisel"></g>
-    <g id="arcoA"><circle r="252" fill="none" stroke="url(#gArco)" stroke-width="5" stroke-dasharray="380 120 60 100 220 803" filter="url(#neon)"/></g>
+    <g id="arcoA"><circle r="252" fill="none" stroke="#FF8A33" stroke-opacity=".18" stroke-width="16" stroke-dasharray="380 120 60 100 220 803"/><circle r="252" fill="none" stroke="url(#gArco)" stroke-width="5" stroke-dasharray="380 120 60 100 220 803"/></g>
     <g id="arcoB"><circle r="232" fill="none" stroke="url(#gArco2)" stroke-width="2" stroke-dasharray="2 8"/></g>
     <g id="arcoC"><circle r="216" fill="none" stroke="#FF8A33" stroke-width="12" stroke-opacity=".22" stroke-dasharray="60 30 10 30 140 90 20 300"/></g>
     <g id="varre"><path d="M0 0 L210 0 A210 210 0 0 0 148 -148 Z" fill="url(#gVarre)"/></g>
@@ -141,7 +141,7 @@ const iris=$('#iris');for(let i=0;i<48;i++){const a=i*7.5*Math.PI/180;
   el('line',{x1:118*Math.cos(a),y1:118*Math.sin(a),x2:(i%4?138:150)*Math.cos(a),y2:(i%4?138:150)*Math.sin(a),stroke:'#FF8A33','stroke-opacity':i%4?.25:.7,'stroke-width':i%4?1:2},iris)}
 el('circle',{r:155,fill:'none',stroke:'#FF8A33','stroke-opacity':.4,'stroke-dasharray':'1 5'},iris);
 const N=72,barras=[];const eq=$('#eq');for(let i=0;i<N;i++){const a=(i/N)*2*Math.PI-Math.PI/2;
-  barras.push({a,l:el('line',{x1:0,y1:0,x2:0,y2:0,stroke:'url(#gArco)','stroke-width':3.2,'stroke-linecap':'round'},eq)})}
+  barras.push({a,l:el('line',{x1:0,y1:0,x2:0,y2:0,stroke:'#FF8A33','stroke-width':3.2,'stroke-linecap':'round'},eq)})}
 // Trilhas de circuito (coordenadas 1920×1080): núcleo → cartões e bordas
 const TR=[
  ['c1','M760 300 H660 L620 260 H575'],['c2','M705 520 H640 L600 580 H575'],
@@ -153,7 +153,7 @@ const TR=[
  [null,'M470 160 V110 H520'],[null,'M1450 160 V110 H1400']];
 const trG=$('#tr'),trilhas=TR.map(([card,d],i)=>{const g=el('g',{},trG);
   const base=el('path',{d,stroke:'url(#gTr)','stroke-width':1.4},g);
-  const p=el('path',{d,stroke:'#FFC08A','stroke-width':2.4,filter:'url(#brilho)'},g);
+  const p=el('path',{d,stroke:'#FFC08A','stroke-width':2.6},g);
   const len=base.getTotalLength();p.setAttribute('stroke-dasharray',`18 ${len+40}`);
   const m=d.match(/[\d.]+ [\d.]+|[HV] ?[\d.]+/g);const ult=base.getPointAtLength(len);
   el('rect',{x:ult.x-4,y:ult.y-4,width:8,height:8,fill:'none',stroke:'#FF8A33','stroke-opacity':.7},g);
@@ -192,9 +192,8 @@ window.render=(t,real=t)=>{
     b.l.setAttribute('x2',r2*Math.cos(b.a));b.l.setAttribute('y2',r2*Math.sin(b.a));b.l.setAttribute('stroke-opacity',.25+.75*v*luz)});media/=N;
   $('#halo').setAttribute('opacity',(.45+media*1.2)*luz+.1);
   const p=(real*1.1)%1;$('#pulso').setAttribute('r',112+p*48);$('#pulso').setAttribute('stroke-opacity',(1-p)*.9*luz);
-  $('#balanca').style.opacity=.55+.45*luz+media*.3;
+  const ob=(.55+.45*luz).toFixed(2);if($('#balanca').dataset.o!==ob){$('#balanca').style.opacity=ob;$('#balanca').dataset.o=ob}
   $('#rotulo').textContent=t<T.acende?'J.A.R.V.I.S // EM ESPERA':esperando?'J.A.R.V.I.S // OUVINDO':fala?'J.A.R.V.I.S // FALANDO':'J.A.R.V.I.S // ONLINE';
-  $('#hexr').setAttribute('transform',`translate(${(real*6)%45},${(real*3)%78})`);
   // trilhas: acendem com o cartão ativo
   const ativo={c0:[T.c0,T.c1],c1:[T.c1,T.c6],c2:[T.c2,T.c6],c3:[T.c3,T.c6],c4:[T.c4,T.c6],c6:[T.c6,T.c7],c7:[T.c7,T.pedro+2]};
   trilhas.forEach(tr=>{let on=.35*luz;if(tr.card){const [a,b]=ativo[tr.card];on=ease((t-a)/.4)*(1-ease((t-b)/.4))}
@@ -217,8 +216,8 @@ window.render=(t,real=t)=>{
   $('#fim').style.opacity=ease((t-T.fim)/1.2);
   if(real-ultFluxo>.25){ultFluxo=real;const l=()=>`0x${hexa()}  ${hexa()}  ${(Math.random()*999).toFixed(0).padStart(3,'0')}`;
     $('#fluxo').textContent=[l(),l(),l(),l()].join('\n');$('#fluxo2').textContent=[l(),l(),l(),l()].join('\n')}
-  const d=new Date();$('#data').textContent=d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'}).replace(/\./g,'').replace(',',' ·').toUpperCase();
-  $('#hora').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  if(Math.floor(real)!==window._seg){window._seg=Math.floor(real);const d=new Date();$('#data').textContent=d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'}).replace(/\./g,'').replace(',',' ·').toUpperCase();
+  $('#hora').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
 };
 
 // ---------- Relógio: para na pergunta até ouvir "prepara" (ou espaço) ----------
