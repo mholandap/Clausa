@@ -50,7 +50,7 @@
   <div class="card" id="c0"><div class="rot">BRASÍLIA · AGORA</div>
     <div class="linha2"><div><div class="num"><span data-n="23">0</span>°</div><div class="sub">agora</div></div><div><div class="num">23–31°</div><div class="sub">hoje</div></div><div><div class="num" style="color:var(--lar)"><span data-n="43">0</span>%</div><div class="sub">chance de chuva</div></div></div></div>
   <div class="card e" id="c1"><div class="rot">INSTAGRAM · REEL DE ONTEM</div>
-    <div class="linha2"><div><div class="num" data-n="41">0</div><div class="sub">curtidas</div></div><div><div class="num" data-n="21">0</div><div class="sub">comentários</div></div></div></div>
+    <div class="linha2"><div><div class="num" data-n="69">0</div><div class="sub">curtidas</div></div><div><div class="num" data-n="28">0</div><div class="sub">comentários</div></div></div></div>
   <div class="card e" id="c2"><div class="rot">QUEM ASSISTIU</div>
     <div class="linha2"><div><div class="num">59%</div><div class="sub">seguidores</div></div><div><div class="num" style="color:var(--lar)">41%</div><div class="sub">ainda não seguem</div></div></div>
     <div class="barra"><i id="b1" style="background:#9B9B9E;width:0"></i><i id="b2" style="background:var(--lar);width:0"></i></div></div>
@@ -70,10 +70,11 @@
 </div>
 <script>
 // Linha do tempo (segundos) casada com o roteiro.md.
-const T={acende:1.5,c0:6,c1:11,c2:16,c3:20.5,c4:27,c5:33.5,c6:38.5,c7:48,espera:51.5,pronto:56,pedro:60,fim:64};
-window.DUR=69;
+// Tempos casados com a duração de cada fala gravada (audio/*.mp3). Agenda (06) saiu: sem áudio.
+const T={acende:1.5,c0:7.5,c1:18.9,c2:23.5,c3:29.6,c4:37.5,c5:1e9,c6:45.4,c7:56.5,espera:60.2,pronto:64.2,pedro:69,fim:76};
+window.DUR=81;
 // Áudios do Jarvis (ElevenLabs): audio/01.mp3 ... audio/11.mp3. Se o arquivo não existir, a tela segue em silêncio.
-const FALAS=[[T.acende,'01'],[T.c0,'02'],[T.c1,'03'],[T.c3,'04'],[T.c4,'05'],[T.c5,'06'],[T.c6,'07'],[T.c7,'08'],[T.pronto,'09'],[T.pedro,'10'],[T.pedro+2.5,'11']];
+const FALAS=[[T.acende,'01'],[T.c0,'02'],[T.c1,'03'],[T.c3,'04'],[T.c4,'05'],[T.c5,'06'],[T.c6,'07'],[T.c7,'08'],[T.pronto,'09'],[T.pedro,'10'],[T.pedro+2.2,'11']];
 const audios=FALAS.map(([t,n])=>{const a=new Audio('audio/'+n+'.mp3');a.preload='auto';a.onerror=()=>{a.falhou=true};return {t,a,tocou:false}});
 const $=s=>document.querySelector(s),ease=x=>x<=0?0:x>=1?1:1-Math.pow(1-x,3);
 const textoMsg='Oi! Só passando para saber se você conseguiu testar o Clausa. Qualquer impressão já me ajuda muito.';
