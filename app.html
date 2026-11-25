@@ -434,7 +434,8 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
         var soLocal=convos.filter(function(c){return !c.synced&&!ids[c.id]&&c.text});
         convos=soLocal.concat(cloud);
         save("clausa-convos",convos);
-        current=convos.length?convos[0].id:null;
+        // ao abrir, fica na tela de novo contrato; só mantém a conversa se o usuário já abriu uma com texto
+        var aberto=current&&getConvo(current);if(!(aberto&&aberto.text))current=null;
         renderSidebar();renderMain();
         if(soLocal.length)cloudSync();
       }
@@ -879,7 +880,8 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
   var fi=el("input");fi.type="file";fi.id="file";fi.accept=".txt,text/plain";fi.style.display="none";document.body.appendChild(fi);
 
   // start
-  if(convos.length){current=convos[0].id}
+  // ao abrir o app, começa sempre na tela de novo contrato (as conversas antigas ficam no menu)
+  current=null;
   renderSidebar();renderMain();sizeInput();
 
   // conta / nuvem: se estiver logado, carrega os contratos da nuvem
