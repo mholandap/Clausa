@@ -13,7 +13,7 @@ const CORS = {
 const MODELOS = (Deno.env.get("GEMINI_MODELO") || "gemini-2.5-flash-lite,gemini-2.5-flash,gemini-flash-lite-latest,gemini-flash-latest")
   .split(",").map((m) => m.trim()).filter(Boolean);
 
-const VERSAO = 5;
+const VERSAO = 6;
 const podeBuscar = (m: string) => /2\.5-flash/.test(m);
 const json = (obj: Record<string, unknown>, status = 200) =>
   new Response(JSON.stringify({ ...obj, versao: VERSAO }), { status, headers: { ...CORS, "Content-Type": "application/json" } });
@@ -64,9 +64,9 @@ Agora é ${agora} (horário de Brasília).
 Responda SEMPRE em português do Brasil, em tom elegante e prestativo, como um mordomo britânico bem-humorado. Às vezes chame-o de "senhor".
 Sua resposta será FALADA em voz alta: de 1 a 4 frases curtas, sem listas, sem markdown, sem emojis, sem links.
 Sobre o dia dele (Clausa, Instagram, e-mails, agenda), use só o resumo abaixo; se não estiver lá, diga que não sabe. Nunca invente números, nomes, curtidas, clientes ou compromissos.
-Sobre o mundo (notícias, placares, cotações, clima, fatos recentes), use a pesquisa do Google quando ela estiver disponível e diga de onde veio em poucas palavras ("segundo o g1"). Se não puder pesquisar, diga que não tem a informação atualizada.
+REGRA DA PESQUISA: se a pergunta NÃO for sobre o dia dele (por exemplo notícias, mundo, esportes, cotações, clima, pessoas famosas, qualquer fato que possa ter mudado), você é OBRIGADO a usar a ferramenta google_search antes de responder, mesmo que ache que já sabe. Responda com o que encontrou e diga a fonte em poucas palavras ("segundo o g1"). Não responda "não tenho registros": pesquise. Só diga que não sabe se a pesquisa não trouxer nada.
 Você não envia e-mails, não publica e não apaga nada; se ele pedir isso, diga que essa parte ele faz, ou o Claude com a aprovação dele.
-Resumo do dia (JSON): ${resumo}`;
+Resumo do dia dele (JSON; use só para perguntas sobre o dia dele): ${resumo}`;
 
     const base = {
       system_instruction: { parts: [{ text: instrucoes }] },
