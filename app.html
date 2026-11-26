@@ -317,9 +317,9 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
   function greetings(){var n=NAME?(", "+NAME):"";return ["O que temos hoje"+n+"?","Qual o novo contrato"+n+"?","Vamos revisar algo"+n+"?","Por onde começamos"+n+"?"];}
 
   var DEFAULTS=[
-    {id:"r1",on:true,sev:"alto",name:"Multa e cláusula penal",pat:"multa|penalidade|cl[áa]usula penal",reason:"Penalidades podem ser elevadas; confira o percentual, a base de cálculo e a proporcionalidade.",sugg:"Rever o valor da multa e vinculá-la à gravidade do descumprimento, evitando percentuais sobre o saldo total."},
+    {id:"r1",on:true,sev:"alto",name:"Multa e cláusula penal",pat:"multa|penalidade|cl[áa]usula penal",excl:"atraso|morat|\\bmora\\b",reason:"Penalidades podem ser elevadas; confira o percentual, a base de cálculo e a proporcionalidade.",sugg:"Rever o valor da multa e vinculá-la à gravidade do descumprimento, evitando percentuais sobre o saldo total."},
     {id:"r2",on:true,sev:"medio",name:"Rescisão",pat:"rescis|resili|distrat",reason:"Verifique as hipóteses de rescisão, prazos de aviso e consequências para cada parte.",sugg:"Equilibrar as hipóteses de rescisão entre as partes e prever prazo de aviso razoável."},
-    {id:"r3",on:true,sev:"alto",name:"Exclusividade",pat:"exclusiv",reason:"Restringe a atuação de uma das partes; confira duração, alcance e exceções.",sugg:"Delimitar a exclusividade por território, segmento e prazo, com exceções previstas."},
+    {id:"r3",on:true,sev:"alto",name:"Exclusividade",pat:"exclusividade|\\bexclusiv[oa]s?\\b|car[áa]ter exclusivo",reason:"Restringe a atuação de uma das partes; confira duração, alcance e exceções.",sugg:"Delimitar a exclusividade por território, segmento e prazo, com exceções previstas."},
     {id:"r4",on:true,sev:"medio",name:"Renovação / prorrogação",pat:"renov|prorrog",reason:"Renovação automática faz o contrato se estender sozinho; controle a data de aviso.",sugg:"Registrar a data-limite de aviso e avaliar um prazo de renovação mais curto."},
     {id:"r23",on:true,sev:"alto",name:"Não concorrência",pat:"n[ãa]o concorr|non.?compete|n[ãa]o poder[áa][^.;]{0,40}(concorr|atuar no mesmo|exercer atividade)",reason:"Proíbe uma das partes de atuar no mesmo ramo; pode limitar o trabalho por anos depois do fim do contrato.",sugg:"Limitar a não concorrência em prazo, território e atividade, e prever compensação por ela."},
     {id:"r24",on:true,sev:"alto",name:"Fiança / devedor solidário",pat:"fiador|fian[çc]a|devedor solid|solidariamente respons",reason:"Alguém passa a responder com o próprio patrimônio pela dívida de outra pessoa.",sugg:"Conferir quem é o fiador ou devedor solidário, até quando vale a garantia e se há renúncia ao benefício de ordem."},
@@ -344,7 +344,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     {id:"r18",on:true,sev:"ok",name:"Identificação das partes",pat:"doravante|denominad[oa]s?|qualificad[oa]s?|neste ato representad|t[êe]m entre si",reason:"Confira a correta qualificação das partes (nome, CNPJ/CPF, endereço).",sugg:"Conferir a qualificação completa de cada parte no preâmbulo."},
     {id:"r19",on:true,sev:"ok",name:"Qualificação das partes",pat:"\\bcpf\\b|\\bcnpj\\b|residente|domiciliad|inscrit[oa]|nacionalidade|estado civil|rg n|portador",reason:"Identificação e qualificação das partes (nome, CPF/CNPJ, endereço, estado civil).",sugg:"Conferir se a qualificação de cada parte está completa e correta."},
     {id:"r20",on:true,sev:"ok",name:"Dados de contato",pat:"endere[çc]o eletr[ôo]nico|e-mail|email|telefone",reason:"Dados de contato das partes, usados para notificações e intimações.",sugg:"Confirmar se os dados de contato estão atualizados e corretos."},
-    {id:"r21",on:true,sev:"medio",name:"Ação / pedido (peça processual)",pat:"a[çc][ãa]o revisional|peti[çc][ãa]o inicial|requer|pedido de|tutela|liminar|danos morais|juros abusiv|revis[ãa]o (do|de)",reason:"Indica que o documento é uma peça processual, não um contrato; os pedidos merecem conferência.",sugg:"Revisar os pedidos e fundamentos da peça — o Clausa é otimizado para contratos, então confira manualmente."}
+    {id:"r21",on:true,sev:"medio",name:"Ação / pedido (peça processual)",pat:"a[çc][ãa]o revisional|peti[çc][ãa]o inicial|requer[- ]se|requer seja|vem,? respeitosamente|pedido de (tutela|liminar|condena|indeniza)|tutela (antecipada|de urg)|liminar|danos morais|juros abusiv|revis[ãa]o (do|de) contrato",reason:"Indica que o documento é uma peça processual, não um contrato; os pedidos merecem conferência.",sugg:"Revisar os pedidos e fundamentos da peça — o Clausa é otimizado para contratos, então confira manualmente."}
   ];
   var EX="CLÁUSULA 1. O prazo de vigência é de 24 meses, renovado automaticamente por iguais períodos, salvo aviso prévio de 60 dias.\nCLÁUSULA 2. O valor mensal é de R$ 12.500,00, reajustado anualmente pelo IPCA.\nCLÁUSULA 3. A CONTRATADA prestará os serviços com exclusividade à CONTRATANTE durante a vigência.\nCLÁUSULA 4. A rescisão antecipada sujeita a parte que lhe der causa ao pagamento de multa de 50% do valor remanescente.\nCLÁUSULA 5. A responsabilidade da CONTRATADA fica limitada ao valor pago nos últimos 12 meses.\nCLÁUSULA 6. As partes mantêm sigilo sobre as informações trocadas.\nCLÁUSULA 7. Fica eleito o foro da comarca de São Paulo/SP.";
 
@@ -368,7 +368,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     var first=(v.split("\n")[0]||"").replace(/^\s*cl[áa]usula\s+\S+\s*[.:–-]?\s*/i,"").trim();
     return first?(first.length>42?first.slice(0,42)+"…":first):("Contrato · "+dt);
   }
-  var RULES_VERSION=8;
+  var RULES_VERSION=9;
   var rules;
   var savedV=load("clausa-rules-v"), savedRules=load("clausa-rules");
   if(savedV===RULES_VERSION){rules=savedRules||clone(DEFAULTS)}
@@ -381,6 +381,9 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       var d14=DEFAULTS.filter(function(d){return d.id==="r14"})[0];r14.sev=d14.sev;r14.reason=d14.reason}
     var r18=rules.filter(function(r){return r.id==="r18"})[0];
     if(r18&&r18.pat==="contratante|contratad[ao]|as partes|locador|locat[áa]rio|outorgante")r18.pat=DEFAULTS.filter(function(d){return d.id==="r18"})[0].pat;
+    // v9: corrige falsos positivos (exclusivamente, requer, multa por atraso) só em regras que a pessoa não editou
+    var velhos={r3:"exclusiv",r21:"a[çc][ãa]o revisional|peti[çc][ãa]o inicial|requer|pedido de|tutela|liminar|danos morais|juros abusiv|revis[ãa]o (do|de)",r1:"multa|penalidade|cl[áa]usula penal"};
+    rules.forEach(function(r){if(velhos[r.id]&&r.pat===velhos[r.id]){var d=DEFAULTS.filter(function(x){return x.id===r.id})[0];r.pat=d.pat;if(d.excl)r.excl=d.excl}});
     DEFAULTS.forEach(function(d){if(!rules.some(function(r){return r.id===d.id}))rules.push(clone(d))});
     save("clausa-rules",rules);save("clausa-rules-v",RULES_VERSION)}
   else{rules=clone(DEFAULTS);save("clausa-rules",rules);save("clausa-rules-v",RULES_VERSION)}
@@ -469,8 +472,10 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       if(!r.on||!r.pat)return;
       var re;try{re=new RegExp(r.pat,"i")}catch(e){return}
       if(!re.test(text))return;
-      var hit="";
-      for(var i=0;i<sents.length;i++){var s=sents[i].trim();if(s.length>=8&&re.test(s)){hit=s;break}}
+      var ex=null;if(r.excl){try{ex=new RegExp(r.excl,"i")}catch(e){}}
+      var hit="",excluidas=0;
+      for(var i=0;i<sents.length;i++){var s=sents[i].trim();if(s.length>=8&&re.test(s)){if(ex&&ex.test(s)){excluidas++;continue}hit=s;break}}
+      if(!hit&&excluidas)return;   // só aparece em frases já cobertas por outra regra
       if(!hit){var idx=text.search(re);hit=text.slice(Math.max(0,idx-30),idx+140).replace(/\s+/g," ").trim()}
       // id da regra identifica o apontamento: aprovações não "pulam" de cláusula quando a lista de regras muda
       found.push({id:r.id||r.name,sev:r.sev,name:r.name,reason:r.reason,sugg:r.sugg,s:hit});
@@ -785,7 +790,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
 
   // ---------- Enviar ----------
   function send(){
-    var v=byId("input").value.trim();if(v.length<10)return;
+    var v=byId("input").value.trim();if(!v)return;if(v.length<40){dialog({title:"Texto muito curto",text:"Cole o texto do contrato (pelo menos uma cláusula inteira) para a Clausa analisar.",ok:"Entendi",noCancel:true});return}
     var c=current?getConvo(current):null;
     if(!c){c={id:uid(),title:"",text:"",decisions:{},pinned:false,label:null,created:Date.now()};convos.unshift(c);current=c.id}
     c.text=v;c.decisions={};
