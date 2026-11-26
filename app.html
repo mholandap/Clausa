@@ -795,27 +795,27 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     var html='<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Clausa - '+esc(c.title||"Relatório")+'</title>'+
       '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">'+
       '<style>@page{size:A4;margin:14mm 14mm 16mm}*{box-sizing:border-box}html,body{margin:0;background:#fff}'+
-      'body{width:182mm;margin:0 auto;font:400 10.5pt/1.42 Inter,Arial,sans-serif;color:#17171A;letter-spacing:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
+      'body{margin:0;font:400 10.5pt/1.45 Inter,Arial,sans-serif;color:#17171A;letter-spacing:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}.folha{width:182mm;margin:0 auto}'+
       '.mono{font-family:"JetBrains Mono",monospace}'+
       '.cab{position:relative;padding:0 0 9pt;margin-bottom:12pt;border-bottom:.8pt solid #E2590B}.cab:after{content:"";position:absolute;right:0;bottom:-3pt;width:22mm;height:2.2pt;background:#E2590B}'+
       '.cab .l1{display:flex;align-items:center;justify-content:space-between}.marca{display:flex;align-items:center;gap:6pt;font:800 15pt "Inter Tight";letter-spacing:-.02em}.marca svg{width:18pt}'+
       '.tag{font:500 7.5pt "JetBrains Mono";letter-spacing:.14em;color:#8A8A90;text-transform:uppercase;text-align:right;line-height:1.5}'+
       'h1{font:800 17pt/1.15 "Inter Tight";letter-spacing:-.02em;margin:10pt 0 2pt}.sub{font:500 8pt "JetBrains Mono";letter-spacing:.1em;color:#8A8A90;text-transform:uppercase;margin:0}'+
-      '.res{display:grid;grid-template-columns:repeat(4,1fr);gap:6pt;margin:12pt 0 14pt}.res div{border:.6pt solid #E8D6C8;border-top:1.6pt solid #E2590B;padding:6pt 8pt}'+
+      '.res{display:grid;grid-template-columns:repeat(4,1fr);gap:6pt;margin:12pt 0 14pt}.res div{border:.6pt solid #E8D6C8;border-top:1.6pt solid #E2590B;border-radius:0 0 5pt 5pt;padding:6pt 8pt}'+
       '.res b{display:block;font:800 16pt/1 "Inter Tight"}.res span{font:500 7pt "JetBrains Mono";letter-spacing:.12em;text-transform:uppercase;color:#77777D}'+
-      '.item{position:relative;border:.6pt solid #F0C9AA;padding:9pt 11pt 8pt;margin:0 0 7pt;break-inside:avoid}'+
-      '.item i{position:absolute;width:7pt;height:7pt;border-color:#E2590B;border-style:solid;border-width:0}.c1{top:-.6pt;left:-.6pt;border-top-width:1.6pt!important;border-left-width:1.6pt!important}'+
-      '.c2{top:-.6pt;right:-.6pt;border-top-width:1.6pt!important;border-right-width:1.6pt!important}.c3{bottom:-.6pt;left:-.6pt;border-bottom-width:1.6pt!important;border-left-width:1.6pt!important}'+
-      '.c4{bottom:-.6pt;right:-.6pt;border-bottom-width:1.6pt!important;border-right-width:1.6pt!important}'+
+      '.item{position:relative;border:.6pt solid #F0C9AA;border-radius:6pt;padding:10pt 12pt 9pt;margin:0 0 8pt;break-inside:avoid}'+
+      '.item i{position:absolute;width:7pt;height:7pt;border-color:#E2590B;border-style:solid;border-width:0}.c1{top:-.6pt;left:-.6pt;border-top-width:1.6pt!important;border-left-width:1.6pt!important;border-top-left-radius:6pt}'+
+      '.c2{top:-.6pt;right:-.6pt;border-top-width:1.6pt!important;border-right-width:1.6pt!important;border-top-right-radius:6pt}.c3{bottom:-.6pt;left:-.6pt;border-bottom-width:1.6pt!important;border-left-width:1.6pt!important;border-bottom-left-radius:6pt}'+
+      '.c4{bottom:-.6pt;right:-.6pt;border-bottom-width:1.6pt!important;border-right-width:1.6pt!important;border-bottom-right-radius:6pt}'+
       '.topo{display:flex;align-items:baseline;gap:7pt;margin-bottom:5pt}.n{font:700 8pt "JetBrains Mono";color:#E2590B}h3{margin:0;font:700 11pt/1.25 Inter;flex:1}'+
-      '.sev{font:700 7pt "JetBrains Mono";letter-spacing:.12em;text-transform:uppercase;border:.8pt solid;padding:1.5pt 5pt;white-space:nowrap}'+
+      '.sev{font:700 7pt "JetBrains Mono";letter-spacing:.12em;text-transform:uppercase;border:.8pt solid;border-radius:4pt;padding:1.5pt 6pt;white-space:nowrap}'+
       'blockquote{margin:0 0 5pt;padding:3pt 0 3pt 8pt;border-left:1.6pt solid;font-style:italic;color:#3A3A40}'+
       '.lin{display:grid;grid-template-columns:27mm 1fr;gap:6pt;margin:2pt 0}.k{font:700 7pt/1.9 "JetBrains Mono";letter-spacing:.12em;text-transform:uppercase;color:#E2590B}'+
       '.st{display:flex;align-items:center;gap:5pt;margin-top:4pt;font:500 7.5pt "JetBrains Mono";letter-spacing:.08em;text-transform:uppercase;color:#77777D}.st span{width:5pt;height:5pt;border-radius:50%}'+
       'h2{font:800 12.5pt "Inter Tight";margin:0 0 6pt;padding-bottom:5pt;border-bottom:.8pt solid #E2590B;break-before:page}'+
       '.contrato{white-space:pre-wrap;font-size:10pt;line-height:1.5}mark{color:inherit;padding:0 .5pt}'+
       '.rod{margin-top:14pt;padding-top:6pt;border-top:.6pt solid #E8D6C8;display:flex;justify-content:space-between;gap:10pt;font:500 7pt/1.5 "JetBrains Mono";letter-spacing:.06em;color:#8A8A90}'+
-      '@media screen{body{padding:14mm 0}}</style></head><body>'+
+      '.barra{display:none}@media screen{html{background:#ECECEF}body{padding:0 0 28px}.folha{width:auto;max-width:780px;margin:0 auto;background:#fff;border-radius:16px;box-shadow:0 8px 34px rgba(20,20,30,.08);padding:30px 30px 26px}.barra{display:flex;position:sticky;top:0;z-index:5;justify-content:space-between;align-items:center;gap:10px;max-width:780px;margin:0 auto;padding:12px 4px;background:rgba(236,236,239,.92);backdrop-filter:blur(8px)}.barra span{font:500 12px "JetBrains Mono";letter-spacing:.12em;color:#77777D;text-transform:uppercase}.barra div{display:flex;gap:8px}.barra button{font:600 14px Inter;border:0;border-radius:10px;padding:10px 16px;cursor:pointer}.barra .pdf{background:#E2590B;color:#fff}.barra .sair{background:#fff;color:#333;border:1px solid #DDD}}@media screen and (max-width:640px){body{font-size:11.5pt}.barra{padding:10px 14px}.folha{margin:0 10px;border-radius:14px;padding:22px 18px 20px}.res{grid-template-columns:repeat(2,1fr)}.lin{grid-template-columns:1fr;gap:1pt;margin:5pt 0}.topo{flex-wrap:wrap}.tag{text-align:left;margin-top:6pt}.cab .l1{flex-wrap:wrap}}@media print{.barra{display:none!important}.folha{box-shadow:none}}</style></head><body><div class="barra"><span>Relatório Clausa</span><div><button class="sair" onclick="window.close()">Fechar</button><button class="pdf" onclick="window.print()">Salvar em PDF</button></div></div><main class="folha">'+
       '<div class="cab"><div class="l1"><div class="marca"><svg viewBox="100 100 312 270"><g fill="none" stroke="#E2590B" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"><path d="M256 146V345"/><path d="M212 345H300"/><path d="M157 212V186H355V212"/><path d="M128 207Q160 258 192 207"/><path d="M320 207Q352 258 384 207"/></g><circle cx="256" cy="136" r="16" fill="#E2590B"/></svg>Clausa</div>'+
       '<div class="tag">Relatório de revisão<br>Ref. '+ref+' · '+data+'</div></div>'+
       '<h1>'+esc(c.title||"Contrato")+'</h1><p class="sub">'+found.length+' pontos para a sua atenção</p></div>'+
@@ -823,7 +823,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       itens.join("")+
       '<h2>Anexo · contrato com os trechos marcados</h2><div class="contrato">'+corpo+'</div>'+
       '<div class="rod"><span>A Clausa aponta pontos de atenção por regras de leitura; não é parecer jurídico. A decisão é sempre do advogado.</span><span>mholandap.github.io/Clausa</span></div>'+
-      '<script>document.fonts.ready.then(function(){setTimeout(function(){window.print()},300)})<\/script></body></html>';
+      '</main><script>if(!matchMedia("(pointer:coarse)").matches)document.fonts.ready.then(function(){setTimeout(function(){window.print()},300)})<\/script></body></html>';
     var w=window.open("","_blank");
     if(w){w.document.open();w.document.write(html);w.document.close();return}
     // janela bloqueada: imprime por um quadro escondido
