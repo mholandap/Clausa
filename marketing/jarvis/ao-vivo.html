@@ -21,7 +21,7 @@
 #cartao.on{opacity:1}
 #cartao .rot{font:700 max(11px,.85vw) "JetBrains Mono";letter-spacing:.18em;color:var(--lar)}
 #cartao .dest{font:900 max(34px,4vw)/1.05 "Inter Tight";letter-spacing:-.04em;margin:.8vh 0 .4vh;background:linear-gradient(180deg,#fff 30%,var(--claro));-webkit-background-clip:text;background-clip:text;color:transparent}
-#cartao .sub{font:500 max(14px,1.15vw)/1.45 Inter;color:#C9C9CC}
+#cartao .dest:empty{display:none}#cartao .sub{font:500 max(14px,1.15vw)/1.45 Inter;color:#C9C9CC}
 #aviso{position:absolute;left:50%;bottom:4vh;transform:translateX(-50%);font:500 14px Inter;color:#77777D;text-align:center;width:92vw}
 #aviso a{color:var(--lar)}
 </style></head><body>
@@ -93,22 +93,45 @@ async function comecar(){
   if(antigo)await fala('O resumo de hoje ainda não chegou. Este é o último que eu tenho.');
   for(const b of (resumo.blocos||[])){mostra(b);await espera(250);await fala(b.fala||'');await espera(200)}
   mostra(null);await espera(300);await fala(resumo.encerramento||'O dia é seu, senhor.');
-  rodando=false;ouvir(true);
+  lido=true;dica();rodando=false;ouvir(true);
+}
+function dica(){const av=$('#aviso');av.style.display='';av.textContent='Pode perguntar: diga "Jarvis," e a sua pergunta (ou aperte P para digitar).'}
+
+// ---------- conversa: o "cérebro" é o Gemini, numa função do Supabase (a chave fica lá, nunca aqui) ----------
+let lido=false;const historico=[];
+async function perguntar(q){
+  q=(q||'').trim();if(!q||rodando)return;rodando=true;ouvir(false);$('#aviso').style.display='none';
+  mostra({rotulo:'VOCÊ: '+q.toUpperCase().slice(0,90),destaque:'',sub:'Pensando…'});
+  let resp='';
+  try{
+    if(!sb)throw {erro:'sem-conexao'};
+    const {data,error}=await sb.functions.invoke('jarvis-conversa',{body:{pergunta:q,historico:historico.slice()}});
+    if(error){let c={};try{c=await error.context.json()}catch(e){}throw c.erro?c:{erro:'fora-do-ar'}}
+    resp=data.resposta;historico.push({papel:'pedro',texto:q},{papel:'jarvis',texto:resp});historico.splice(0,Math.max(0,historico.length-8));
+  }catch(e){console.log(e);resp={'limite':'Atingi o limite gratuito por agora, senhor. Tente de novo em um minuto.','so-o-dono':'Só converso com o dono, senhor. Entre na sua conta do Clausa neste navegador.','sem-chave':'Falta guardar a chave do Gemini no Supabase.','fora-do-ar':'Ainda não consigo conversar. Falta ligar o meu cérebro no Supabase.'}[e&&e.erro]||'Perdão, senhor, tive um problema para pensar agora.'}
+  $('#cSub').textContent=resp;await fala(resp);await espera(600);mostra(null);
+  lido=true;dica();rodando=false;ouvir(true);
 }
 
 // ---------- microfone: "Bom dia, Jarvis" começa (espaço também) ----------
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,querOuvir=true,ativo=false;
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,querOuvir=true,ativo=false,aguarda=0;
 function rotMic(){$('#mic').textContent=!SR?'MIC: USE EDGE OU CHROME':querOuvir&&ativo?'● MIC: OUVINDO':'MIC: EM PAUSA';$('#mic').style.color=querOuvir&&ativo?'var(--lar)':''}
 function ouvir(s){querOuvir=s;if(!rec)return;try{s?(!ativo&&rec.start()):rec.abort()}catch(e){}rotMic()}
 function ligaMic(){if(!SR||rec)return;rec=new SR();rec.lang='pt-BR';rec.continuous=true;rec.interimResults=true;
-  rec.onresult=e=>{if(!querOuvir||rodando)return;let t='';for(let i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript+' ';
-    if(/jarvis|jarves|javis|bom dia/i.test(t.normalize('NFD').replace(/[̀-ͯ]/g,'')))comecar()};
+  rec.onresult=e=>{if(!querOuvir||rodando)return;let t='',fim=false;for(let i=e.resultIndex;i<e.results.length;i++){t+=e.results[i][0].transcript+' ';if(e.results[i].isFinal)fim=true}
+    const n=t.normalize('NFD').replace(/[\u0300-\u036f]/g,''),chamou=/jarvis|jarves|javis|jarbas/i;
+    if(!lido){if(chamou.test(n)||/bom dia/i.test(n))comecar();return}
+    // depois do resumo: só frases completas. "Jarvis, ..." já com a pergunta, ou "Jarvis" e a pergunta logo depois.
+    if(!fim)return;
+    if(chamou.test(n)){const q=t.split(/jarvis|jarves|javis|jarbas/i).slice(1).join(' ').replace(/^[\s,.!?]+/,'').trim();
+      if(q.split(/\s+/).length>=2)perguntar(q);else{aguarda=Date.now()}}
+    else if(Date.now()-aguarda<9000){aguarda=0;perguntar(t)}};
   rec.onstart=()=>{ativo=true;rotMic()};rec.onend=()=>{ativo=false;rotMic();if(querOuvir&&!rodando)setTimeout(()=>{try{rec.start()}catch(e){}},200)};
   rec.onerror=e=>{if(e.error==='not-allowed'){$('#mic').textContent='MIC: BLOQUEADO'}};try{rec.start()}catch(e){}}
 function telaCheia(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}
 addEventListener('click',()=>{ligaMic();achaVoz()});
 addEventListener('dblclick',telaCheia);
-addEventListener('keydown',e=>{if(e.code==='Space'){ligaMic();comecar()}if(e.key==='f'||e.key==='F')telaCheia()});
+addEventListener('keydown',e=>{if(e.code==='Space'){ligaMic();comecar()}if(e.key==='f'||e.key==='F')telaCheia();if((e.key==='p'||e.key==='P')&&!rodando){const q=prompt('Pergunte ao Jarvis:');if(q)perguntar(q)}});
 
 // ---------- animação ----------
 let ult=0;
@@ -119,7 +142,7 @@ function quadro(ts){const t=ts/1000,luz=rodando?1:.45;
   let soma=0;for(let i=0;i<72;i++){const a=i/72*Math.PI*2-Math.PI/2,v=falando?(.25+.65*Math.abs(Math.sin(t*9+i*.7)*Math.sin(t*3.1+i*.23))):(.05+.03*Math.sin(t*2+i));soma+=v;
     g.globalAlpha=.25+.75*v*luz;g.beginPath();g.moveTo(162*Math.cos(a),162*Math.sin(a));g.lineTo((170+v*46)*Math.cos(a),(170+v*46)*Math.sin(a));g.stroke()}
   g.globalAlpha=1;$('#halo').style.opacity=((.35+soma/72*1.2)*luz+.1).toFixed(3);
-  const est=falando?'J.A.R.V.I.S // FALANDO':rodando?'J.A.R.V.I.S // ONLINE':'J.A.R.V.I.S // EM ESPERA';if($('#estado').textContent!==est)$('#estado').textContent=est;
+  const est=falando?'J.A.R.V.I.S // FALANDO':(aguarda&&Date.now()-aguarda<9000)?'J.A.R.V.I.S // PODE FALAR':rodando?'J.A.R.V.I.S // ONLINE':'J.A.R.V.I.S // EM ESPERA';if($('#estado').textContent!==est)$('#estado').textContent=est;
   if(t-ult>1){ult=t;const d=new Date();$('#hora').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
     $('#data').textContent=d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'}).replace(/\./g,'').replace(',',' ·').toUpperCase()}
   requestAnimationFrame(quadro)}
