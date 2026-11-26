@@ -12,12 +12,14 @@ const CORS = {
 const MODELOS = (Deno.env.get("GEMINI_MODELO") || "gemini-flash-lite-latest,gemini-2.5-flash-lite,gemini-flash-latest,gemini-2.5-flash")
   .split(",").map((m) => m.trim()).filter(Boolean);
 
-const json = (obj: unknown, status = 200) =>
-  new Response(JSON.stringify(obj), { status, headers: { ...CORS, "Content-Type": "application/json" } });
+const VERSAO = 4;
+const json = (obj: Record<string, unknown>, status = 200) =>
+  new Response(JSON.stringify({ ...obj, versao: VERSAO }), { status, headers: { ...CORS, "Content-Type": "application/json" } });
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return json({ erro: "use POST" }, 405);
+  const t0 = Date.now(), passo = (p: string) => console.log(`[jarvis] ${p} (${Date.now() - t0} ms)`);
   try {
     const chave = Deno.env.get("GEMINI_API_KEY");
     if (!chave) return json({ erro: "sem-chave" }, 500);
@@ -38,6 +40,7 @@ Deno.serve(async (req) => {
       return json({ erro: "outro-email", email }, 403);
     }
 
+    passo("dono ok");
     // 2) Pega o último resumo do dia (o mesmo que a tela lê)
     const r2 = await fetch(`${url}/rest/v1/jarvis_resumos?select=conteudo,criado_em&order=criado_em.desc&limit=1`, { headers: h });
     const linhas = r2.ok ? await r2.json() : [];
@@ -72,26 +75,30 @@ Resumo do dia (JSON): ${resumo}`;
       fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`, {
         method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": chave },
         body: JSON.stringify({ ...base, generationConfig: { temperature: 0.7, ...(comPensar ? { thinkingConfig: pensar(modelo) } : {}) } }),
-        signal: AbortSignal.timeout(12000),
+        signal: AbortSignal.timeout(Math.max(1000, Math.min(10000, 28000 - (Date.now() - t0)))),
       });
 
     let limite = false, ultimoErro = "";
+    const tentativas: string[] = [];
     for (const modelo of MODELOS) {
+      if (Date.now() - t0 > 27000) break; // não passar de ~30 s no total
       let r: Response;
       try {
         r = await chamar(modelo, true);
         if (r.status === 400) r = await chamar(modelo, false); // modelo que não aceita o ajuste de "pensar"
-      } catch (_) { ultimoErro = "demorou: " + modelo; continue; } // demorou demais: tenta o próximo
+      } catch (_) { ultimoErro = "demorou: " + modelo; tentativas.push(modelo + ":demorou"); passo(modelo + " demorou"); continue; }
+      tentativas.push(modelo + ":" + r.status); passo(modelo + " " + r.status);
       if (r.status === 404) continue; // nome de modelo que não existe mais
       if (r.status === 429) { limite = true; continue; } // limite deste modelo: tenta outro
-      const d = await r.json();
-      if (!r.ok) { ultimoErro = d?.error?.message || String(r.status); continue; }
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) { ultimoErro = (d?.error?.message || String(r.status)).slice(0, 160); continue; }
       const texto = (d?.candidates?.[0]?.content?.parts || []).map((p: { text?: string }) => p.text || "").join("").trim();
       return json({ resposta: texto || "Perdão, senhor, não consegui formular uma resposta.", modelo });
     }
-    if (limite) return json({ erro: "limite" }, 429);
-    return json({ erro: "sem-modelo", detalhe: ultimoErro }, 502);
+    if (limite) return json({ erro: "limite", detalhe: tentativas.join(" ") }, 429);
+    return json({ erro: "sem-modelo", detalhe: tentativas.join(" ") + " | " + ultimoErro }, 502);
   } catch (e) {
-    return json({ erro: "falha", detalhe: String(e) }, 500);
+    passo("falha " + String(e));
+    return json({ erro: "falha", detalhe: String(e).slice(0, 200) }, 500);
   }
 });
