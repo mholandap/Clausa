@@ -13,9 +13,9 @@ Style: Linha,Inter,10,&H00338AFF,&H00338AFF,&H00000000,&H00000000,0,0,0,0,100,10
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-Dialogue: 1,0:00:00.00,0:00:02.40,Quem,,0,0,0,,{\fad(100,140)}{\c&H9E9B9B&}{\pos(90,1440)}PEDRO
-Dialogue: 0,0:00:00.00,0:00:02.40,Linha,,0,0,0,,{\fad(100,140)}{\c&H9E9B9B&}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
-Dialogue: 1,0:00:00.00,0:00:02.40,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Bom {\k105}dia, {\k40}Jarvis.
+Dialogue: 1,0:00:01.45,0:00:02.80,Quem,,0,0,0,,{\fad(100,140)}{\c&H9E9B9B&}{\pos(90,1440)}PEDRO
+Dialogue: 0,0:00:01.45,0:00:02.80,Linha,,0,0,0,,{\fad(100,140)}{\c&H9E9B9B&}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:01.45,0:00:02.80,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Bom {\k13}dia, {\k26}Jarvis.
 Dialogue: 1,0:00:02.91,0:00:04.33,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
 Dialogue: 0,0:00:02.91,0:00:04.33,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
 Dialogue: 1,0:00:02.91,0:00:04.33,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Bom {\k22}dia, {\k36}Pedro.
