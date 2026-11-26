@@ -1,0 +1,135 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jarvis</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.95.0/dist/umd/supabase.js"></script>
+<script src="../../js/clausa-config.js"></script>
+<style>
+:root{--bg:#060607;--linha:#2A2A2D;--txt:#FAFAFA;--cinza:#9B9B9E;--lar:#FF8A33;--claro:#FFC08A;--selo:#E2590B}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:Inter,sans-serif;overflow:hidden}
+#palco{position:fixed;inset:0;background:radial-gradient(ellipse 60% 70% at 50% 42%,#1d1009 0%,#0d0907 38%,#060607 75%)}
+#varredura{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 4px);pointer-events:none}
+#topo{position:absolute;left:3vw;right:3vw;top:3vh;display:flex;align-items:center;gap:1.6vw;font:600 max(11px,.8vw) "JetBrains Mono";color:var(--cinza);letter-spacing:.14em}
+#topo .ponto{width:.6vw;min-width:7px;height:.6vw;min-height:7px;border-radius:50%;background:var(--lar);box-shadow:0 0 12px var(--lar)}
+#hora{font:700 max(22px,2.3vw) "Inter Tight";color:var(--txt);letter-spacing:-.02em}
+#topo .esp{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,138,51,.5),transparent 60%)}
+#nucleo{position:absolute;left:50%;top:40%;width:min(52vh,78vw);height:min(52vh,78vw);transform:translate(-50%,-50%)}
+#nucleo .cam{position:absolute;inset:0;width:100%;height:100%;overflow:visible}#nucleo .gira{will-change:transform}
+#halo{border-radius:50%;background:radial-gradient(circle,rgba(255,138,51,.5) 0%,rgba(226,89,11,.16) 45%,rgba(226,89,11,0) 70%);will-change:opacity}
+#estado{position:absolute;left:0;right:0;top:99%;text-align:center;font:500 max(10px,1.1vh) "JetBrains Mono";letter-spacing:.42em;color:var(--lar)}
+#cartao{position:absolute;left:50%;top:73vh;transform:translateX(-50%);width:min(860px,92vw);text-align:center;opacity:0;transition:opacity .35s,transform .35s;padding:2.2vh 3vw 2vh;
+  background:linear-gradient(135deg,rgba(255,138,51,.14),rgba(22,22,23,.85) 40%,rgba(12,12,13,.92));border:1px solid rgba(255,138,51,.2);border-radius:14px}
+#cartao.on{opacity:1}
+#cartao .rot{font:700 max(11px,.85vw) "JetBrains Mono";letter-spacing:.18em;color:var(--lar)}
+#cartao .dest{font:900 max(34px,4vw)/1.05 "Inter Tight";letter-spacing:-.04em;margin:.8vh 0 .4vh;background:linear-gradient(180deg,#fff 30%,var(--claro));-webkit-background-clip:text;background-clip:text;color:transparent}
+#cartao .sub{font:500 max(14px,1.15vw)/1.45 Inter;color:#C9C9CC}
+#aviso{position:absolute;left:50%;bottom:4vh;transform:translateX(-50%);font:500 14px Inter;color:#77777D;text-align:center;width:92vw}
+#aviso a{color:var(--lar)}
+</style></head><body>
+<div id="palco">
+  <div id="varredura"></div>
+  <div id="topo"><span class="ponto"></span><span id="hora">--:--</span><span id="data"></span><span>CLAUSA // JARVIS</span><span class="esp"></span><span id="mic">MIC: DESLIGADO</span></div>
+  <svg width="0" height="0" style="position:absolute"><defs>
+    <linearGradient id="gArco" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFC08A"/><stop offset=".45" stop-color="#FF8A33"/><stop offset="1" stop-color="#E2590B" stop-opacity="0"/></linearGradient>
+    <linearGradient id="gVarre" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF8A33" stop-opacity="0"/><stop offset="1" stop-color="#FF8A33" stop-opacity=".35"/></linearGradient>
+    <radialGradient id="gDisco" cx="50%" cy="40%"><stop offset="0" stop-color="#2a170c"/><stop offset=".6" stop-color="#140c08"/><stop offset="1" stop-color="#0a0807"/></radialGradient>
+    <filter id="neon" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs></svg>
+  <div id="nucleo">
+    <div id="halo" class="cam"></div>
+    <svg class="cam gira" id="sBisel" viewBox="-300 -300 600 600"><g id="bisel"></g></svg>
+    <svg class="cam gira" id="sA" viewBox="-300 -300 600 600"><circle r="252" fill="none" stroke="#FF8A33" stroke-opacity=".18" stroke-width="16" stroke-dasharray="380 120 60 100 220 803"/><circle r="252" fill="none" stroke="url(#gArco)" stroke-width="5" stroke-dasharray="380 120 60 100 220 803"/></svg>
+    <svg class="cam gira" id="sC" viewBox="-300 -300 600 600"><circle r="216" fill="none" stroke="#FF8A33" stroke-width="12" stroke-opacity=".22" stroke-dasharray="60 30 10 30 140 90 20 300"/></svg>
+    <svg class="cam gira" id="sV" viewBox="-300 -300 600 600"><path d="M0 0 L210 0 A210 210 0 0 0 148 -148 Z" fill="url(#gVarre)"/></svg>
+    <canvas class="cam" id="cvEq"></canvas>
+    <svg class="cam" id="sD" viewBox="-300 -300 600 600"><circle r="112" fill="url(#gDisco)" stroke="#FF8A33" stroke-opacity=".55" stroke-width="1.5"/>
+      <g transform="translate(-256,-250)" fill="none" stroke="#FF8A33" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" filter="url(#neon)">
+      <path d="M256 160V330"/><path d="M220 330H292"/><path d="M175 216V196H337V216"/><path d="M150 212Q176 252 202 212"/><path d="M310 212Q336 252 362 212"/><circle cx="256" cy="150" r="10" fill="#FF8A33" stroke="none"/></g></svg>
+    <div id="estado">J.A.R.V.I.S // EM ESPERA</div>
+  </div>
+  <div id="cartao"><div class="rot" id="cRot"></div><div class="dest" id="cDest"></div><div class="sub" id="cSub"></div></div>
+  <div id="aviso">Carregando…</div>
+</div>
+<script>
+const $=s=>document.querySelector(s),NS='http://www.w3.org/2000/svg',cfg=window.CLAUSA_CONFIG||{};
+const el=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p&&p.appendChild(e);return e};
+// peças do núcleo
+const bis=$('#bisel');for(let i=0;i<120;i++){const a=i*3*Math.PI/180,L=i%10===0?16:i%5===0?10:5;el('line',{x1:272*Math.cos(a),y1:272*Math.sin(a),x2:(272-L)*Math.cos(a),y2:(272-L)*Math.sin(a),stroke:'#FF8A33','stroke-opacity':i%10===0?.9:.35,'stroke-width':i%10===0?2:1},bis)}
+const cv=$('#cvEq'),g=cv.getContext('2d');function ajusta(){const r=Math.min(devicePixelRatio||1,1.5);cv.width=cv.height=Math.round($('#nucleo').clientWidth*r)}ajusta();addEventListener('resize',ajusta);
+
+// ---------- voz (a escolhida na página de teste; se não houver, procura o Antônio) ----------
+const sint=window.speechSynthesis;let voz=null,cfgVoz={vel:1,tom:.9};
+try{const s=JSON.parse(localStorage.getItem('jarvis-voz')||'null');if(s)cfgVoz=s}catch(e){}
+function achaVoz(){const vs=sint.getVoices().filter(v=>/^pt/i.test(v.lang));voz=vs.find(v=>cfgVoz.nome&&v.name===cfgVoz.nome)||vs.find(v=>/antonio|ant[oô]nio/i.test(v.name))||vs.find(v=>/natural/i.test(v.name))||vs[0]||null}
+achaVoz();sint.onvoiceschanged=achaVoz;
+let falando=false;
+function fala(texto){return new Promise(ok=>{const frases=(texto||'').match(/[^.!?]+[.!?]*/g)||[];if(!frases.length)return ok();
+  frases.forEach((f,i)=>{const u=new SpeechSynthesisUtterance(f.trim());if(voz){u.voice=voz;u.lang=voz.lang}else u.lang='pt-BR';u.rate=cfgVoz.vel||1;u.pitch=cfgVoz.tom||.9;
+    u.onstart=()=>{falando=true};if(i===frases.length-1){u.onend=()=>{falando=false;ok()};u.onerror=()=>{falando=false;ok()}}sint.speak(u)})})}
+const espera=ms=>new Promise(r=>setTimeout(r,ms));
+
+// ---------- dados: último resumo salvo pelo Jarvis das 7h50 (só o dono lê) ----------
+const sb=(window.supabase&&cfg.SUPABASE_URL)?window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY):null;
+let resumo=null,problema='';
+async function carrega(){
+  if(!sb){problema='sem-conexao';return}
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){problema='sem-login';return}
+  const {data,error}=await sb.from('jarvis_resumos').select('conteudo,criado_em').order('criado_em',{ascending:false}).limit(1);
+  if(error){problema='erro';console.log(error);return}
+  if(!data||!data.length){problema='vazio';return}
+  resumo=data[0].conteudo;resumo._quando=data[0].criado_em;
+}
+function hojeSP(){return new Date().toLocaleDateString('sv-SE',{timeZone:'America/Sao_Paulo'})}
+
+// ---------- roteiro falado ----------
+let rodando=false;
+function mostra(b){if(!b){$('#cartao').classList.remove('on');return}$('#cRot').textContent=b.rotulo||'';$('#cDest').textContent=b.destaque||'';$('#cSub').textContent=b.sub||'';$('#cartao').classList.add('on')}
+async function comecar(){
+  if(rodando)return;rodando=true;ouvir(false);$('#aviso').style.display='none';
+  if(!resumo){const msg={'sem-login':'Bom dia. Para eu ler o seu resumo, entre na sua conta do Clausa neste navegador.','vazio':'Bom dia. Ainda não tenho nenhum resumo salvo. Ele chega às sete e cinquenta.','erro':'Bom dia. Não consegui buscar o seu resumo agora.','sem-conexao':'Bom dia. Estou sem conexão com o banco.'}[problema]||'Bom dia.';
+    await fala(msg);rodando=false;ouvir(true);return}
+  const antigo=(resumo.data||String(resumo._quando).slice(0,10))!==hojeSP();
+  await fala(resumo.abertura||'Bom dia, Pedro.');
+  if(antigo)await fala('O resumo de hoje ainda não chegou. Este é o último que eu tenho.');
+  for(const b of (resumo.blocos||[])){mostra(b);await espera(250);await fala(b.fala||'');await espera(200)}
+  mostra(null);await espera(300);await fala(resumo.encerramento||'O dia é seu, senhor.');
+  rodando=false;ouvir(true);
+}
+
+// ---------- microfone: "Bom dia, Jarvis" começa (espaço também) ----------
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,querOuvir=true,ativo=false;
+function rotMic(){$('#mic').textContent=!SR?'MIC: USE EDGE OU CHROME':querOuvir&&ativo?'● MIC: OUVINDO':'MIC: EM PAUSA';$('#mic').style.color=querOuvir&&ativo?'var(--lar)':''}
+function ouvir(s){querOuvir=s;if(!rec)return;try{s?(!ativo&&rec.start()):rec.abort()}catch(e){}rotMic()}
+function ligaMic(){if(!SR||rec)return;rec=new SR();rec.lang='pt-BR';rec.continuous=true;rec.interimResults=true;
+  rec.onresult=e=>{if(!querOuvir||rodando)return;let t='';for(let i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript+' ';
+    if(/jarvis|jarves|javis|bom dia/i.test(t.normalize('NFD').replace(/[̀-ͯ]/g,'')))comecar()};
+  rec.onstart=()=>{ativo=true;rotMic()};rec.onend=()=>{ativo=false;rotMic();if(querOuvir&&!rodando)setTimeout(()=>{try{rec.start()}catch(e){}},200)};
+  rec.onerror=e=>{if(e.error==='not-allowed'){$('#mic').textContent='MIC: BLOQUEADO'}};try{rec.start()}catch(e){}}
+function telaCheia(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}
+addEventListener('click',()=>{ligaMic();achaVoz()});
+addEventListener('dblclick',telaCheia);
+addEventListener('keydown',e=>{if(e.code==='Space'){ligaMic();comecar()}if(e.key==='f'||e.key==='F')telaCheia()});
+
+// ---------- animação ----------
+let ult=0;
+function quadro(ts){const t=ts/1000,luz=rodando?1:.45;
+  const R=(id,deg)=>{$(id).style.transform=`rotate(${deg%360}deg)`};R('#sA',t*14);R('#sC',t*4);R('#sV',t*55);R('#sBisel',t*1.5);
+  $('#nucleo').style.opacity=(.5+.5*luz).toFixed(2);
+  const W=cv.width,k=W/600;g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,W,W);g.setTransform(k,0,0,k,W/2,W/2);g.strokeStyle='#FF8A33';g.lineWidth=3.2;g.lineCap='round';
+  let soma=0;for(let i=0;i<72;i++){const a=i/72*Math.PI*2-Math.PI/2,v=falando?(.25+.65*Math.abs(Math.sin(t*9+i*.7)*Math.sin(t*3.1+i*.23))):(.05+.03*Math.sin(t*2+i));soma+=v;
+    g.globalAlpha=.25+.75*v*luz;g.beginPath();g.moveTo(162*Math.cos(a),162*Math.sin(a));g.lineTo((170+v*46)*Math.cos(a),(170+v*46)*Math.sin(a));g.stroke()}
+  g.globalAlpha=1;$('#halo').style.opacity=((.35+soma/72*1.2)*luz+.1).toFixed(3);
+  const est=falando?'J.A.R.V.I.S // FALANDO':rodando?'J.A.R.V.I.S // ONLINE':'J.A.R.V.I.S // EM ESPERA';if($('#estado').textContent!==est)$('#estado').textContent=est;
+  if(t-ult>1){ult=t;const d=new Date();$('#hora').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    $('#data').textContent=d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'}).replace(/\./g,'').replace(',',' ·').toUpperCase()}
+  requestAnimationFrame(quadro)}
+requestAnimationFrame(quadro);
+
+carrega().then(()=>{
+  const av=$('#aviso');
+  if(problema==='sem-login')av.innerHTML='Você não está logado neste navegador. <a href="../../entrar.html">Entrar no Clausa</a> e depois volte para esta página.';
+  else if(problema==='vazio')av.textContent='Ainda não há resumo salvo. Clique uma vez e diga "Bom dia, Jarvis" mesmo assim, ou aperte espaço.';
+  else if(problema)av.textContent='Não consegui buscar o resumo ('+problema+').';
+  else av.textContent='Resumo pronto. Clique uma vez na tela (liga o microfone), aperte F para tela cheia e diga "Bom dia, Jarvis" — ou aperte espaço.';
+});
+</script></body></html>
