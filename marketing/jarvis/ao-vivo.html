@@ -105,12 +105,13 @@ async function perguntar(q){
   let resp='';
   try{
     if(!sb)throw {erro:'sem-conexao'};
-    const {data,error}=await sb.functions.invoke('jarvis-conversa',{body:{pergunta:q,historico:historico.slice()}});
+    const {data:{session}}=await sb.auth.getSession();if(!session)throw {erro:'sem-login'};
+    const {data,error}=await sb.functions.invoke('jarvis-conversa',{body:{pergunta:q,historico:historico.slice()},headers:{Authorization:'Bearer '+session.access_token}});
     if(error){let c={};try{c=await error.context.json()}catch(e){}throw c.erro?c:{erro:'fora-do-ar'}}
     resp=data.resposta;historico.push({papel:'pedro',texto:q},{papel:'jarvis',texto:resp});historico.splice(0,Math.max(0,historico.length-8));
-  }catch(e){console.log(e);resp={'limite':'Atingi o limite gratuito por agora, senhor. Tente de novo em um minuto.','so-o-dono':'Só converso com o dono, senhor. Entre na sua conta do Clausa neste navegador.','sem-chave':'Falta guardar a chave do Gemini no Supabase.','fora-do-ar':'Ainda não consigo conversar. Falta ligar o meu cérebro no Supabase.'}[e&&e.erro]||'Perdão, senhor, tive um problema para pensar agora.'}
+  }catch(e){console.log(e);if(e&&e.email)$('#aviso').textContent='Logado como '+e.email+'. Esse e-mail precisa ser o mesmo do jarvis.sql.';resp={'limite':'Atingi o limite gratuito por agora, senhor. Tente de novo em um minuto.','so-o-dono':'Só converso com o dono, senhor.','sem-login':'Não encontrei o seu login, senhor. Entre na sua conta do Clausa neste navegador.','outro-email':'Você está logado com um e-mail diferente do que foi cadastrado no Jarvis, senhor.','sem-chave':'Falta guardar a chave do Gemini no Supabase.','fora-do-ar':'Ainda não consigo conversar. Falta ligar o meu cérebro no Supabase.'}[e&&e.erro]||'Perdão, senhor, tive um problema para pensar agora.'}
   $('#cSub').textContent=resp;await fala(resp);await espera(600);mostra(null);
-  lido=true;dica();rodando=false;ouvir(true);
+  lido=true;if(!/^Logado como/.test($('#aviso').textContent))dica();else $('#aviso').style.display='';rodando=false;ouvir(true);
 }
 
 // ---------- microfone: "Bom dia, Jarvis" começa (espaço também) ----------
