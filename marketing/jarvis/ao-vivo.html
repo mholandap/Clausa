@@ -27,7 +27,7 @@
 </style></head><body>
 <div id="palco">
   <div id="varredura"></div>
-  <div id="topo"><span class="ponto"></span><span id="hora">--:--</span><span id="data"></span><span>CLAUSA // JARVIS · V6</span><span class="esp"></span><span id="mic">MIC: DESLIGADO</span></div>
+  <div id="topo"><span class="ponto"></span><span id="hora">--:--</span><span id="data"></span><span>CLAUSA // JARVIS · V7</span><span class="esp"></span><span id="mic">MIC: DESLIGADO</span></div>
   <svg width="0" height="0" style="position:absolute"><defs>
     <linearGradient id="gArco" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFC08A"/><stop offset=".45" stop-color="#FF8A33"/><stop offset="1" stop-color="#E2590B" stop-opacity="0"/></linearGradient>
     <linearGradient id="gVarre" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF8A33" stop-opacity="0"/><stop offset="1" stop-color="#FF8A33" stop-opacity=".35"/></linearGradient>
@@ -109,7 +109,7 @@ async function perguntar(q){
     const t0=Date.now(),relogio=setTimeout(()=>{$('#cSub').textContent='Ainda pensando…'},6000);
     const {data,error}=await Promise.race([sb.functions.invoke('jarvis-conversa',{body:{pergunta:q,historico:historico.slice()},headers:{Authorization:'Bearer '+session.access_token}}),espera(40000).then(()=>{throw {erro:'demorou'}})]).finally(()=>clearTimeout(relogio));
     if(error){let c={};try{c=await error.context.json()}catch(e){}if(!c.erro)c={erro:'fora-do-ar',detalhe:(error.name||'')+' '+((error.context&&error.context.status)||'')+' '+(error.message||'')};throw c}
-    resp=data.resposta;historico.push({papel:'pedro',texto:q},{papel:'jarvis',texto:resp});historico.splice(0,Math.max(0,historico.length-8));console.log('jarvis respondeu em',Date.now()-t0,'ms',data.modelo);ultimaInfo=(data.pesquisou?'🔎 pesquisou no Google':'sem pesquisa')+' · '+(data.modelo||'')+' · '+((Date.now()-t0)/1000).toFixed(1).replace('.',',')+' s'+(data.versao?' · v'+data.versao:'');
+    resp=data.resposta;historico.push({papel:'pedro',texto:q},{papel:'jarvis',texto:resp});historico.splice(0,Math.max(0,historico.length-8));console.log('jarvis respondeu em',Date.now()-t0,'ms',data.modelo);ultimaInfo=(data.pesquisou?'🔎 '+({google:'pesquisou no Google',noticias:'pesquisou no Google Notícias',cotacao:'consultou a cotação'}[data.fonte]||'pesquisou'):'sem pesquisa')+' · '+(data.modelo||'')+' · '+((Date.now()-t0)/1000).toFixed(1).replace('.',',')+' s'+(data.versao?' · v'+data.versao:'')+(data.tentativas?' · '+data.tentativas:'');
   }catch(e){console.log(e);if(e&&e.email)$('#aviso').textContent='Logado como '+e.email+'. Esse e-mail precisa ser o mesmo do jarvis.sql.';
     else if(e&&e.erro)$('#aviso').textContent='Detalhe: '+e.erro+(e.detalhe?' · '+e.detalhe:'')+(e.versao?' · v'+e.versao:'');resp={'limite':'Atingi o limite gratuito por agora, senhor. Tente de novo em um minuto.','so-o-dono':'Só converso com o dono, senhor.','demorou':'Perdão, senhor, o meu cérebro demorou demais para responder. Pergunte de novo, por favor.','sem-login':'Não encontrei o seu login, senhor. Entre na sua conta do Clausa neste navegador.','outro-email':'Você está logado com um e-mail diferente do que foi cadastrado no Jarvis, senhor.','sem-chave':'Falta guardar a chave do Gemini no Supabase.','fora-do-ar':'Ainda não consigo conversar. Falta ligar o meu cérebro no Supabase.'}[e&&e.erro]||'Perdão, senhor, tive um problema para pensar agora.'}
   $('#cSub').textContent=resp;await fala(resp);await espera(600);mostra(null);
