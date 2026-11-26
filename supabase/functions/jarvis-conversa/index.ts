@@ -8,8 +8,8 @@ const CORS = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
-// Tenta o primeiro modelo; se o Google tiver aposentado o nome, tenta o próximo.
-const MODELOS = (Deno.env.get("GEMINI_MODELO") || "gemini-flash-latest,gemini-2.5-flash,gemini-2.0-flash")
+// Tenta o primeiro modelo (o "lite" é o mais rápido); se o nome não existir ou demorar, tenta o próximo.
+const MODELOS = (Deno.env.get("GEMINI_MODELO") || "gemini-flash-lite-latest,gemini-2.5-flash-lite,gemini-flash-latest,gemini-2.5-flash")
   .split(",").map((m) => m.trim()).filter(Boolean);
 
 const json = (obj: unknown, status = 200) =>
@@ -62,24 +62,35 @@ Use o resumo do dia abaixo como fonte. Se a resposta não estiver no resumo e n�
 Você não envia e-mails, não publica e não apaga nada; se ele pedir isso, diga que essa parte ele faz, ou o Claude com a aprovação dele.
 Resumo do dia (JSON): ${resumo}`;
 
-    const pedido = JSON.stringify({
+    const base = {
       system_instruction: { parts: [{ text: instrucoes }] },
       contents: [...historico, { role: "user", parts: [{ text: pergunta }] }],
-      generationConfig: { temperature: 0.7 },
-    });
-
-    for (const modelo of MODELOS) {
-      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`, {
-        method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": chave }, body: pedido,
+    };
+    // "Pensar pouco": resposta falada e curta não precisa de raciocínio longo.
+    const pensar = (m: string) => /2\.5/.test(m) ? { thinkingBudget: 0 } : { thinkingLevel: "minimal" };
+    const chamar = (modelo: string, comPensar: boolean) =>
+      fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`, {
+        method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": chave },
+        body: JSON.stringify({ ...base, generationConfig: { temperature: 0.7, ...(comPensar ? { thinkingConfig: pensar(modelo) } : {}) } }),
+        signal: AbortSignal.timeout(12000),
       });
+
+    let limite = false, ultimoErro = "";
+    for (const modelo of MODELOS) {
+      let r: Response;
+      try {
+        r = await chamar(modelo, true);
+        if (r.status === 400) r = await chamar(modelo, false); // modelo que não aceita o ajuste de "pensar"
+      } catch (_) { ultimoErro = "demorou: " + modelo; continue; } // demorou demais: tenta o próximo
       if (r.status === 404) continue; // nome de modelo que não existe mais
-      if (r.status === 429) return json({ erro: "limite" }, 429);
+      if (r.status === 429) { limite = true; continue; } // limite deste modelo: tenta outro
       const d = await r.json();
-      if (!r.ok) return json({ erro: "gemini", detalhe: d?.error?.message || r.status }, 502);
+      if (!r.ok) { ultimoErro = d?.error?.message || String(r.status); continue; }
       const texto = (d?.candidates?.[0]?.content?.parts || []).map((p: { text?: string }) => p.text || "").join("").trim();
       return json({ resposta: texto || "Perdão, senhor, não consegui formular uma resposta.", modelo });
     }
-    return json({ erro: "sem-modelo" }, 502);
+    if (limite) return json({ erro: "limite" }, 429);
+    return json({ erro: "sem-modelo", detalhe: ultimoErro }, 502);
   } catch (e) {
     return json({ erro: "falha", detalhe: String(e) }, 500);
   }
