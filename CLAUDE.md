@@ -19,7 +19,7 @@ Projeto do Pedro (GitHub `mholandap`, Instagram `@pedrom.holanda`). Clausa = app
 - Drive: pastas "Clausa — Vídeos" → `0 - Referências`, `1 - Brutos`, `Marca`. Baixar com `drive.usercontent.google.com/download?id=...&export=download&confirm=t` depois que ele compartilhar.
 - Vídeo: `marketing/anuncio-tela/render.js` (quadro a quadro, `LARG=1080 ALT=1920` para vertical), ffmpeg, Whisper (`marketing/ferramentas/transcrever.py`), máquina de vídeo em `marketing/maquina/`.
 - Banco: tarefa `.github/workflows/manter-banco-ativo.yml` evita a pausa do Supabase grátis.
-- App instalável (PWA): `manifest.webmanifest`, `sw.js`, `js/instalar.js`.
+- App instalável (PWA): `manifest.webmanifest`, `sw.js`, `js/instalar.js`. **Ao mudar `app.html`, atualize `<meta name="clausa-versao">` (AAAAMMDDhhmm):** é ela que faz o app avisar "Tem uma versão nova" no celular.
 
 ## Agenda do Instagram (atualizado em 26/11/2026)
 - Ter 24/11 18h: anúncio vertical "Dia 2 construindo o Clausa" (`marketing/anuncio-tela/anuncio-vertical.mp4`).
