@@ -54,6 +54,31 @@
 #fim .marca{font:900 4.4vw "Inter Tight";letter-spacing:-.045em}
 #fim .arroba{font:500 1.2vw "JetBrains Mono";color:var(--cinza);letter-spacing:.08em}
 #dica{position:absolute;bottom:1.2vh;left:50%;transform:translateX(-50%);font:500 .8vw Inter;color:#5a5a60;white-space:nowrap}
+
+/* ---------- Modo vídeo vertical (Reel 1080×1920): tela.html?video=1&vertical=1 ---------- */
+#titulo{display:none}
+html.video #versao,html.video #mic,html.video #estado,html.video #dica,html.video #topo .esp{display:none!important}
+html.vertical #trilhas,html.vertical #cvTr,html.vertical #fluxo,html.vertical #fluxo2{display:none}
+html.vertical #titulo{display:block;position:absolute;left:0;right:0;top:10vh;text-align:center}
+html.vertical #titulo .bd{font:700 3.4vw "JetBrains Mono";letter-spacing:.45em;color:var(--lar);margin-left:.45em}
+html.vertical #titulo .jv{font:900 12.5vw/1 "Inter Tight";letter-spacing:-.02em;background:linear-gradient(180deg,#fff 35%,var(--claro));-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:.6vh}
+html.vertical #topo{left:0;right:0;top:20.2vh;justify-content:center;gap:3vw;font-size:2.3vw}
+html.vertical #topo .painel{display:none}html.vertical #topo .ponto{width:1.6vw;height:1.6vw}
+html.vertical #hora{font-size:6.2vw}
+html.vertical #nucleo{top:45.5%;width:78vw;height:78vw}
+html.vertical #rotulo{font-size:1.9vw;top:99%}
+html.vertical #saud{top:70vh;font-size:9.5vw}
+html.vertical .card{width:44vw;padding:2.2vw 2.4vw 2vw}
+html.vertical .e{left:4vw}html.vertical .d{right:4vw}
+html.vertical #c1,html.vertical #c3{left:4vw;right:auto;top:69vh}
+html.vertical #c2,html.vertical #c4{right:4vw;left:auto;top:69vh}
+html.vertical .rot{font-size:1.85vw;margin-bottom:1.6vw;gap:1.2vw}
+html.vertical .num{font-size:9vw}html.vertical .sub{font-size:2.7vw;margin-top:1vw}
+html.vertical .linha2{gap:4vw}html.vertical .barra{height:1.3vw;margin-top:2vw}
+html.vertical #c0,html.vertical #c6,html.vertical #c7{width:90vw;top:69vh;padding:2.6vw 3vw 2.4vw}
+html.vertical #c0 .num{font-size:8.5vw}html.vertical .lei{font-size:5vw}html.vertical #t7{font-size:3.8vw}
+html.vertical #cursor{width:.5vw;height:3.6vw}
+html.vertical #fim .marca{font-size:13vw}html.vertical #fim .arroba{font-size:3.4vw}html.vertical #fim svg{width:22vw!important}
 </style></head><body>
 <div id="palco">
   <svg id="fundo" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
@@ -71,7 +96,8 @@
   <canvas id="cvTr"></canvas>
   <div id="varredura"></div>
 
-  <div id="topo"><span class="ponto"></span><span id="hora">07:00</span><span id="data">QUA · 25 NOV</span><span>CLAUSA // PAINEL DO DIA</span><span class="esp"></span><span id="estado">SISTEMA ONLINE</span><span id="mic">MIC: DESLIGADO</span><span id="versao" style="color:#4a3426">V13</span></div>
+  <div id="titulo"><div class="bd">BOM DIA</div><div class="jv">J.A.R.V.I.S</div></div>
+  <div id="topo"><span class="ponto"></span><span id="hora">07:00</span><span id="data">QUA · 25 NOV</span><span class="painel">CLAUSA // PAINEL DO DIA</span><span class="esp"></span><span id="estado">SISTEMA ONLINE</span><span id="mic">MIC: DESLIGADO</span><span id="versao" style="color:#4a3426">V13</span></div>
   <div id="ouviu" style="display:none;position:absolute;right:3vw;top:8vh;max-width:40vw;font:500 .9vw 'JetBrains Mono';color:#FFC08A;background:rgba(0,0,0,.6);padding:.4vw .7vw;border-radius:6px;z-index:9"></div>
 
   <svg width="0" height="0" style="position:absolute"><defs>
@@ -283,5 +309,18 @@ function ligarMic(){if(!SR){rotuloMic();return}if(rec)return;
   permitido=true;try{rec.start()}catch(_){}}
 addEventListener('click',()=>{ligarMic();
   audios.forEach(x=>{if(!x.a.falhou&&!x.destravado){x.destravado=true;x.a.muted=true;x.a.play().then(()=>{x.a.pause();x.a.currentTime=0;x.a.muted=false}).catch(()=>{x.a.muted=false})}})});
+
+// ---------- Modo vídeo: monta a linha do tempo do Reel (s = início após "Bom dia, Jarvis"; w = duração da espera) ----------
+const Q=new URLSearchParams(location.search);
+if(Q.get('vertical'))document.documentElement.classList.add('vertical');
+if(Q.get('video')){document.documentElement.classList.add('video');
+  const S=+Q.get('s')||2.5,W=+Q.get('w')||3.5,base=window.render,rel=Q.get('relogio'),dat=Q.get('data');
+  window.DUR=S+T.fim+W+3.5;window.TV={S,W};
+  window.render=(tv)=>{let t;const e0=S+T.espera;
+    if(tv<S)t=0;else if(tv<e0)t=tv-S;else if(tv<e0+W)t=T.espera;else t=tv-S-W;
+    esperando=tv>=e0&&tv<e0+W;base(t,tv);
+    if(Q.get('vertical')&&t>=T.c3-.45){const k=1-ease((t-(T.c3-.45))/.45);['#c1','#c2'].forEach(id=>{const e=$(id);e.style.opacity=(+e.style.opacity)*k})}
+    if(rel){const [h,m]=rel.split(':').map(Number),mm=h*60+m+Math.floor((tv+10)/60);$('#hora').textContent=String(Math.floor(mm/60)%24).padStart(2,'0')+':'+String(mm%60).padStart(2,'0')}
+    if(dat)$('#data').textContent=dat}}
 if(!navigator.webdriver)loop();else render(0);
 </script></body></html>
