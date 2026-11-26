@@ -31,8 +31,7 @@ Projeto do Pedro (GitHub `mholandap`, Instagram `@pedrom.holanda`). Clausa = app
 
 ## Pendente
 - **Jarvis (resumo diário automático):** tarefa agendada que lê o Gmail conectado (cadastros do site, alertas do Supabase, avisos de conta, respostas do LinkedIn), o Metricool (posts de ontem, agenda de hoje) e o status do banco, e manda notificação no celular. Nunca envia e-mail (só rascunho), nunca publica, nunca apaga. Pendente do Pedro: horário (sugestão 8h) e apontar o Formspree para o mesmo e-mail que está conectado.
-- **Jarvis automático:** existem DUAS tarefas diárias ("Jarvis — resumo do dia" 7h37 e "Jarvis: resumo diário do Clausa" 7h50), ambas sem os conectores Gmail/Metricool. Pendente: Pedro decidir qual manter e ligar os conectores pelo claude.ai.
-- Arquivo `Clausa — Meu dia (protótipo) - Claude.html` (página salva do claude.ai) está público no site; sugerido remover, aguardando o Pedro.
+- **Jarvis automático:** fica só "Jarvis: resumo diário do Clausa" (7h50); o das 7h37 foi desativado em 26/11. Pendente: Pedro adicionar os conectores Gmail e Metricool nele pelo claude.ai.
 - Tela do Jarvis: `marketing/jarvis/tela.html` (teclas: espaço começa, C continua, F tela cheia, H esconde relógio, D mostra o que o microfone ouviu). Lição: não processar demais a voz do Pedro; gravar no próprio ambiente.
 - Reel com foto/print do Claude trabalhando no LinkedIn: legenda sóbria nas cores do Clausa; Pedro vai mandar inspiração e a foto no Drive. Desfocar dados de terceiros.
 - Stories da semana (ideias: chamada para o post das 18h; enquete dos 5 avisos; "instale o app"; time-lapse). Figurinhas de link/enquete o Pedro adiciona à mão.
