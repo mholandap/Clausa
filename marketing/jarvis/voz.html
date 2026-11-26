@@ -1,0 +1,64 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jarvis · teste de voz</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{--bg:#0B0B0C;--card:#161617;--linha:#2A2A2D;--txt:#FAFAFA;--cinza:#9B9B9E;--lar:#FF8A33;--selo:#E2590B}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--txt);font:400 16px/1.5 Inter,sans-serif}
+main{max-width:640px;margin:0 auto;padding:28px 18px 60px}
+.rot{font:700 12px "JetBrains Mono";letter-spacing:.16em;color:var(--lar);text-transform:uppercase}
+h1{font:800 32px/1.1 "Inter Tight";letter-spacing:-.03em;margin:8px 0 6px}p{color:var(--cinza);margin:0 0 18px}
+.caixa{border:1px solid var(--linha);background:var(--card);border-radius:14px;padding:16px;margin:0 0 14px}
+label{display:block;font:600 13px Inter;color:var(--cinza);margin:0 0 6px}
+select,textarea{width:100%;background:#0F0F10;color:var(--txt);border:1px solid var(--linha);border-radius:10px;padding:10px 12px;font:400 15px Inter}
+textarea{min-height:140px;resize:vertical}
+.lin{display:flex;gap:14px;align-items:center;margin-top:12px}.lin input{flex:1;accent-color:var(--lar)}.lin span{font:500 13px "JetBrains Mono";color:var(--cinza);width:44px;text-align:right}
+.botoes{display:flex;gap:10px;flex-wrap:wrap}
+button{font:600 15px Inter;border:0;border-radius:11px;padding:12px 18px;cursor:pointer}
+.pri{background:var(--selo);color:#fff}.sec{background:#1F1F21;color:var(--txt);border:1px solid var(--linha)}
+#lista{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.voz{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--linha);border-radius:10px;cursor:pointer}
+.voz.on{border-color:var(--lar);background:rgba(255,138,51,.07)}.voz small{color:var(--cinza);font:500 12px "JetBrains Mono"}
+.ok{color:#5FB58C;font:600 14px Inter;min-height:20px;margin-top:10px}
+</style></head><body><main>
+<div class="rot">Jarvis · teste de voz</div>
+<h1>Qual voz fica melhor?</h1>
+<p>Estas são as vozes gratuitas do seu aparelho. Toque numa delas e em <b>Ouvir</b>. Quando gostar de uma, toque em <b>Usar esta voz</b>: a tela do Jarvis passa a falar com ela.</p>
+
+<div class="caixa"><label>Vozes em português neste aparelho</label><div id="lista"><small style="color:#9B9B9E">Carregando vozes…</small></div></div>
+
+<div class="caixa"><label for="texto">Texto de exemplo</label>
+<textarea id="texto">Bom dia, Pedro. Lá fora, em Brasília, faz vinte e três graus. Hoje vai de vinte e três a trinta e um, com chance de chuva de quarenta por cento. No Instagram, o Reel de ontem teve sessenta e nove curtidas e vinte e oito comentários. Hoje, às dez horas, sai o Reel das três palavras. O dia é seu, senhor.</textarea>
+<div class="lin"><label style="margin:0;width:90px">Velocidade</label><input id="vel" type="range" min="0.7" max="1.4" step="0.05" value="1"><span id="velv">1,00</span></div>
+<div class="lin"><label style="margin:0;width:90px">Tom</label><input id="tom" type="range" min="0.6" max="1.4" step="0.05" value="0.9"><span id="tomv">0,90</span></div></div>
+
+<div class="botoes"><button class="pri" id="ouvir">▶ Ouvir</button><button class="sec" id="parar">■ Parar</button><button class="sec" id="usar">Usar esta voz</button></div>
+<div class="ok" id="ok"></div>
+<p style="margin-top:22px;font-size:14px">Dica: no computador com Windows, abra esta página no <b>Microsoft Edge</b> para ouvir as vozes "Natural" (as mais humanas). No celular Android, as vozes do Google costumam ser as melhores.</p>
+</main>
+<script>
+const $=s=>document.querySelector(s),sint=window.speechSynthesis;let vozes=[],escolhida=null;
+const salvo=(()=>{try{return JSON.parse(localStorage.getItem('jarvis-voz')||'null')}catch(e){return null}})();
+function nota(v){const n=v.name.toLowerCase();return (n.includes('natural')?0:n.includes('online')?1:n.includes('google')?2:3)+(v.lang==='pt-BR'?0:0.5)}
+function carrega(){
+  vozes=sint.getVoices().filter(v=>/^pt/i.test(v.lang)).sort((a,b)=>nota(a)-nota(b));
+  const l=$('#lista');
+  if(!vozes.length){l.innerHTML='<small style="color:#9B9B9E">Nenhuma voz em português encontrada neste navegador. Tente no Chrome ou no Edge.</small>';return}
+  l.innerHTML='';
+  vozes.forEach((v,i)=>{const d=document.createElement('div');d.className='voz';d.innerHTML='<span>'+v.name.replace(/Microsoft |Google /,'')+'</span><small>'+v.lang+(v.localService?'':' · online')+'</small>';
+    d.onclick=()=>{escolhida=v;[...l.children].forEach(c=>c.classList.remove('on'));d.classList.add('on');fala()};l.appendChild(d);
+    if((salvo&&salvo.nome===v.name)||(!salvo&&i===0&&!escolhida)){escolhida=v;d.classList.add('on')}});
+}
+sint.onvoiceschanged=carrega;carrega();setTimeout(carrega,800);
+if(salvo){$('#vel').value=salvo.vel;$('#tom').value=salvo.tom}
+const fmt=x=>(+x).toFixed(2).replace('.',',');
+function rotulos(){$('#velv').textContent=fmt($('#vel').value);$('#tomv').textContent=fmt($('#tom').value)}
+$('#vel').oninput=rotulos;$('#tom').oninput=rotulos;rotulos();
+// fala frase por frase (o Chrome corta falas longas no meio)
+function fala(){sint.cancel();const frases=$('#texto').value.match(/[^.!?]+[.!?]*/g)||[];
+  frases.forEach(f=>{const u=new SpeechSynthesisUtterance(f.trim());if(escolhida){u.voice=escolhida;u.lang=escolhida.lang}else u.lang='pt-BR';
+    u.rate=+$('#vel').value;u.pitch=+$('#tom').value;sint.speak(u)})}
+$('#ouvir').onclick=fala;$('#parar').onclick=()=>sint.cancel();
+$('#usar').onclick=()=>{if(!escolhida){$('#ok').textContent='Escolha uma voz da lista primeiro.';return}
+  try{localStorage.setItem('jarvis-voz',JSON.stringify({nome:escolhida.name,vel:+$('#vel').value,tom:+$('#tom').value}))}catch(e){}
+  $('#ok').textContent='✓ Voz escolhida: '+escolhida.name+'. Me conte qual foi e o que achou.'};
+</script></body></html>
