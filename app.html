@@ -674,7 +674,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       w.innerHTML=SCALES.replace('class="scales"','class="scales" style="width:46px;height:46px"')+
         '<h1>'+esc(g)+'</h1>'+
         '<p>Cole o texto de um contrato na caixa abaixo e a Clausa aponta os pontos de atenção, com sugestões para você aprovar.</p>'+
-        '<div class="chips"><button class="btn ghost sm" id="ex">Carregar exemplo</button><label class="btn ghost sm" for="file">Carregar arquivo .txt</label></div>';
+        '<div class="chips"><button class="btn ghost sm" id="ex">Carregar exemplo</button><label class="btn ghost sm" for="file">Carregar PDF, Word ou .txt</label></div>';
       inner.appendChild(w);
       var ex=byId("ex");if(ex)ex.onclick=function(){byId("input").value=EX;sizeInput();send()};
       byId("input").placeholder="Cole o contrato aqui…";
@@ -727,13 +727,13 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       block+='</div>';
       rest+=block;
     });
-    rest+='<div class="reprow" style="margin-top:4px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" id="rep">Copiar relatório</button><button class="btn ghost sm" id="dl">Baixar relatório (.txt)</button></div></div>';
+    rest+='<div class="reprow" style="margin-top:4px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" id="rep">Copiar relatório</button><button class="btn sm" id="dl">Baixar relatório (PDF)</button></div></div>';
     ma.innerHTML=head+'<div class="mbody"><div class="mname">Clausa</div><p id="typ" style="margin:0 0 12px"></p>'+rest+'</div>';
     inner.appendChild(ma);
     $("[data-apr]",inner).forEach(function(b){b.onclick=function(){decide(found,+b.dataset.apr,"apr")}});
     $("[data-rej]",inner).forEach(function(b){b.onclick=function(){decide(found,+b.dataset.rej,"rej")}});
     byId("rep").onclick=function(){copyReport(c,found)};
-    var dlb=byId("dl");if(dlb)dlb.onclick=function(){downloadReport(c,found)};
+    var dlb=byId("dl");if(dlb)dlb.onclick=function(){relatorioPdf(c,found)};
     updateApr(c,found);
     typeWords(byId("typ"),"Revisei o contrato e encontrei "+found.length+(found.length===1?" ponto":" pontos")+" para a sua atenção:",typeIt,function(){var r=byId("rest");if(r)r.classList.add("show");byId("scroll").scrollTop=byId("scroll").scrollHeight});
   }
@@ -772,9 +772,43 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     lines.push("— A Clausa aponta os riscos; a decisão é sempre do advogado.");
     return lines.join("\n");
   }
+  // ---------- Relatório em PDF: abre uma página formatada e o navegador salva como PDF ----------
+  function relatorioPdf(c,found){
+    var cores={alto:"#D9483F",medio:"#C7921E",ok:"#3E9A6E"},rot={alto:"Risco alto",medio:"Atenção",ok:"Sem alerta"};
+    var cnt={alto:0,medio:0,ok:0},apr=0;found.forEach(function(f){cnt[f.sev]++;if(c.decisions[f.id]==="apr")apr++});
+    var data=new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});
+    var itens=found.map(function(f,i){var d=c.decisions[f.id],st=d==="apr"?"Sugestão aprovada":d==="rej"?"Sugestão rejeitada":"Aguardando sua decisão";
+      return '<div class="item" style="border-left-color:'+cores[f.sev]+'"><div class="topo"><span class="n">'+String(i+1).padStart(2,"0")+'</span><span class="sev" style="background:'+cores[f.sev]+'">'+rot[f.sev]+'</span><h3>'+esc(f.name)+'</h3></div>'+
+        '<blockquote>'+esc(f.s.trim())+'</blockquote><p><b>Por que importa.</b> '+esc(f.reason)+'</p>'+(f.sugg?'<p><b>Sugestão.</b> '+esc(f.sugg)+'</p><p class="st">'+st+'</p>':'')+'</div>'});
+    // anexo: o contrato com os trechos marcados
+    var corpo=esc(c.text),marcados={};found.forEach(function(f){var t=esc(f.s.trim());if(marcados[t])return;marcados[t]=1;if(t.length>8&&corpo.indexOf(t)>=0)corpo=corpo.split(t).join('<mark style="background:'+cores[f.sev]+'22;border-bottom:2px solid '+cores[f.sev]+'">'+t+'</mark>')});
+    var html='<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Clausa - '+esc(c.title||"Relatório")+'</title>'+
+      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@800;900&family=Inter:wght@400;500;600;700&display=swap">'+
+      '<style>@page{size:A4;margin:16mm 15mm}*{box-sizing:border-box}body{margin:0;font:400 11pt/1.5 Inter,Arial,sans-serif;color:#1A1A1A;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
+      '.cab{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #E2590B;padding-bottom:10px;margin-bottom:18px}.marca{display:flex;align-items:center;gap:8px;font:900 20pt "Inter Tight";letter-spacing:-.03em}.marca svg{width:26px}'+
+      '.cab .d{font-size:9pt;color:#666;text-align:right}h1{font:800 18pt/1.2 "Inter Tight";letter-spacing:-.02em;margin:0 0 4px}.sub{color:#666;font-size:10pt;margin:0 0 16px}'+
+      '.res{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}.res div{border:1px solid #E5E5E5;border-radius:8px;padding:8px 12px;min-width:110px}.res b{display:block;font:800 18pt "Inter Tight"}.res span{font-size:9pt;color:#666}'+
+      '.item{border:1px solid #E5E5E5;border-left:5px solid;border-radius:8px;padding:12px 14px;margin:0 0 12px;break-inside:avoid}.topo{display:flex;align-items:center;gap:10px;margin-bottom:8px}.n{font:700 9pt Inter;color:#999}'+
+      '.sev{color:#fff;font:700 8pt Inter;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px}h3{margin:0;font:700 12pt Inter}'+
+      'blockquote{margin:0 0 8px;padding:8px 12px;background:#F6F6F7;border-radius:6px;font-style:italic;color:#333}p{margin:4px 0}.st{font-size:9pt;color:#666}'+
+      'h2{font:800 13pt "Inter Tight";margin:26px 0 8px;break-before:page}.contrato{white-space:pre-wrap;font-size:10pt;line-height:1.6}mark{color:inherit;padding:0 1px}'+
+      '.rod{margin-top:22px;padding-top:10px;border-top:1px solid #E5E5E5;font-size:8.5pt;color:#777}</style></head><body>'+
+      '<div class="cab"><div class="marca"><svg viewBox="100 100 312 270"><g fill="none" stroke="#E2590B" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><path d="M256 146V345"/><path d="M212 345H300"/><path d="M157 212V186H355V212"/><path d="M128 207Q160 258 192 207"/><path d="M320 207Q352 258 384 207"/></g><circle cx="256" cy="136" r="14" fill="#E2590B"/></svg>Clausa</div><div class="d">Relatório de revisão<br>'+data+'</div></div>'+
+      '<h1>'+esc(c.title||"Contrato")+'</h1><p class="sub">'+found.length+' pontos apontados para a sua atenção</p>'+
+      '<div class="res"><div><b style="color:'+cores.alto+'">'+cnt.alto+'</b><span>Risco alto</span></div><div><b style="color:'+cores.medio+'">'+cnt.medio+'</b><span>Atenção</span></div><div><b style="color:'+cores.ok+'">'+cnt.ok+'</b><span>Sem alerta</span></div><div><b>'+apr+'</b><span>Sugestões aprovadas</span></div></div>'+
+      itens.join("")+
+      '<h2>Contrato com os trechos marcados</h2><div class="contrato">'+corpo+'</div>'+
+      '<div class="rod">A Clausa aponta pontos de atenção por regras de leitura; não é parecer jurídico. A decisão é sempre do advogado. · mholandap.github.io/Clausa</div>'+
+      '<script>document.fonts.ready.then(function(){setTimeout(function(){window.print()},300)})<\/script></body></html>';
+    var w=window.open("","_blank");
+    if(w){w.document.open();w.document.write(html);w.document.close();return}
+    // janela bloqueada: imprime por um quadro escondido
+    var fr=document.createElement("iframe");fr.style.cssText="position:fixed;right:0;bottom:0;width:0;height:0;border:0";document.body.appendChild(fr);
+    fr.contentDocument.open();fr.contentDocument.write(html.replace("window.print()","window.print();setTimeout(function(){parent.document.body.removeChild(frameElement)},1000)"));fr.contentDocument.close();
+  }
   function copyReport(c,found){
     var txt=buildReport(c,found);
-    var falhou=function(){dialog({title:"Não deu pra copiar",text:"O navegador bloqueou a cópia automática. Use “Baixar relatório (.txt)” para guardar o relatório.",ok:"Entendi",noCancel:true})};
+    var falhou=function(){dialog({title:"Não deu pra copiar",text:"O navegador bloqueou a cópia automática. Use “Baixar relatório (PDF)” para guardar o relatório.",ok:"Entendi",noCancel:true})};
     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(function(){toast("Relatório copiado!")},falhou);
     else falhou();
   }
@@ -849,18 +883,44 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
   byId("send").onclick=send;
   byId("input").addEventListener("input",sizeInput);
   byId("input").addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}});
+  // ---------- Arquivos: .txt, PDF e Word (.docx) lidos no próprio navegador (nada é enviado) ----------
+  var libs={};
+  function carregaScript(url){if(libs[url])return libs[url];libs[url]=new Promise(function(ok,erro){var sc=document.createElement("script");sc.src=url;sc.onload=ok;sc.onerror=function(){delete libs[url];erro(new Error("rede"))};document.head.appendChild(sc)});return libs[url]}
+  var PDFJS="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/",MAMMOTH="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js";
+  function lerTexto(f){return new Promise(function(ok){var rd=new FileReader();rd.onload=function(){
+      // .txt salvo no Bloco de Notas antigo vem em Windows-1252: em UTF-8 os acentos viram "�"
+      if(rd.result.indexOf("\uFFFD")>=0&&!rd.retried){rd.retried=true;rd.readAsText(f,"windows-1252");return}ok(rd.result)};rd.readAsText(f)})}
+  function lerPdf(f){return carregaScript(PDFJS+"pdf.min.js").then(function(){
+      var lib=window.pdfjsLib;lib.GlobalWorkerOptions.workerSrc=PDFJS+"pdf.worker.min.js";
+      return f.arrayBuffer().then(function(buf){return lib.getDocument({data:buf}).promise}).then(function(doc){
+        var pags=[];for(var i=1;i<=doc.numPages;i++)pags.push(doc.getPage(i).then(function(pg){return pg.getTextContent()}).then(function(tc){
+          return tc.items.map(function(it){return it.str+(it.hasEOL?"\n":"")}).join("").replace(/[ \t]+/g," ")}));
+        return Promise.all(pags).then(function(ts){return ts.join("\n\n")})})})}
+  function lerDocx(f){return carregaScript(MAMMOTH).then(function(){return f.arrayBuffer()}).then(function(buf){return window.mammoth.extractRawText({arrayBuffer:buf})}).then(function(r){return r.value})}
+  function abrirArquivo(f){
+    if(!f)return;var nome=(f.name||"").toLowerCase(),tipo;
+    if(/\.pdf$/.test(nome)||f.type==="application/pdf")tipo="pdf";
+    else if(/\.docx$/.test(nome))tipo="docx";
+    else if(/\.doc$/.test(nome)){dialog({title:"Formato antigo do Word",text:"Arquivos .doc (Word antigo) não abrem aqui. No Word, use “Salvar como” → .docx ou PDF e carregue de novo.",ok:"Entendi",noCancel:true});return}
+    else tipo="txt";
+    if(tipo!=="txt"){byId("input").value="";byId("input").placeholder=tipo==="pdf"?"Lendo o PDF…":"Lendo o documento do Word…"}
+    (tipo==="pdf"?lerPdf(f):tipo==="docx"?lerDocx(f):lerTexto(f)).then(function(txt){
+      txt=(txt||"").replace(/\r/g,"");
+      // PDF quebra a linha no meio da frase: junta quando a linha seguinte continua a frase
+      if(tipo==="pdf")txt=txt.replace(/([^\n.;:!?])[ \t]*\n(?=[ \t]*[a-zà-ÿ0-9(,])/g,"$1 ");
+      txt=txt.replace(/\n{3,}/g,"\n\n").trim();
+      if(txt.replace(/\s/g,"").length<40){
+        dialog({title:"Não encontrei texto nesse arquivo",text:tipo==="pdf"?"Parece um PDF escaneado (uma foto do papel). Por enquanto a Clausa só lê PDFs com texto selecionável. Se tiver o arquivo original (Word ou PDF gerado pelo computador), carregue ele.":"O arquivo parece vazio. Confira e tente de novo.",ok:"Entendi",noCancel:true});return}
+      byId("input").value=txt;sizeInput();send();
+    }).catch(function(){dialog({title:"Não consegui abrir o arquivo",text:"Confira sua conexão com a internet e tente de novo. Se o problema continuar, copie o texto do contrato e cole na caixa.",ok:"Entendi",noCancel:true})});
+  }
   document.addEventListener("change",function(e){
     if(!e.target||e.target.id!=="file")return;
-    var inp=e.target,f=inp.files[0];if(!f)return;
-    var rd=new FileReader();
-    rd.onload=function(){
-      // .txt salvo no Bloco de Notas antigo vem em Windows-1252: em UTF-8 os acentos viram "�"
-      if(rd.result.indexOf("�")>=0&&!rd.retried){rd.retried=true;rd.readAsText(f,"windows-1252");return}
-      byId("input").value=rd.result;sizeInput();send();
-      inp.value="";  // permite carregar o mesmo arquivo de novo
-    };
-    rd.readAsText(f);
+    var inp=e.target;abrirArquivo(inp.files[0]);inp.value="";  // permite carregar o mesmo arquivo de novo
   });
+  // arrastar e soltar o arquivo em qualquer lugar da tela
+  document.addEventListener("dragover",function(e){if(e.dataTransfer&&[].indexOf.call(e.dataTransfer.types||[],"Files")>=0)e.preventDefault()});
+  document.addEventListener("drop",function(e){if(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files.length){e.preventDefault();abrirArquivo(e.dataTransfer.files[0])}});
   byId("menu").onclick=function(){byId("app").classList.toggle("nav-open")};
   function closeNav(){byId("app").classList.remove("nav-open")}
   byId("navshade").onclick=closeNav;  // tocar fora do menu lateral fecha
@@ -881,8 +941,8 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       .then(function(ok){if(!ok)return;rules=clone(DEFAULTS);persistRules();renderRules();if(current)renderMain()});
   };
 
-  // adiciona input de arquivo oculto (reaproveitado pelos botões "Carregar .txt")
-  var fi=el("input");fi.type="file";fi.id="file";fi.accept=".txt,text/plain";fi.style.display="none";document.body.appendChild(fi);
+  // adiciona input de arquivo oculto (reaproveitado pelo botão "Carregar PDF, Word ou .txt")
+  var fi=el("input");fi.type="file";fi.id="file";fi.accept=".pdf,.docx,.doc,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain";fi.style.display="none";document.body.appendChild(fi);
 
   // start
   // ao abrir o app, começa sempre na tela de novo contrato (as conversas antigas ficam no menu)
