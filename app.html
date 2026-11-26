@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<meta name="clausa-versao" content="202611261805">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Clausa — App</title>
@@ -986,6 +987,21 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
   }else{
     renderAccount();
   }
+
+  // ---------- Atualização automática: ao voltar para o app, confere se há versão nova no site ----------
+  (function(){
+    var minha=(document.querySelector('meta[name="clausa-versao"]')||{}).content,avisado=false;
+    function confere(){
+      if(!minha||avisado||document.visibilityState!=="visible")return;
+      fetch("app.html?v="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){
+        var m=t.match(/name="clausa-versao" content="(\d+)"/);
+        if(m&&m[1]!==minha){avisado=true;
+          var b=el("div");b.style.cssText="position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:999;background:#161617;border:1px solid #FF8A33;color:#FAFAFA;border-radius:12px;padding:10px 12px 10px 16px;display:flex;gap:12px;align-items:center;font:500 14px Inter;box-shadow:0 8px 30px rgba(0,0,0,.4);max-width:calc(100vw - 24px)";
+          b.innerHTML='<span>Tem uma versão nova do Clausa.</span><button class="btn sm" style="white-space:nowrap">Atualizar</button>';
+          b.querySelector("button").onclick=function(){location.reload()};document.body.appendChild(b)}
+      }).catch(function(){})}
+    document.addEventListener("visibilitychange",confere);setInterval(confere,5*60*1000);setTimeout(confere,4000);
+  })();
 })();
 </script>
 </body>
