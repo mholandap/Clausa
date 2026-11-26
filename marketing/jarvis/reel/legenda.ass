@@ -1,0 +1,132 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Fala,Inter SemiBold,52,&H00FAFAFA,&HFF000000,&H00000000,&H96000000,0,0,0,0,100,100,0,0,1,0,2,7,90,90,0,1
+Style: Quem,Inter,24,&H00338AFF,&H00338AFF,&H00000000,&H00000000,1,0,0,0,100,100,6,0,1,0,0,7,80,80,0,1
+Style: Linha,Inter,10,&H00338AFF,&H00338AFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 1,0:00:00.00,0:00:02.40,Quem,,0,0,0,,{\fad(100,140)}{\c&H9E9B9B&}{\pos(90,1440)}PEDRO
+Dialogue: 0,0:00:00.00,0:00:02.40,Linha,,0,0,0,,{\fad(100,140)}{\c&H9E9B9B&}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:00.00,0:00:02.40,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Bom {\k105}dia, {\k40}Jarvis.
+Dialogue: 1,0:00:02.91,0:00:04.33,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:02.91,0:00:04.33,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:02.91,0:00:04.33,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Bom {\k22}dia, {\k36}Pedro.
+Dialogue: 1,0:00:04.33,0:00:05.65,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:04.33,0:00:05.65,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:04.33,0:00:05.65,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}O {\k16}mundo {\k28}não {\k34}parou
+Dialogue: 1,0:00:05.65,0:00:07.33,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:05.65,0:00:07.33,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:05.65,0:00:07.33,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}enquanto {\k24}você {\k40}dormia.
+Dialogue: 1,0:00:07.33,0:00:08.35,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:07.33,0:00:08.35,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:07.33,0:00:08.35,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Vamos {\k30}lá.
+Dialogue: 1,0:00:08.35,0:00:10.49,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:08.35,0:00:10.49,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:08.35,0:00:10.49,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Lá {\k28}fora, {\k84}em {\k10}Brasília,
+Dialogue: 1,0:00:10.49,0:00:12.67,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:10.49,0:00:12.67,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:10.49,0:00:12.67,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}faz {\k18}23 {\k74}graus.
+Dialogue: 1,0:00:12.77,0:00:15.31,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:12.77,0:00:15.31,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:12.77,0:00:15.31,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Hoje {\k28}vai {\k22}de {\k16}23 {\k66}a {\k22}31.
+Dialogue: 1,0:00:15.31,0:00:18.25,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:15.31,0:00:18.25,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:15.31,0:00:18.25,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}A {\k16}chance {\k20}de {\k20}chuva {\k46}é {\k6}de {\k10}43%.
+Dialogue: 1,0:00:19.23,0:00:21.91,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:19.23,0:00:21.91,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:19.23,0:00:21.91,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}No {\k84}Insta, {\k78}o {\k8}Reel {\k20}de {\k20}ontem {\k36}teve
+Dialogue: 1,0:00:21.91,0:00:25.43,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:21.91,0:00:25.43,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:21.91,0:00:25.43,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}69 {\k82}curtidas {\k74}e {\k22}28 {\k58}comentários.
+Dialogue: 1,0:00:25.43,0:00:27.19,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:25.43,0:00:27.19,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:25.43,0:00:27.19,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}4 {\k30}em {\k18}cada {\k26}10 {\k40}pessoas {\k44}que
+Dialogue: 1,0:00:27.19,0:00:28.09,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:27.19,0:00:28.09,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:27.19,0:00:28.09,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}assistiram {\k58}ainda
+Dialogue: 1,0:00:28.09,0:00:29.45,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:28.09,0:00:29.45,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:28.09,0:00:29.45,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}não {\k32}te {\k16}seguem.
+Dialogue: 1,0:00:29.45,0:00:30.95,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:29.45,0:00:30.95,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:29.45,0:00:30.95,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}No {\k18}LinkedIn, {\k96}duas
+Dialogue: 1,0:00:30.95,0:00:32.73,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:30.95,0:00:32.73,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:30.95,0:00:32.73,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}advogadas {\k64}responderam.
+Dialogue: 1,0:00:32.73,0:00:34.17,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:32.73,0:00:34.17,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:32.73,0:00:34.17,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Uma {\k24}vai {\k20}testar {\k38}o {\k4}Clausa {\k40}esta
+Dialogue: 1,0:00:34.17,0:00:36.83,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:34.17,0:00:36.83,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:34.17,0:00:36.83,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}semana, {\k96}a {\k16}outra {\k28}pediu {\k44}o {\k10}link.
+Dialogue: 1,0:00:36.83,0:00:38.61,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:36.83,0:00:38.61,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:36.83,0:00:38.61,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Ontem {\k42}foram {\k24}15 {\k48}melhorias
+Dialogue: 1,0:00:38.61,0:00:40.43,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:38.61,0:00:40.43,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:38.61,0:00:40.43,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}publicadas {\k56}no {\k14}Clausa.
+Dialogue: 1,0:00:40.55,0:00:42.63,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:40.55,0:00:42.63,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:40.55,0:00:42.63,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Agora {\k60}ele {\k32}instala {\k38}no {\k14}celular,
+Dialogue: 1,0:00:42.63,0:00:44.19,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:42.63,0:00:44.19,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:42.63,0:00:44.19,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}como {\k32}um {\k12}aplicativo.
+Dialogue: 1,0:00:44.19,0:00:46.43,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:44.19,0:00:46.43,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:44.19,0:00:46.43,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Agora, {\k90}a {\k4}dica {\k30}do {\k14}dia.
+Dialogue: 1,0:00:46.99,0:00:48.87,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:46.99,0:00:48.87,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:46.99,0:00:48.87,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Multa {\k60}de {\k10}contrato {\k50}exagerada
+Dialogue: 1,0:00:48.87,0:00:51.17,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:48.87,0:00:51.17,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:48.87,0:00:51.17,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}pode {\k26}ser {\k28}reduzida {\k68}pelo {\k22}juiz.
+Dialogue: 1,0:00:51.17,0:00:53.33,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:51.17,0:00:53.33,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:51.17,0:00:53.33,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Está {\k34}no {\k16}artigo {\k36}413
+Dialogue: 1,0:00:53.33,0:00:54.83,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:53.33,0:00:54.83,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:53.33,0:00:54.83,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}do {\k32}Código {\k36}Civil.
+Dialogue: 1,0:00:54.83,0:00:56.27,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:54.83,0:00:56.27,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:54.83,0:00:56.27,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Quer {\k18}que {\k18}eu {\k6}prepare {\k34}a {\k14}mensagem
+Dialogue: 1,0:00:56.27,0:00:57.25,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:56.27,0:00:57.25,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:56.27,0:00:57.25,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}para {\k30}a {\k12}advogada
+Dialogue: 1,0:00:57.25,0:00:58.57,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:57.25,0:00:58.57,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:57.25,0:00:58.57,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}que {\k12}vai {\k12}testar?
+Dialogue: 1,0:00:58.59,0:01:00.61,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:00:58.59,0:01:00.61,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:00:58.59,0:01:00.61,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}O {\k16}dia {\k32}é {\k24}seu, {\k42}senhor.
+Dialogue: 1,0:01:01.09,0:01:02.23,Quem,,0,0,0,,{\fad(100,140)}{\c&H9E9B9B&}{\pos(90,1440)}PEDRO
+Dialogue: 0,0:01:01.09,0:01:02.23,Linha,,0,0,0,,{\fad(100,140)}{\c&H9E9B9B&}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:01:01.09,0:01:02.23,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Pode {\k28}preparar {\k48}e {\k8}marcar
+Dialogue: 1,0:01:02.23,0:01:04.05,Quem,,0,0,0,,{\fad(100,140)}{\c&H9E9B9B&}{\pos(90,1440)}PEDRO
+Dialogue: 0,0:01:02.23,0:01:04.05,Linha,,0,0,0,,{\fad(100,140)}{\c&H9E9B9B&}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:01:02.23,0:01:04.05,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}aquela {\k22}reunião {\k32}para {\k24}seis.
+Dialogue: 1,0:01:05.13,0:01:06.41,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:01:05.13,0:01:06.41,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:01:05.13,0:01:06.41,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Pronto, {\k58}Pedro.
+Dialogue: 1,0:01:06.41,0:01:07.29,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:01:06.41,0:01:07.29,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:01:06.41,0:01:07.29,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}A {\k10}mensagem {\k52}está
+Dialogue: 1,0:01:07.29,0:01:09.23,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:01:07.29,0:01:09.23,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:01:07.29,0:01:09.23,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}esperando {\k42}a {\k24}sua {\k14}revisão.
+Dialogue: 1,0:01:09.74,0:01:10.72,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:01:09.74,0:01:10.72,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:01:09.74,0:01:10.72,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Pedro?
+Dialogue: 1,0:01:11.49,0:01:12.61,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:01:11.49,0:01:12.61,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:01:11.49,0:01:12.61,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}Me {\k32}deixou {\k46}falando
+Dialogue: 1,0:01:12.61,0:01:15.31,Quem,,0,0,0,,{\fad(100,140)}{\pos(90,1440)}JARVIS
+Dialogue: 0,0:01:12.61,0:01:15.31,Linha,,0,0,0,,{\fad(100,140)}{\p1\pos(90,1476)}m 0 0 l 44 0 l 44 3 l 0 3{\p0}
+Dialogue: 1,0:01:12.61,0:01:15.31,Fala,,0,0,0,,{\fad(100,140)}{\pos(90,1490)}{\k5}sozinho, {\k148}de {\k26}novo.
