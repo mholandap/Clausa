@@ -477,7 +477,10 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       if(!re.test(text))return;
       var ex=null;if(r.excl){try{ex=new RegExp(r.excl,"i")}catch(e){}}
       var hit="",excluidas=0;
-      for(var i=0;i<sents.length;i++){var s=sents[i].trim();if(s.length>=8&&re.test(s)){if(ex&&ex.test(s)){excluidas++;continue}hit=s;break}}
+      for(var i=0;i<sents.length;i++){var s=sents[i].trim();if(s.length>=8&&re.test(s)){if(ex&&ex.test(s)){excluidas++;continue}hit=s;
+        // achou só o título da cláusula ("Cláusula 5ª – Da exclusividade."): mostra também a frase seguinte, que é o conteúdo
+        if(/^cl[áa]usula\b/i.test(s)&&s.split(/\s+/).length<=7&&sents[i+1]&&sents[i+1].trim())hit=s+" "+sents[i+1].trim();
+        break}}
       if(!hit&&excluidas)return;   // só aparece em frases já cobertas por outra regra
       if(!hit){var idx=text.search(re);hit=text.slice(Math.max(0,idx-30),idx+140).replace(/\s+/g," ").trim()}
       // id da regra identifica o apontamento: aprovações não "pulam" de cláusula quando a lista de regras muda
@@ -780,28 +783,46 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     var cores={alto:"#D9483F",medio:"#C7921E",ok:"#3E9A6E"},rot={alto:"Risco alto",medio:"Atenção",ok:"Sem alerta"};
     var cnt={alto:0,medio:0,ok:0},apr=0;found.forEach(function(f){cnt[f.sev]++;if(c.decisions[f.id]==="apr")apr++});
     var data=new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});
+    var ref=new Date().toISOString().slice(2,10).replace(/-/g,"")+"-"+String(found.length).padStart(2,"0");
     var itens=found.map(function(f,i){var d=c.decisions[f.id],st=d==="apr"?"Sugestão aprovada":d==="rej"?"Sugestão rejeitada":"Aguardando sua decisão";
-      return '<div class="item" style="border-left-color:'+cores[f.sev]+'"><div class="topo"><span class="n">'+String(i+1).padStart(2,"0")+'</span><span class="sev" style="background:'+cores[f.sev]+'">'+rot[f.sev]+'</span><h3>'+esc(f.name)+'</h3></div>'+
-        '<blockquote>'+esc(f.s.trim())+'</blockquote><p><b>Por que importa.</b> '+esc(f.reason)+'</p>'+(f.sugg?'<p><b>Sugestão.</b> '+esc(f.sugg)+'</p><p class="st">'+st+'</p>':'')+'</div>'});
-    // anexo: o contrato com os trechos marcados
-    var corpo=esc(c.text),marcados={};found.forEach(function(f){var t=esc(f.s.trim());if(marcados[t])return;marcados[t]=1;if(t.length>8&&corpo.indexOf(t)>=0)corpo=corpo.split(t).join('<mark style="background:'+cores[f.sev]+'22;border-bottom:2px solid '+cores[f.sev]+'">'+t+'</mark>')});
-    var html='<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Clausa - '+esc(c.title||"Relatório")+'</title>'+
-      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@800;900&family=Inter:wght@400;500;600;700&display=swap">'+
-      '<style>@page{size:A4;margin:16mm 15mm}*{box-sizing:border-box}body{margin:0;font:400 11pt/1.5 Inter,Arial,sans-serif;color:#1A1A1A;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
-      '.cab{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #E2590B;padding-bottom:10px;margin-bottom:18px}.marca{display:flex;align-items:center;gap:8px;font:900 20pt "Inter Tight";letter-spacing:-.03em}.marca svg{width:26px}'+
-      '.cab .d{font-size:9pt;color:#666;text-align:right}h1{font:800 18pt/1.2 "Inter Tight";letter-spacing:-.02em;margin:0 0 4px}.sub{color:#666;font-size:10pt;margin:0 0 16px}'+
-      '.res{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}.res div{border:1px solid #E5E5E5;border-radius:8px;padding:8px 12px;min-width:110px}.res b{display:block;font:800 18pt "Inter Tight"}.res span{font-size:9pt;color:#666}'+
-      '.item{border:1px solid #E5E5E5;border-left:5px solid;border-radius:8px;padding:12px 14px;margin:0 0 12px;break-inside:avoid}.topo{display:flex;align-items:center;gap:10px;margin-bottom:8px}.n{font:700 9pt Inter;color:#999}'+
-      '.sev{color:#fff;font:700 8pt Inter;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px}h3{margin:0;font:700 12pt Inter}'+
-      'blockquote{margin:0 0 8px;padding:8px 12px;background:#F6F6F7;border-radius:6px;font-style:italic;color:#333}p{margin:4px 0}.st{font-size:9pt;color:#666}'+
-      'h2{font:800 13pt "Inter Tight";margin:26px 0 8px;break-before:page}.contrato{white-space:pre-wrap;font-size:10pt;line-height:1.6}mark{color:inherit;padding:0 1px}'+
-      '.rod{margin-top:22px;padding-top:10px;border-top:1px solid #E5E5E5;font-size:8.5pt;color:#777}</style></head><body>'+
-      '<div class="cab"><div class="marca"><svg viewBox="100 100 312 270"><g fill="none" stroke="#E2590B" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><path d="M256 146V345"/><path d="M212 345H300"/><path d="M157 212V186H355V212"/><path d="M128 207Q160 258 192 207"/><path d="M320 207Q352 258 384 207"/></g><circle cx="256" cy="136" r="14" fill="#E2590B"/></svg>Clausa</div><div class="d">Relatório de revisão<br>'+data+'</div></div>'+
-      '<h1>'+esc(c.title||"Contrato")+'</h1><p class="sub">'+found.length+' pontos apontados para a sua atenção</p>'+
-      '<div class="res"><div><b style="color:'+cores.alto+'">'+cnt.alto+'</b><span>Risco alto</span></div><div><b style="color:'+cores.medio+'">'+cnt.medio+'</b><span>Atenção</span></div><div><b style="color:'+cores.ok+'">'+cnt.ok+'</b><span>Sem alerta</span></div><div><b>'+apr+'</b><span>Sugestões aprovadas</span></div></div>'+
+      return '<section class="item"><i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i>'+
+        '<div class="topo"><span class="n">'+String(i+1).padStart(2,"0")+' //</span><h3>'+esc(f.name)+'</h3><span class="sev" style="color:'+cores[f.sev]+';border-color:'+cores[f.sev]+'">'+rot[f.sev]+'</span></div>'+
+        '<blockquote style="border-left-color:'+cores[f.sev]+'">'+esc(f.s.trim())+'</blockquote>'+
+        '<div class="lin"><span class="k">Por que importa</span><span>'+esc(f.reason)+'</span></div>'+
+        (f.sugg?'<div class="lin"><span class="k">Sugestão</span><span>'+esc(f.sugg)+'</span></div><div class="st"><span style="background:'+(d==="apr"?cores.ok:d==="rej"?cores.alto:"#B8B8BC")+'"></span>'+st+'</div>':'')+'</section>'});
+    // anexo: o contrato com os trechos marcados (cada trecho só uma vez, pela cor mais grave)
+    var corpo=esc(c.text),marcados={};found.forEach(function(f){var t=esc(f.s.trim());if(marcados[t])return;marcados[t]=1;if(t.length>8&&corpo.indexOf(t)>=0)corpo=corpo.split(t).join('<mark style="background:'+cores[f.sev]+'1A;border-bottom:1.2pt solid '+cores[f.sev]+'">'+t+'</mark>')});
+    var html='<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Clausa - '+esc(c.title||"Relatório")+'</title>'+
+      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">'+
+      '<style>@page{size:A4;margin:14mm 14mm 16mm}*{box-sizing:border-box}html,body{margin:0;background:#fff}'+
+      'body{width:182mm;margin:0 auto;font:400 10.5pt/1.42 Inter,Arial,sans-serif;color:#17171A;letter-spacing:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
+      '.mono{font-family:"JetBrains Mono",monospace}'+
+      '.cab{position:relative;padding:0 0 9pt;margin-bottom:12pt;border-bottom:.8pt solid #E2590B}.cab:after{content:"";position:absolute;right:0;bottom:-3pt;width:22mm;height:2.2pt;background:#E2590B}'+
+      '.cab .l1{display:flex;align-items:center;justify-content:space-between}.marca{display:flex;align-items:center;gap:6pt;font:800 15pt "Inter Tight";letter-spacing:-.02em}.marca svg{width:18pt}'+
+      '.tag{font:500 7.5pt "JetBrains Mono";letter-spacing:.14em;color:#8A8A90;text-transform:uppercase;text-align:right;line-height:1.5}'+
+      'h1{font:800 17pt/1.15 "Inter Tight";letter-spacing:-.02em;margin:10pt 0 2pt}.sub{font:500 8pt "JetBrains Mono";letter-spacing:.1em;color:#8A8A90;text-transform:uppercase;margin:0}'+
+      '.res{display:grid;grid-template-columns:repeat(4,1fr);gap:6pt;margin:12pt 0 14pt}.res div{border:.6pt solid #E8D6C8;border-top:1.6pt solid #E2590B;padding:6pt 8pt}'+
+      '.res b{display:block;font:800 16pt/1 "Inter Tight"}.res span{font:500 7pt "JetBrains Mono";letter-spacing:.12em;text-transform:uppercase;color:#77777D}'+
+      '.item{position:relative;border:.6pt solid #F0C9AA;padding:9pt 11pt 8pt;margin:0 0 7pt;break-inside:avoid}'+
+      '.item i{position:absolute;width:7pt;height:7pt;border-color:#E2590B;border-style:solid;border-width:0}.c1{top:-.6pt;left:-.6pt;border-top-width:1.6pt!important;border-left-width:1.6pt!important}'+
+      '.c2{top:-.6pt;right:-.6pt;border-top-width:1.6pt!important;border-right-width:1.6pt!important}.c3{bottom:-.6pt;left:-.6pt;border-bottom-width:1.6pt!important;border-left-width:1.6pt!important}'+
+      '.c4{bottom:-.6pt;right:-.6pt;border-bottom-width:1.6pt!important;border-right-width:1.6pt!important}'+
+      '.topo{display:flex;align-items:baseline;gap:7pt;margin-bottom:5pt}.n{font:700 8pt "JetBrains Mono";color:#E2590B}h3{margin:0;font:700 11pt/1.25 Inter;flex:1}'+
+      '.sev{font:700 7pt "JetBrains Mono";letter-spacing:.12em;text-transform:uppercase;border:.8pt solid;padding:1.5pt 5pt;white-space:nowrap}'+
+      'blockquote{margin:0 0 5pt;padding:3pt 0 3pt 8pt;border-left:1.6pt solid;font-style:italic;color:#3A3A40}'+
+      '.lin{display:grid;grid-template-columns:27mm 1fr;gap:6pt;margin:2pt 0}.k{font:700 7pt/1.9 "JetBrains Mono";letter-spacing:.12em;text-transform:uppercase;color:#E2590B}'+
+      '.st{display:flex;align-items:center;gap:5pt;margin-top:4pt;font:500 7.5pt "JetBrains Mono";letter-spacing:.08em;text-transform:uppercase;color:#77777D}.st span{width:5pt;height:5pt;border-radius:50%}'+
+      'h2{font:800 12.5pt "Inter Tight";margin:0 0 6pt;padding-bottom:5pt;border-bottom:.8pt solid #E2590B;break-before:page}'+
+      '.contrato{white-space:pre-wrap;font-size:10pt;line-height:1.5}mark{color:inherit;padding:0 .5pt}'+
+      '.rod{margin-top:14pt;padding-top:6pt;border-top:.6pt solid #E8D6C8;display:flex;justify-content:space-between;gap:10pt;font:500 7pt/1.5 "JetBrains Mono";letter-spacing:.06em;color:#8A8A90}'+
+      '@media screen{body{padding:14mm 0}}</style></head><body>'+
+      '<div class="cab"><div class="l1"><div class="marca"><svg viewBox="100 100 312 270"><g fill="none" stroke="#E2590B" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"><path d="M256 146V345"/><path d="M212 345H300"/><path d="M157 212V186H355V212"/><path d="M128 207Q160 258 192 207"/><path d="M320 207Q352 258 384 207"/></g><circle cx="256" cy="136" r="16" fill="#E2590B"/></svg>Clausa</div>'+
+      '<div class="tag">Relatório de revisão<br>Ref. '+ref+' · '+data+'</div></div>'+
+      '<h1>'+esc(c.title||"Contrato")+'</h1><p class="sub">'+found.length+' pontos para a sua atenção</p></div>'+
+      '<div class="res"><div><b style="color:'+cores.alto+'">'+cnt.alto+'</b><span>Risco alto</span></div><div><b style="color:'+cores.medio+'">'+cnt.medio+'</b><span>Atenção</span></div><div><b style="color:'+cores.ok+'">'+cnt.ok+'</b><span>Sem alerta</span></div><div><b>'+apr+'</b><span>Aprovadas</span></div></div>'+
       itens.join("")+
-      '<h2>Contrato com os trechos marcados</h2><div class="contrato">'+corpo+'</div>'+
-      '<div class="rod">A Clausa aponta pontos de atenção por regras de leitura; não é parecer jurídico. A decisão é sempre do advogado. · mholandap.github.io/Clausa</div>'+
+      '<h2>Anexo · contrato com os trechos marcados</h2><div class="contrato">'+corpo+'</div>'+
+      '<div class="rod"><span>A Clausa aponta pontos de atenção por regras de leitura; não é parecer jurídico. A decisão é sempre do advogado.</span><span>mholandap.github.io/Clausa</span></div>'+
       '<script>document.fonts.ready.then(function(){setTimeout(function(){window.print()},300)})<\/script></body></html>';
     var w=window.open("","_blank");
     if(w){w.document.open();w.document.write(html);w.document.close();return}
