@@ -9,11 +9,11 @@ const CORS = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 // Tenta o primeiro modelo; se o nome não existir, demorar ou bater limite, tenta o próximo.
-// Os 2.5 vêm primeiro porque, na faixa grátis, só eles podem pesquisar no Google (500 por dia, somando os dois).
-const MODELOS = (Deno.env.get("GEMINI_MODELO") || "gemini-2.5-flash-lite,gemini-2.5-flash,gemini-flash-lite-latest,gemini-flash-latest")
+// (Os Gemini 2.5 saíram do ar em nov/2026; a pesquisa usa as nossas ferramentas abaixo.)
+const MODELOS = (Deno.env.get("GEMINI_MODELO") || "gemini-flash-lite-latest,gemini-flash-latest")
   .split(",").map((m) => m.trim()).filter(Boolean);
 
-const VERSAO = 7;
+const VERSAO = 8;
 const podeBuscar = (m: string) => /2\.5-flash/.test(m);
 const json = (obj: Record<string, unknown>, status = 200) =>
   new Response(JSON.stringify({ ...obj, versao: VERSAO }), { status, headers: { ...CORS, "Content-Type": "application/json" } });
@@ -51,6 +51,7 @@ Deno.serve(async (req) => {
     // 3) Pergunta e um pouco da conversa anterior
     const corpo = await req.json().catch(() => ({}));
     const pergunta = String(corpo.pergunta || "").slice(0, 600).trim();
+    if (corpo.aquecer) return json({ ok: true }); // só acorda a função
     if (!pergunta) return json({ erro: "sem-pergunta" }, 400);
     const historico = (Array.isArray(corpo.historico) ? corpo.historico : []).slice(-8)
       .map((t: { papel?: string; texto?: string }) => ({
@@ -157,7 +158,7 @@ async function noticias(consulta: string) {
   const url = q
     ? `https://news.google.com/rss/search?q=${encodeURIComponent(q + " when:7d")}&hl=pt-BR&gl=BR&ceid=BR:pt-419`
     : "https://news.google.com/rss?hl=pt-BR&gl=BR&ceid=BR:pt-419";
-  const r = await fetch(url, { signal: AbortSignal.timeout(6000) });
+  const r = await fetch(url, { signal: AbortSignal.timeout(4000) });
   if (!r.ok) return { erro: "Google Notícias respondeu " + r.status };
   const xml = await r.text();
   const itens = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, 8).map((m) => {
