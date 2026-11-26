@@ -13,7 +13,7 @@ const CORS = {
 const MODELOS = (Deno.env.get("GEMINI_MODELO") || "gemini-2.5-flash-lite,gemini-2.5-flash,gemini-flash-lite-latest,gemini-flash-latest")
   .split(",").map((m) => m.trim()).filter(Boolean);
 
-const VERSAO = 6;
+const VERSAO = 7;
 const podeBuscar = (m: string) => /2\.5-flash/.test(m);
 const json = (obj: Record<string, unknown>, status = 200) =>
   new Response(JSON.stringify({ ...obj, versao: VERSAO }), { status, headers: { ...CORS, "Content-Type": "application/json" } });
@@ -64,7 +64,7 @@ Agora é ${agora} (horário de Brasília).
 Responda SEMPRE em português do Brasil, em tom elegante e prestativo, como um mordomo britânico bem-humorado. Às vezes chame-o de "senhor".
 Sua resposta será FALADA em voz alta: de 1 a 4 frases curtas, sem listas, sem markdown, sem emojis, sem links.
 Sobre o dia dele (Clausa, Instagram, e-mails, agenda), use só o resumo abaixo; se não estiver lá, diga que não sabe. Nunca invente números, nomes, curtidas, clientes ou compromissos.
-REGRA DA PESQUISA: se a pergunta NÃO for sobre o dia dele (por exemplo notícias, mundo, esportes, cotações, clima, pessoas famosas, qualquer fato que possa ter mudado), você é OBRIGADO a usar a ferramenta google_search antes de responder, mesmo que ache que já sabe. Responda com o que encontrou e diga a fonte em poucas palavras ("segundo o g1"). Não responda "não tenho registros": pesquise. Só diga que não sabe se a pesquisa não trouxer nada.
+REGRA DA PESQUISA: se a pergunta NÃO for sobre o dia dele (notícias, mundo, esportes, cotações, pessoas famosas, qualquer fato que possa ter mudado), você é OBRIGADO a usar uma ferramenta de pesquisa antes de responder (google_search, ou pesquisar_noticias e cotacao_moeda), mesmo que ache que já sabe. Responda com o que encontrou e diga a fonte em poucas palavras ("segundo o g1"). Não responda "não tenho registros": pesquise. Só diga que não sabe se a pesquisa não trouxer nada.
 Você não envia e-mails, não publica e não apaga nada; se ele pedir isso, diga que essa parte ele faz, ou o Claude com a aprovação dele.
 Resumo do dia dele (JSON; use só para perguntas sobre o dia dele): ${resumo}`;
 
@@ -74,12 +74,21 @@ Resumo do dia dele (JSON; use só para perguntas sobre o dia dele): ${resumo}`;
     };
     // "Pensar pouco": resposta falada e curta não precisa de raciocínio longo.
     const pensar = (m: string) => /2\.5/.test(m) ? { thinkingBudget: 0 } : { thinkingLevel: "minimal" };
-    const chamar = (modelo: string, comPensar: boolean, comBusca: boolean) =>
+    // Modos de pesquisa: "google" (busca do próprio Gemini, só nos 2.5 na faixa grátis),
+    // "ferramentas" (nossas: Google Notícias e cotação, funcionam em qualquer modelo) ou "nenhum".
+    type Modo = "google" | "ferramentas" | "nenhum";
+    const ferramentas = [{ functionDeclarations: [
+      { name: "pesquisar_noticias", description: "Pesquisa notícias recentes no Google Notícias (Brasil, em português). Use para qualquer fato atual: notícias, esportes, política, pessoas, eventos. Deixe a consulta vazia para as principais manchetes do dia.",
+        parameters: { type: "OBJECT", properties: { consulta: { type: "STRING", description: "Palavras-chave curtas, ex.: 'resultado Flamengo', 'eleições EUA'. Vazio = principais manchetes." } } } },
+      { name: "cotacao_moeda", description: "Cotação de referência do dia de uma moeda em reais (atualizada uma vez por dia).",
+        parameters: { type: "OBJECT", properties: { moeda: { type: "STRING", description: "Código da moeda, ex.: USD, EUR, GBP, BTC não é suportado." } }, required: ["moeda"] } },
+    ] }];
+    const chamar = (modelo: string, comPensar: boolean, modo: Modo, conteudos: unknown[]) =>
       fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`, {
         method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": chave },
         body: JSON.stringify({
-          ...base,
-          ...(comBusca ? { tools: [{ google_search: {} }] } : {}),
+          system_instruction: base.system_instruction, contents: conteudos,
+          ...(modo === "google" ? { tools: [{ google_search: {} }] } : modo === "ferramentas" ? { tools: ferramentas } : {}),
           generationConfig: { temperature: 0.7, ...(comPensar ? { thinkingConfig: pensar(modelo) } : {}) },
         }),
         signal: AbortSignal.timeout(Math.max(1000, Math.min(10000, 28000 - (Date.now() - t0)))),
@@ -89,21 +98,49 @@ Resumo do dia dele (JSON; use só para perguntas sobre o dia dele): ${resumo}`;
     const tentativas: string[] = [];
     for (const modelo of MODELOS) {
       if (Date.now() - t0 > 27000) break; // não passar de ~30 s no total
-      let r: Response, busca = podeBuscar(modelo);
+      const modos: Modo[] = podeBuscar(modelo) ? ["google", "ferramentas", "nenhum"] : ["ferramentas", "nenhum"];
+      let r: Response | null = null, modo: Modo = modos[0], comPensar = true, conteudos: unknown[] = base.contents;
       try {
-        r = await chamar(modelo, true, busca);
-        if (r.status === 400) r = await chamar(modelo, false, busca); // modelo que não aceita o ajuste de "pensar"
-        if ((r.status === 400 || r.status === 429) && busca) { busca = false; r = await chamar(modelo, false, false); } // pesquisa indisponível ou cota da pesquisa acabou
+        for (modo of modos) {
+          r = await chamar(modelo, comPensar, modo, conteudos);
+          if (r.status === 400 && comPensar) { comPensar = false; r = await chamar(modelo, false, modo, conteudos); } // não aceita o ajuste de "pensar"
+          tentativas.push(`${modelo}+${modo}:${r.status}`); passo(`${modelo} ${modo} ${r.status}`);
+          if (r.status === 400 || (r.status === 429 && modo === "google")) continue; // esse modo não serve aqui: tenta o próximo
+          break;
+        }
       } catch (_) { ultimoErro = "demorou: " + modelo; tentativas.push(modelo + ":demorou"); passo(modelo + " demorou"); continue; }
-      tentativas.push(modelo + (busca ? "+busca" : "") + ":" + r.status); passo(modelo + (busca ? " +busca " : " ") + r.status);
-      if (r.status === 404) continue; // nome de modelo que não existe mais
+      if (!r || r.status === 404) continue; // nome de modelo que não existe mais
       if (r.status === 429) { limite = true; continue; } // limite deste modelo: tenta outro
-      const d = await r.json().catch(() => ({}));
+      let d = await r.json().catch(() => ({}));
       if (!r.ok) { ultimoErro = (d?.error?.message || String(r.status)).slice(0, 160); continue; }
+
+      // Se o modelo pediu para usar nossas ferramentas, executa e devolve o resultado (até 3 rodadas)
+      let fonte = d?.candidates?.[0]?.groundingMetadata?.webSearchQueries?.length ? "google" : "";
+      try {
+        for (let rodada = 0; rodada < 3; rodada++) {
+          const partes = d?.candidates?.[0]?.content?.parts || [];
+          const pedidos = partes.filter((p: { functionCall?: unknown }) => p.functionCall);
+          if (!pedidos.length) break;
+          const respostas = [];
+          for (const p of pedidos) {
+            const { name, args } = p.functionCall;
+            const resultado = name === "cotacao_moeda" ? await cotacao(String(args?.moeda || "USD")) : await noticias(String(args?.consulta || ""));
+            fonte = fonte || (name === "cotacao_moeda" ? "cotacao" : "noticias");
+            passo(`${name}(${JSON.stringify(args || {})})`);
+            respostas.push({ functionResponse: { name, response: { resultado } } });
+          }
+          conteudos = [...conteudos, { role: "model", parts: partes }, { role: "user", parts: respostas }];
+          const r2 = await chamar(modelo, comPensar, modo, conteudos);
+          tentativas.push(`${modelo}+resposta:${r2.status}`);
+          if (!r2.ok) break;
+          d = await r2.json();
+        }
+      } catch (e) { passo("ferramenta falhou " + String(e)); }
+
       const texto = (d?.candidates?.[0]?.content?.parts || []).map((p: { text?: string }) => p.text || "").join("")
         .replace(/\[\d+(,\s*\d+)*\]/g, "").replace(/[*_#`]/g, "").replace(/https?:\/\/\S+/g, "").replace(/\s+/g, " ").replace(/\s+([,.!?;:])/g, "$1").trim(); // vai ser falado
-      const pesquisou = !!d?.candidates?.[0]?.groundingMetadata?.webSearchQueries?.length;
-      return json({ resposta: texto || "Perdão, senhor, não consegui formular uma resposta.", modelo, pesquisou });
+      if (!texto) { ultimoErro = "resposta vazia: " + modelo; continue; }
+      return json({ resposta: texto, modelo, pesquisou: !!fonte, fonte, tentativas: tentativas.join(" ") });
     }
     if (limite) return json({ erro: "limite", detalhe: tentativas.join(" ") }, 429);
     return json({ erro: "sem-modelo", detalhe: tentativas.join(" ") + " | " + ultimoErro }, 502);
@@ -112,3 +149,27 @@ Resumo do dia dele (JSON; use só para perguntas sobre o dia dele): ${resumo}`;
     return json({ erro: "falha", detalhe: String(e).slice(0, 200) }, 500);
   }
 });
+
+// ---------- ferramentas de pesquisa grátis ----------
+const desfaz = (t: string) => t.replace(/<!\[CDATA\[|\]\]>/g, "").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim();
+async function noticias(consulta: string) {
+  const q = consulta.trim();
+  const url = q
+    ? `https://news.google.com/rss/search?q=${encodeURIComponent(q + " when:7d")}&hl=pt-BR&gl=BR&ceid=BR:pt-419`
+    : "https://news.google.com/rss?hl=pt-BR&gl=BR&ceid=BR:pt-419";
+  const r = await fetch(url, { signal: AbortSignal.timeout(6000) });
+  if (!r.ok) return { erro: "Google Notícias respondeu " + r.status };
+  const xml = await r.text();
+  const itens = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, 8).map((m) => {
+    const pega = (tag: string) => desfaz((m[1].match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`)) || [])[1] || "");
+    return { titulo: pega("title"), fonte: pega("source"), data: pega("pubDate") };
+  });
+  return itens.length ? { consulta: q || "principais manchetes", noticias: itens } : { consulta: q, noticias: [], aviso: "nada encontrado" };
+}
+async function cotacao(moeda: string) {
+  const m = moeda.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 3) || "USD";
+  const r = await fetch(`https://open.er-api.com/v6/latest/${m}`, { signal: AbortSignal.timeout(6000) });
+  const d = await r.json().catch(() => ({}));
+  if (d?.result !== "success" || !d?.rates?.BRL) return { erro: "cotação indisponível para " + m };
+  return { moeda: m, em_reais: Math.round(d.rates.BRL * 100) / 100, atualizado: d.time_last_update_utc, observacao: "cotação de referência, atualizada uma vez por dia" };
+}
