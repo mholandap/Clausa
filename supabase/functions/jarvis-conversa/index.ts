@@ -8,11 +8,13 @@ const CORS = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
-// Tenta o primeiro modelo (o "lite" é o mais rápido); se o nome não existir ou demorar, tenta o próximo.
-const MODELOS = (Deno.env.get("GEMINI_MODELO") || "gemini-flash-lite-latest,gemini-2.5-flash-lite,gemini-flash-latest,gemini-2.5-flash")
+// Tenta o primeiro modelo; se o nome não existir, demorar ou bater limite, tenta o próximo.
+// Os 2.5 vêm primeiro porque, na faixa grátis, só eles podem pesquisar no Google (500 por dia, somando os dois).
+const MODELOS = (Deno.env.get("GEMINI_MODELO") || "gemini-2.5-flash-lite,gemini-2.5-flash,gemini-flash-lite-latest,gemini-flash-latest")
   .split(",").map((m) => m.trim()).filter(Boolean);
 
-const VERSAO = 4;
+const VERSAO = 5;
+const podeBuscar = (m: string) => /2\.5-flash/.test(m);
 const json = (obj: Record<string, unknown>, status = 200) =>
   new Response(JSON.stringify({ ...obj, versao: VERSAO }), { status, headers: { ...CORS, "Content-Type": "application/json" } });
 
@@ -61,7 +63,8 @@ Deno.serve(async (req) => {
 Agora é ${agora} (horário de Brasília).
 Responda SEMPRE em português do Brasil, em tom elegante e prestativo, como um mordomo britânico bem-humorado. Às vezes chame-o de "senhor".
 Sua resposta será FALADA em voz alta: de 1 a 4 frases curtas, sem listas, sem markdown, sem emojis, sem links.
-Use o resumo do dia abaixo como fonte. Se a resposta não estiver no resumo e não for conhecimento geral, diga com franqueza que não sabe. Nunca invente números, nomes, curtidas, clientes ou compromissos.
+Sobre o dia dele (Clausa, Instagram, e-mails, agenda), use só o resumo abaixo; se não estiver lá, diga que não sabe. Nunca invente números, nomes, curtidas, clientes ou compromissos.
+Sobre o mundo (notícias, placares, cotações, clima, fatos recentes), use a pesquisa do Google quando ela estiver disponível e diga de onde veio em poucas palavras ("segundo o g1"). Se não puder pesquisar, diga que não tem a informação atualizada.
 Você não envia e-mails, não publica e não apaga nada; se ele pedir isso, diga que essa parte ele faz, ou o Claude com a aprovação dele.
 Resumo do dia (JSON): ${resumo}`;
 
@@ -71,10 +74,14 @@ Resumo do dia (JSON): ${resumo}`;
     };
     // "Pensar pouco": resposta falada e curta não precisa de raciocínio longo.
     const pensar = (m: string) => /2\.5/.test(m) ? { thinkingBudget: 0 } : { thinkingLevel: "minimal" };
-    const chamar = (modelo: string, comPensar: boolean) =>
+    const chamar = (modelo: string, comPensar: boolean, comBusca: boolean) =>
       fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`, {
         method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": chave },
-        body: JSON.stringify({ ...base, generationConfig: { temperature: 0.7, ...(comPensar ? { thinkingConfig: pensar(modelo) } : {}) } }),
+        body: JSON.stringify({
+          ...base,
+          ...(comBusca ? { tools: [{ google_search: {} }] } : {}),
+          generationConfig: { temperature: 0.7, ...(comPensar ? { thinkingConfig: pensar(modelo) } : {}) },
+        }),
         signal: AbortSignal.timeout(Math.max(1000, Math.min(10000, 28000 - (Date.now() - t0)))),
       });
 
@@ -82,18 +89,21 @@ Resumo do dia (JSON): ${resumo}`;
     const tentativas: string[] = [];
     for (const modelo of MODELOS) {
       if (Date.now() - t0 > 27000) break; // não passar de ~30 s no total
-      let r: Response;
+      let r: Response, busca = podeBuscar(modelo);
       try {
-        r = await chamar(modelo, true);
-        if (r.status === 400) r = await chamar(modelo, false); // modelo que não aceita o ajuste de "pensar"
+        r = await chamar(modelo, true, busca);
+        if (r.status === 400) r = await chamar(modelo, false, busca); // modelo que não aceita o ajuste de "pensar"
+        if ((r.status === 400 || r.status === 429) && busca) { busca = false; r = await chamar(modelo, false, false); } // pesquisa indisponível ou cota da pesquisa acabou
       } catch (_) { ultimoErro = "demorou: " + modelo; tentativas.push(modelo + ":demorou"); passo(modelo + " demorou"); continue; }
-      tentativas.push(modelo + ":" + r.status); passo(modelo + " " + r.status);
+      tentativas.push(modelo + (busca ? "+busca" : "") + ":" + r.status); passo(modelo + (busca ? " +busca " : " ") + r.status);
       if (r.status === 404) continue; // nome de modelo que não existe mais
       if (r.status === 429) { limite = true; continue; } // limite deste modelo: tenta outro
       const d = await r.json().catch(() => ({}));
       if (!r.ok) { ultimoErro = (d?.error?.message || String(r.status)).slice(0, 160); continue; }
-      const texto = (d?.candidates?.[0]?.content?.parts || []).map((p: { text?: string }) => p.text || "").join("").trim();
-      return json({ resposta: texto || "Perdão, senhor, não consegui formular uma resposta.", modelo });
+      const texto = (d?.candidates?.[0]?.content?.parts || []).map((p: { text?: string }) => p.text || "").join("")
+        .replace(/\[\d+(,\s*\d+)*\]/g, "").replace(/[*_#`]/g, "").replace(/https?:\/\/\S+/g, "").replace(/\s+/g, " ").replace(/\s+([,.!?;:])/g, "$1").trim(); // vai ser falado
+      const pesquisou = !!d?.candidates?.[0]?.groundingMetadata?.webSearchQueries?.length;
+      return json({ resposta: texto || "Perdão, senhor, não consegui formular uma resposta.", modelo, pesquisou });
     }
     if (limite) return json({ erro: "limite", detalhe: tentativas.join(" ") }, 429);
     return json({ erro: "sem-modelo", detalhe: tentativas.join(" ") + " | " + ultimoErro }, 502);
