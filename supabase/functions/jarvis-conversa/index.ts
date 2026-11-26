@@ -30,7 +30,13 @@ Deno.serve(async (req) => {
       "Content-Type": "application/json",
     };
     const r1 = await fetch(`${url}/rest/v1/rpc/jarvis_eh_dono`, { method: "POST", headers: h, body: "{}" });
-    if (!r1.ok || (await r1.json()) !== true) return json({ erro: "so-o-dono" }, 403);
+    if (!r1.ok || (await r1.json()) !== true) {
+      // Diz o motivo: sem login, ou logado com outro e-mail
+      const u = await fetch(`${url}/auth/v1/user`, { headers: h });
+      if (!u.ok) return json({ erro: "sem-login" }, 401);
+      const email = (await u.json())?.email || "";
+      return json({ erro: "outro-email", email }, 403);
+    }
 
     // 2) Pega o último resumo do dia (o mesmo que a tela lê)
     const r2 = await fetch(`${url}/rest/v1/jarvis_resumos?select=conteudo,criado_em&order=criado_em.desc&limit=1`, { headers: h });
