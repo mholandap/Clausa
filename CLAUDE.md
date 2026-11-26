@@ -21,16 +21,19 @@ Projeto do Pedro (GitHub `mholandap`, Instagram `@pedrom.holanda`). Clausa = app
 - Banco: tarefa `.github/workflows/manter-banco-ativo.yml` evita a pausa do Supabase grátis.
 - App instalável (PWA): `manifest.webmanifest`, `sw.js`, `js/instalar.js`.
 
-## Agenda do Instagram (atualizado em 24/11/2026)
+## Agenda do Instagram (atualizado em 26/11/2026)
 - Ter 24/11 18h: anúncio vertical "Dia 2 construindo o Clausa" (`marketing/anuncio-tela/anuncio-vertical.mp4`).
-- Qua 25/11 10h05: Reel "5 avisos que não valem nada", narrado (`marketing/avisos/avisos-narrado.mp4`).
+- Qua 25/11 10h05: Reel "5 avisos que não valem nada", narrado (`marketing/avisos/avisos-narrado.mp4`). Publicado.
+- Qui 26/11 ~10h30: Reel "Bom dia, Jarvis" (`marketing/jarvis/reel/bom-dia-jarvis.mp4`), postado pelo Pedro no celular com música da biblioteca do Instagram (Sweet Child O' Mine) e rótulo de IA. Música de terceiros só pela biblioteca do app, nunca embutida no arquivo; Metricool não consegue pôr música (conta sem Página do Facebook).
 - Sex 27/11 10h: Reel "3 palavras".
 - Qua 02/12 10h: carrossel "Renovação automática".
 - Rascunho (não sai): anúncio com voz do Matheus "Comecei a construir uma coisa".
 
 ## Pendente
 - **Jarvis (resumo diário automático):** tarefa agendada que lê o Gmail conectado (cadastros do site, alertas do Supabase, avisos de conta, respostas do LinkedIn), o Metricool (posts de ontem, agenda de hoje) e o status do banco, e manda notificação no celular. Nunca envia e-mail (só rascunho), nunca publica, nunca apaga. Pendente do Pedro: horário (sugestão 8h) e apontar o Formspree para o mesmo e-mail que está conectado.
-- **Reel "Bom dia, Jarvis"** (referência no Drive, pasta `0 - Referências`, vídeo de 74 s enviado em 24/11): Pedro de lado/costas no escuro diz "Bom dia, Jarvis"; voz de IA (ElevenLabs, voz diferente do Matheus) lê o resumo REAL do dia; termina com "Me deixou falando sozinho de novo." Eu crio a tela HUD nas cores do Clausa para ele exibir no monitor, legenda palavra por palavra, "BOM DIA, JARVIS" fixo no topo. Pendente: Pedro topar gravar (ou falas só escritas) e gerar a voz.
+- **Jarvis automático:** existem DUAS tarefas diárias ("Jarvis — resumo do dia" 7h37 e "Jarvis: resumo diário do Clausa" 7h50), ambas sem os conectores Gmail/Metricool. Pendente: Pedro decidir qual manter e ligar os conectores pelo claude.ai.
+- Arquivo `Clausa — Meu dia (protótipo) - Claude.html` (página salva do claude.ai) está público no site; sugerido remover, aguardando o Pedro.
+- Tela do Jarvis: `marketing/jarvis/tela.html` (teclas: espaço começa, C continua, F tela cheia, H esconde relógio, D mostra o que o microfone ouviu). Lição: não processar demais a voz do Pedro; gravar no próprio ambiente.
 - Reel com foto/print do Claude trabalhando no LinkedIn: legenda sóbria nas cores do Clausa; Pedro vai mandar inspiração e a foto no Drive. Desfocar dados de terceiros.
 - Stories da semana (ideias: chamada para o post das 18h; enquete dos 5 avisos; "instale o app"; time-lapse). Figurinhas de link/enquete o Pedro adiciona à mão.
 - Time-lapse da gravação que o Pedro fez de si mesmo em 24/11 (ele vai mandar).
