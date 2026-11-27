@@ -29,6 +29,10 @@ Projeto do Pedro (GitHub `mholandap`, Instagram `@pedrom.holanda`). Clausa = app
 - Qua 02/12 10h: carrossel "Renovação automática".
 - Rascunho (não sai): anúncio com voz do Matheus "Comecei a construir uma coisa".
 
+## Escritórios (27/11)
+- Possível piloto num escritório de ~30 advogados (contato: advogada conhecida do Pedro, vai falar com a chefe). Proposta de 1 página: `marketing/proposta/proposta-clausa-escritorios.pdf` (piloto grátis de 30 dias; sem preço definido ainda). Demo: `exemplos/contrato-servicos-ti-ficticio.pdf` (16 cláusulas, 25 apontamentos).
+- App: **modo sigilo** (contrato não vai para a nuvem; botão na barra lateral e no menu ⋯) e leitura de contratos longos (todos os trechos, "Cláusula X · item Y"). Regras v10.
+
 ## Pendente
 - **Jarvis (resumo diário automático):** tarefa agendada que lê o Gmail conectado (cadastros do site, alertas do Supabase, avisos de conta, respostas do LinkedIn), o Metricool (posts de ontem, agenda de hoje) e o status do banco, e manda notificação no celular. Nunca envia e-mail (só rascunho), nunca publica, nunca apaga. Pendente do Pedro: horário (sugestão 8h) e apontar o Formspree para o mesmo e-mail que está conectado.
 - **Jarvis automático: PAUSADO em 26/11 a pedido do Pedro.** "Jarvis: resumo diário do Clausa" (7h50, `trig_01LZVjbPb3kPFKoJBSvNhK6W`) está desligado; o das 7h37 também. Religar só quando ele pedir (e aí adicionar Gmail e Metricool pelo claude.ai).
