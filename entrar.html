@@ -64,6 +64,8 @@ label{font-size:12.5px;font-weight:500;margin-bottom:3px;display:block}
 .done .ic{width:52px;height:52px;border-radius:50%;background:rgba(95,181,140,.15);border:1px solid rgba(95,181,140,.4);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--ok);font-size:26px}
 .done h2{font-size:21px;margin-bottom:8px}
 .done p{color:var(--gray);font-size:14px;margin:0 0 18px}
+.done .ic.aviso{background:rgba(255,138,51,.12);border-color:rgba(255,138,51,.4);color:#FF8A33}
+.done form{text-align:left;display:flex;flex-direction:column;gap:12px;margin:0 0 8px}
 .alink{display:inline-block;text-decoration:none;background:var(--orange-deep);color:#fff;border-radius:10px;padding:12px 20px;font:600 15px "Inter"}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -110,7 +112,7 @@ label{font-size:12.5px;font-weight:500;margin-bottom:3px;display:block}
 
   <p class="foot" id="foot"></p>
 
-  <div class="note">🔒 <b>Login real</b> — suas credenciais são verificadas com segurança pelo Supabase. A análise por IA é ligada na próxima etapa.</div>
+  <div class="note">🔒 Sua senha é verificada com segurança. A análise dos contratos é feita por regras, no seu próprio navegador.</div>
 </div>
 
 <script>
@@ -156,8 +158,8 @@ label{font-size:12.5px;font-weight:500;margin-bottom:3px;display:block}
       (mostrarApp?'<a class="alink" href="'+APP+'">Ir para o app →</a>':'')+'</div>';
   }
   function telaLogado(email){
-    byId("card").innerHTML='<div class="done"><div class="ic">✓</div><h2>Login funcionando! 🎉</h2>'+
-      '<p>Você está logado como <b style="color:var(--ink)">'+email+'</b>.</p>'+
+    byId("card").innerHTML='<div class="done"><div class="ic">✓</div><h2>Você já está conectado</h2>'+
+      '<p>Conta: <b style="color:var(--ink)">'+esc(email)+'</b>.</p>'+
       '<a class="alink" href="'+APP+'">Ir para o app →</a>'+
       '<div style="margin-top:14px"><button class="link" id="sair" type="button">Sair</button></div></div>';
     var s=byId("sair");if(s)s.onclick=function(){sb.auth.signOut().then(function(){location.reload()})};
@@ -172,7 +174,7 @@ label{font-size:12.5px;font-weight:500;margin-bottom:3px;display:block}
     info("err-in","Entrando…");
     sb.auth.signInWithPassword({email:e,password:p}).then(function(r){
       if(r.error){erro("err-in",traduz(r.error.message));return}
-      telaLogado(e);
+      location.href=APP;
     });
   };
 
@@ -186,12 +188,12 @@ label{font-size:12.5px;font-weight:500;margin-bottom:3px;display:block}
     if(!byId("ag").checked){erro("err-up","Marque o aceite dos termos para continuar.");return}
     if(!sb){semConfig("err-up");return}
     info("err-up","Criando sua conta…");
-    sb.auth.signUp({email:e,password:p,options:{data:{nome:nm}}}).then(function(r){
+    sb.auth.signUp({email:e,password:p,options:{data:{nome:nm},emailRedirectTo:new URL("entrar.html?confirmado=1",location.href).href}}).then(function(r){
       if(r.error){console.log("Supabase signup error:",r.error);erro("err-up",traduz(r.error.message));return}
       if(r.data && r.data.session){
         telaLogado(e);
       }else{
-        telaOk("Confirme seu e-mail","Enviamos um link de confirmação para "+e+". Abra o e-mail para ativar sua conta e depois é só entrar.",false);
+        telaOk("Falta só confirmar o seu e-mail","Enviamos um e-mail do Clausa para <b style=\"color:var(--ink)\">"+esc(e)+"</b>. Abra e toque em <b style=\"color:var(--ink)\">Confirmar meu e-mail</b>: você volta para cá já com a conta ativa.<br><br><span style=\"font-size:13px\">Não chegou em 2 minutos? Olhe a caixa de spam ou promoções.</span>",false);
       }
     });
   };
@@ -209,11 +211,44 @@ label{font-size:12.5px;font-weight:500;margin-bottom:3px;display:block}
     var e=byId("e1").value.trim();
     if(!okEmail(e)){info("err-in","Digite seu e-mail acima e clique de novo em “Esqueci minha senha”.");return}
     if(!sb){semConfig("err-in");return}
-    sb.auth.resetPasswordForEmail(e).then(function(){info("err-in","Enviamos um link de redefinição para o seu e-mail.")});
+    sb.auth.resetPasswordForEmail(e,{redirectTo:new URL("entrar.html?nova-senha=1",location.href).href}).then(function(r){
+      if(r&&r.error){erro("err-in",traduz(r.error.message));return}
+      info("err-in","Enviamos um e-mail do Clausa para "+e+" com o link para criar uma senha nova.")});
   };
 
-  // Se já estiver logado, mostra o estado logado (com botão Sair).
-  if(sb)sb.auth.getSession().then(function(r){if(r.data&&r.data.session)telaLogado(r.data.session.user.email)});
+  function esc(t){return String(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+  var Q=new URLSearchParams(location.search),H=new URLSearchParams((location.hash||"").replace(/^#/,""));
+  // link vencido ou já usado (o Supabase devolve o erro no endereço)
+  if(H.get("error")||Q.get("error")){
+    var cod=H.get("error_code")||Q.get("error_code")||"";
+    byId("card").innerHTML='<div class="done"><div class="ic aviso">!</div><h2>Esse link não vale mais</h2><p>'+(/expired/.test(cod)?"O link do e-mail venceu (ele vale por pouco tempo, por segurança).":"O link do e-mail já foi usado ou não é válido.")+' Peça um novo: entre com o seu e-mail e senha ou use “Esqueci minha senha”.</p><a class="alink" href="entrar.html">Voltar para o login</a></div>';
+    history.replaceState(null,"",location.pathname);return;
+  }
+  // criar senha nova (vindo do e-mail "Esqueci minha senha")
+  function telaNovaSenha(){
+    byId("card").innerHTML='<div class="done"><div class="ic aviso">🔑</div><h2>Crie uma senha nova</h2><p>Escolha uma senha com pelo menos 8 caracteres.</p>'+
+      '<form id="f-nova" novalidate><div><label for="n1">Senha nova</label><input class="inp" type="password" id="n1" autocomplete="new-password"></div>'+
+      '<div><label for="n2">Repita a senha</label><input class="inp" type="password" id="n2" autocomplete="new-password"></div><div class="err" id="err-nova"></div>'+
+      '<button class="btn" type="submit">Salvar senha nova</button></form></div>';
+    byId("f-nova").onsubmit=function(ev){ev.preventDefault();var a=byId("n1").value;
+      if(a.length<8){erro("err-nova","A senha deve ter ao menos 8 caracteres.");return}
+      if(a!==byId("n2").value){erro("err-nova","As senhas não coincidem.");return}
+      info("err-nova","Salvando…");
+      sb.auth.updateUser({password:a}).then(function(r){if(r.error){erro("err-nova",traduz(r.error.message));return}
+        telaOk("Senha nova salva","Pronto! A partir de agora, entre com a senha nova.",true)})};
+  }
+  if(sb){
+    var veioDoEmail=Q.get("confirmado")||Q.get("nova-senha");
+    if(veioDoEmail)history.replaceState(null,"",location.pathname);
+    sb.auth.getSession().then(function(r){var ses=r.data&&r.data.session;
+      if(Q.get("nova-senha")){if(ses)telaNovaSenha();else telaOk("Esse link não vale mais","Peça um novo em “Esqueci minha senha”.",false);return}
+      if(Q.get("confirmado")&&ses){
+        var nm=(ses.user.user_metadata&&ses.user.user_metadata.nome||"").split(" ")[0];
+        telaOk("E-mail confirmado"+(nm?", "+esc(nm):"")+"! 🎉","Sua conta do Clausa está ativa. Vamos para o app: cole ou carregue um contrato e veja os pontos de atenção.",true);
+        setTimeout(function(){location.href=APP},3500);return}
+      if(ses)telaLogado(ses.user.email);  // já estava logado: mostra o estado (com botão Sair)
+    });
+  }
 
   show(false);
 })();
