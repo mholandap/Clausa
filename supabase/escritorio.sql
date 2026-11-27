@@ -104,6 +104,9 @@ end $$;
 revoke all on function public.criar_escritorio(text) from public;
 revoke all on function public.entrar_escritorio(text) from public;
 revoke all on function public.novo_convite(uuid) from public;
+-- o Supabase dá acesso automático ao papel anon; tiramos (as funções já recusam quem não está logado)
+revoke execute on function public.criar_escritorio(text), public.entrar_escritorio(text), public.novo_convite(uuid),
+  public.meu_escritorio(), public.sou_admin(uuid) from anon;
 grant execute on function public.criar_escritorio(text), public.entrar_escritorio(text), public.novo_convite(uuid),
   public.meu_escritorio(), public.sou_admin(uuid) to authenticated;
 
