@@ -191,7 +191,10 @@ label{font-size:12.5px;font-weight:500;margin-bottom:3px;display:block}
     sb.auth.signUp({email:e,password:p,options:{data:{nome:nm},emailRedirectTo:new URL("entrar.html?confirmado=1",location.href).href}}).then(function(r){
       if(r.error){console.log("Supabase signup error:",r.error);erro("err-up",traduz(r.error.message));return}
       if(r.data && r.data.session){
-        telaLogado(e);
+        // sem confirmação de e-mail ligada: a conta já está ativa
+        var pn=nm.split(" ")[0];
+        telaOk("Conta criada"+(pn?", "+esc(pn):"")+"! 🎉","Abrindo o Clausa…",false);
+        setTimeout(function(){location.href=APP},1400);
       }else{
         telaOk("Falta só confirmar o seu e-mail","Enviamos um e-mail do Clausa para <b style=\"color:var(--ink)\">"+esc(e)+"</b>. Abra e toque em <b style=\"color:var(--ink)\">Confirmar meu e-mail</b>: você volta para cá já com a conta ativa.<br><br><span style=\"font-size:13px\">Não chegou em 2 minutos? Olhe a caixa de spam ou promoções.</span>",false);
       }

@@ -23,7 +23,7 @@ Aparece "Pronto: conta de equipe criada." Depois, no app: barra lateral → **Es
 - 🔧 Depois, o Claude passa os registros de DNS, configura o GitHub Pages com HTTPS e atualiza o Supabase e os links.
 
 ### 3. E-mails de cadastro e "esqueci a senha" (grátis) ⏳ depois do passo 2
-O envio padrão do Supabase grátis é limitado. Para o lançamento, use um serviço próprio:
+O envio padrão do Supabase **só entrega para a equipe do projeto** (2 por hora): clientes não recebem. Enquanto isso, "Confirm email" fica **desligado** (as pessoas entram direto) e o login com Google é o caminho recomendado. Os modelos de e-mail prontos estão em `supabase/emails/`. Para o lançamento, use um serviço próprio:
 - Crie uma conta grátis no **Resend** (resend.com) e adicione o domínio do passo 2.
 - 🔧 O Claude passa os registros de DNS. A chave do Resend vai **direto** no Supabase (Authentication → Emails → SMTP Settings), **nunca no chat**.
 - Enquanto isso, o login com Google continua funcionando normalmente.
