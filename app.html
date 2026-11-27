@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta name="clausa-versao" content="202611271330">
+<meta name="clausa-versao" content="202611271500">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Clausa — App</title>
@@ -834,13 +834,14 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       block+='</div>';
       rest+=block;
     });
-    rest+='<div class="reprow" style="margin-top:4px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" id="rep">Copiar relatório</button><button class="btn sm" id="dl">Baixar relatório (PDF)</button></div></div>';
+    rest+='<div class="reprow" style="margin-top:4px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" id="rep">Copiar relatório</button><button class="btn sm" id="dl">Baixar relatório (PDF)</button><button class="btn ghost sm" id="dlw">Baixar em Word</button></div></div>';
     ma.innerHTML=head+'<div class="mbody"><div class="mname">Clausa</div><p id="typ" style="margin:0 0 12px"></p>'+rest+'</div>';
     inner.appendChild(ma);
     $("[data-apr]",inner).forEach(function(b){b.onclick=function(){decide(found,+b.dataset.apr,"apr")}});
     $("[data-rej]",inner).forEach(function(b){b.onclick=function(){decide(found,+b.dataset.rej,"rej")}});
     byId("rep").onclick=function(){copyReport(c,found)};
     var dlb=byId("dl");if(dlb)dlb.onclick=function(){relatorioPdf(c,found)};
+    var dlw=byId("dlw");if(dlw)dlw.onclick=function(){relatorioWord(c,found,dlw)};
     updateApr(c,found);
     typeWords(byId("typ"),"Revisei o contrato e encontrei "+found.length+(found.length===1?" ponto":" pontos")+" para a sua atenção:",typeIt,function(){var r=byId("rest");if(r)r.classList.add("show");byId("scroll").scrollTop=byId("scroll").scrollHeight});
   }
@@ -933,6 +934,50 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     var fr=document.createElement("iframe");fr.style.cssText="position:fixed;right:0;bottom:0;width:0;height:0;border:0";document.body.appendChild(fr);
     fr.contentDocument.open();fr.contentDocument.write(html.replace("window.print()","window.print();setTimeout(function(){parent.document.body.removeChild(frameElement)},1000)"));fr.contentDocument.close();
   }
+  // ---------- Relatório em Word (.docx), montado aqui mesmo no navegador ----------
+  var JSZIP="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
+  function relatorioWord(c,found,botao){
+    var orig=botao&&botao.textContent;if(botao){botao.disabled=true;botao.textContent="Gerando…"}
+    var fim=function(){if(botao){botao.disabled=false;botao.textContent=orig}};
+    carregaScript(JSZIP).then(function(){
+      var X=function(t){return String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,"")};
+      var cores={alto:"D9483F",medio:"B7821A",ok:"3E9A6E"},rot={alto:"RISCO ALTO",medio:"ATENÇÃO",ok:"SEM ALERTA"};
+      var run=function(t,o){o=o||{};return '<w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>'+(o.b?'<w:b/>':'')+(o.i?'<w:i/>':'')+(o.cor?'<w:color w:val="'+o.cor+'"/>':'')+'<w:sz w:val="'+(o.tam||21)+'"/></w:rPr><w:t xml:space="preserve">'+X(t)+'</w:t></w:r>'};
+      var par=function(runs,o){o=o||{};return '<w:p><w:pPr>'+(o.borda?'<w:pBdr><w:left w:val="single" w:sz="18" w:space="8" w:color="'+o.borda+'"/></w:pBdr>':'')+(o.linha?'<w:pBdr><w:bottom w:val="single" w:sz="8" w:space="4" w:color="E2590B"/></w:pBdr>':'')+
+        '<w:spacing w:before="'+(o.antes||0)+'" w:after="'+(o.depois==null?100:o.depois)+'"/>'+(o.recuo?'<w:ind w:left="'+o.recuo+'"/>':'')+(o.quebra?'<w:pageBreakBefore/>':'')+'</w:pPr>'+(typeof runs==="string"?runs:runs.join(""))+'</w:p>'};
+      var cnt={alto:0,medio:0,ok:0},apr=0;found.forEach(function(f){cnt[f.sev]++;if(c.decisions[f.id]==="apr")apr++});
+      var corpo=[];
+      corpo.push(par([run("Clausa",{b:true,tam:32,cor:"E2590B"}),run("   Relatório de revisão",{tam:20,cor:"77777D"})],{linha:true,depois:200}));
+      corpo.push(par(run(c.title||"Contrato",{b:true,tam:32}),{depois:40}));
+      corpo.push(par(run("Gerado em "+new Date().toLocaleString("pt-BR")+" · "+found.length+" pontos para a sua atenção",{tam:18,cor:"77777D"}),{depois:200}));
+      corpo.push(par([run(cnt.alto+" risco alto",{b:true,cor:cores.alto}),run("   ·   "),run(cnt.medio+" atenção",{b:true,cor:cores.medio}),run("   ·   "),run(cnt.ok+" sem alerta",{b:true,cor:cores.ok}),run("   ·   "),run(apr+" aprovadas",{b:true})],{depois:300}));
+      found.forEach(function(f,i){
+        var d=c.decisions[f.id];
+        corpo.push(par([run(String(i+1).padStart(2,"0")+"  ",{b:true,cor:"E2590B"}),run(f.name,{b:true,tam:24}),run("   "+rot[f.sev],{b:true,tam:16,cor:cores[f.sev]})],{antes:240,depois:80}));
+        [{s:f.s,ref:f.ref}].concat(f.outros||[]).forEach(function(o){
+          if(o.ref)corpo.push(par(run(o.ref.toUpperCase(),{b:true,tam:15,cor:"E2590B"}),{depois:20,recuo:200}));
+          corpo.push(par(run("“"+o.s.trim()+"”",{i:true,cor:"3A3A40"}),{borda:cores[f.sev],recuo:200,depois:100}));
+        });
+        corpo.push(par([run("Por que importa: ",{b:true}),run(f.reason)],{depois:60}));
+        if(f.sugg)corpo.push(par([run((f.sev==="ok"?"Observação: ":"Sugestão: "),{b:true}),run(f.sugg)],{depois:60}));
+        if(f.sugg&&f.sev!=="ok")corpo.push(par(run(d==="apr"?"✓ Sugestão aprovada":d==="rej"?"✕ Sugestão rejeitada":"• Aguardando decisão",{b:true,tam:17,cor:d==="apr"?cores.ok:d==="rej"?cores.alto:"8A8A90"}),{depois:60}));
+      });
+      corpo.push(par(run("Anexo · texto do contrato",{b:true,tam:26}),{linha:true,quebra:true,depois:200}));
+      c.text.split(/\n/).forEach(function(l){corpo.push(par(run(l,{tam:20}),{depois:60}))});
+      corpo.push(par(run("A Clausa aponta pontos de atenção por regras de leitura; não é parecer jurídico. A decisão é sempre do advogado. · mholandap.github.io/Clausa",{tam:16,cor:"8A8A90"}),{antes:300}));
+      var doc='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+corpo.join("")+
+        '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>';
+      var z=new JSZip();
+      z.file("[Content_Types].xml",'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
+      z.file("_rels/.rels",'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
+      z.file("word/document.xml",doc);
+      return z.generateAsync({type:"blob",mimeType:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
+    }).then(function(blob){
+      var nm=(c.title||"revisao").replace(/[^\wÀ-ſ ·-]/g,"").replace(/·/g,"-").trim().slice(0,50)||"revisao";
+      var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Clausa - "+nm+".docx";
+      document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);fim();
+    }).catch(function(){fim();dialog({title:"Não consegui gerar o Word",text:"Confira sua conexão com a internet e tente de novo. O relatório em PDF continua disponível.",ok:"Entendi",noCancel:true})});
+  }
   function copyReport(c,found){
     var txt=buildReport(c,found);
     var falhou=function(){dialog({title:"Não deu pra copiar",text:"O navegador bloqueou a cópia automática. Use “Baixar relatório (PDF)” para guardar o relatório.",ok:"Entendi",noCancel:true})};
@@ -1023,6 +1068,26 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
         var pags=[];for(var i=1;i<=doc.numPages;i++)pags.push(doc.getPage(i).then(function(pg){return pg.getTextContent()}).then(function(tc){
           return tc.items.map(function(it){return it.str+(it.hasEOL?"\n":"")}).join("").replace(/[ \t]+/g," ")}));
         return Promise.all(pags).then(function(ts){return ts.join("\n\n")})})})}
+  // PDF escaneado (foto do papel): lê a imagem de cada página aqui mesmo no aparelho (Tesseract), sem enviar a lugar nenhum
+  var TESS="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js",MAX_OCR=40;
+  function lerPdfImagem(f,aviso){
+    var doc,n,pag=1;
+    return Promise.all([carregaScript(PDFJS+"pdf.min.js"),carregaScript(TESS)]).then(function(){
+      var lib=window.pdfjsLib;lib.GlobalWorkerOptions.workerSrc=PDFJS+"pdf.worker.min.js";
+      return f.arrayBuffer().then(function(buf){return lib.getDocument({data:buf}).promise});
+    }).then(function(d){doc=d;n=Math.min(doc.numPages,MAX_OCR);aviso(0,n,0);
+      return window.Tesseract.createWorker("por",1,{logger:function(m){if(m.status==="recognizing text")aviso(pag,n,m.progress||0)}});
+    }).then(function(w){
+      var textos=[];
+      function prox(){
+        if(pag>n)return w.terminate().then(function(){return textos.join("\n\n")});
+        return doc.getPage(pag).then(function(pg){var vp=pg.getViewport({scale:2});var cv=document.createElement("canvas");cv.width=vp.width;cv.height=vp.height;
+          return pg.render({canvasContext:cv.getContext("2d"),viewport:vp}).promise.then(function(){return w.recognize(cv)})})
+        .then(function(r){textos.push(r.data.text||"");pag++;return prox()});
+      }
+      return prox();
+    });
+  }
   function lerDocx(f){return carregaScript(MAMMOTH).then(function(){return f.arrayBuffer()}).then(function(buf){return window.mammoth.extractRawText({arrayBuffer:buf})}).then(function(r){return r.value})}
   function abrirArquivo(f){
     if(!f)return;var nome=(f.name||"").toLowerCase(),tipo;
@@ -1031,10 +1096,13 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     else if(/\.doc$/.test(nome)){dialog({title:"Formato antigo do Word",text:"Arquivos .doc (Word antigo) não abrem aqui. No Word, use “Salvar como” → .docx ou PDF e carregue de novo.",ok:"Entendi",noCancel:true});return}
     else tipo="txt";
     if(tipo!=="txt"){byId("input").value="";byId("input").placeholder=tipo==="pdf"?"Lendo o PDF…":"Lendo o documento do Word…"}
-    (tipo==="pdf"?lerPdf(f):tipo==="docx"?lerDocx(f):lerTexto(f)).then(function(txt){
+    (tipo==="pdf"?lerPdf(f):tipo==="docx"?lerDocx(f):lerTexto(f)).then(function(txt){usaTexto(txt,tipo,f)})
+    .catch(function(){byId("input").placeholder="Cole o contrato aqui…";dialog({title:"Não consegui abrir o arquivo",text:"Confira sua conexão com a internet e tente de novo. Se o problema continuar, copie o texto do contrato e cole na caixa.",ok:"Entendi",noCancel:true})});
+  }
+  function usaTexto(txt,tipo,f){
       txt=(txt||"").replace(/\r/g,"");
       // PDF quebra a linha no meio da frase: junta quando a linha seguinte continua a frase
-      if(tipo==="pdf"){
+      if(tipo==="pdf"||tipo==="ocr"){
         // junta as linhas quebradas pelo PDF, mas mantém separados os títulos ("CLÁUSULA OITAVA – DA ...") e o início de itens ("8.1. ")
         var out=[];txt.split("\n").forEach(function(l){var ant=out.length?out[out.length-1]:"";
           var lt=l.trim(),inicio=/^(\d+(\.\d+)*[.)]\s|cl[áa]usula\b|par[áa]grafo\b|§)/i.test(lt);
@@ -1045,10 +1113,20 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       }
       txt=txt.replace(/\n{3,}/g,"\n\n").trim();
       if(txt.replace(/\s/g,"").length<40){
-        dialog({title:"Não encontrei texto nesse arquivo",text:tipo==="pdf"?"Parece um PDF escaneado (uma foto do papel). Por enquanto a Clausa só lê PDFs com texto selecionável. Se tiver o arquivo original (Word ou PDF gerado pelo computador), carregue ele.":"O arquivo parece vazio. Confira e tente de novo.",ok:"Entendi",noCancel:true});return}
+        byId("input").placeholder="Cole o contrato aqui…";
+        if(tipo==="pdf"&&f){
+          dialog({title:"Parece um PDF escaneado",html:"É uma foto do papel, sem texto selecionável. A Clausa pode <b>ler a imagem</b> de cada página aqui mesmo, no seu aparelho (nada é enviado). Leva alguns segundos por página e pode trocar uma letra ou outra: confira os trechos.",ok:"Ler a imagem",cancel:"Agora não"})
+          .then(function(ok){if(!ok)return;
+            var inp=byId("input");inp.value="";
+            lerPdfImagem(f,function(p,n,pr){inp.placeholder=p?"Lendo a imagem: página "+p+" de "+n+" ("+Math.round(pr*100)+"%)…":"Preparando a leitura da imagem…"})
+            .then(function(t){usaTexto(t,"ocr",null)})
+            .catch(function(){inp.placeholder="Cole o contrato aqui…";dialog({title:"Não consegui ler a imagem",text:"Confira sua conexão com a internet (a primeira leitura baixa o leitor de imagens) e tente de novo.",ok:"Entendi",noCancel:true})});
+          });
+          return;
+        }
+        dialog({title:"Não encontrei texto nesse arquivo",text:tipo==="ocr"?"Não consegui reconhecer texto nas páginas. Se tiver o arquivo original (Word ou PDF gerado pelo computador), carregue ele.":"O arquivo parece vazio. Confira e tente de novo.",ok:"Entendi",noCancel:true});return}
       var atual=current?getConvo(current):null;if(atual&&atual.text){newConvo()}
       byId("input").value=txt;sizeInput();send();
-    }).catch(function(){dialog({title:"Não consegui abrir o arquivo",text:"Confira sua conexão com a internet e tente de novo. Se o problema continuar, copie o texto do contrato e cole na caixa.",ok:"Entendi",noCancel:true})});
   }
   document.addEventListener("change",function(e){
     if(!e.target||e.target.id!=="file")return;
