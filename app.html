@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta name="clausa-versao" content="202611271630">
+<meta name="clausa-versao" content="202611271800">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Clausa — App</title>
@@ -77,10 +77,21 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
 .cmenupop .lbl{font:600 10.5px "Inter";letter-spacing:.06em;text-transform:uppercase;color:var(--gray);padding:6px 10px 3px}
 .cmenupop .dot{width:9px;height:9px;border-radius:50%;flex:none}
 .cmenupop .del{color:var(--alto)}
-.side-foot{border-top:1px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:6px}
+.side-foot{border-top:1px solid var(--line);padding:10px 12px;display:flex;flex-direction:column;gap:6px;position:relative}
+.fmenu{position:absolute;left:10px;right:10px;bottom:calc(100% + 6px);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px;display:flex;flex-direction:column;gap:1px;z-index:30;box-shadow:0 -12px 40px rgba(0,0,0,.5);transform-origin:50% 100%;animation:fm-in .16s cubic-bezier(.2,.85,.25,1)}
+.fmenu[hidden]{display:none}
+@keyframes fm-in{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+.side-foot .fmbtn{padding:7px 8px;gap:10px;color:var(--ink)}
+.side-foot .fmbtn[aria-expanded="true"]{background:var(--card)}
+.fmav{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#FF8A33,#E2590B);color:#fff;font:700 13px "Inter"}
+.fmtx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.fmtx b{font:600 13px "Inter";overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fmtx small{font:400 11px "Inter";color:var(--gray);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fmch{flex:none;color:var(--gray);transition:transform .2s}.fmbtn[aria-expanded="true"] .fmch{transform:rotate(180deg)}
 .side-foot button,.side-foot a{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:0;color:var(--gray);font:500 13px "Inter";cursor:pointer;text-decoration:none;padding:8px 10px;border-radius:8px}
 .side-foot button:hover,.side-foot a:hover{background:var(--card);color:var(--ink)}
 .side-acct{display:flex;align-items:center;gap:8px;padding:6px 10px 10px;margin-bottom:4px;border-bottom:1px solid var(--line)}
+.side-acct:empty{display:none}
 .side-acct .acct-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
 .side-acct .acct-nm{font:600 13px "Inter";color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .side-acct .acct-em{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:400 11px "Inter";color:var(--gray)}
@@ -277,12 +288,15 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     </div>
     <div class="convos" id="convos"></div>
     <div class="side-foot">
+      <div class="fmenu" id="fmenu" role="menu" hidden>
       <div class="side-acct" id="account"></div>
       <button type="button" data-instalar hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Instalar app</button>
       <button type="button" class="sigilo" id="sigilo" hidden></button>
       <button type="button" id="openesc" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5M9 10h.01M15 10h.01"/></svg><span id="escrot">Escritório</span></button>
       <button id="openrules"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="12" r="2"/><circle cx="15" cy="18" r="2"/></svg>Regras e modelos</button>
       <a href="index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Voltar ao site</a>
+      </div>
+      <button type="button" class="fmbtn" id="fmbtn" aria-haspopup="menu" aria-expanded="false" title="Conta e configurações"><span class="fmav" id="fmav">C</span><span class="fmtx"><b id="fmnm">Menu</b><small id="fmsub"></small></span><svg class="fmch" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 15l5-5 5 5"/></svg></button>
     </div>
   </aside>
   <div class="navshade" id="navshade"></div>
@@ -514,8 +528,21 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       }
     });
   }
+  // ---------- Menu compacto do rodapé (conta, sigilo, escritório, regras…) ----------
+  function rotMenu(){
+    var nm=user?(NAME||(user.email||"").split("@")[0]):"Visitante";
+    byId("fmnm").textContent=nm;byId("fmav").textContent=(nm||"C").charAt(0).toUpperCase();
+    var sub=[];
+    if(typeof escAtual!=="undefined"&&escAtual)sub.push(escAtual.nome);else sub.push(user?user.email:"Entrar para salvar na nuvem");
+    if(sigiloPadrao)sub.unshift("🔒 Sigilo");
+    byId("fmsub").textContent=sub.join(" · ");
+  }
+  function abreMenu(abrir){var m=byId("fmenu"),b=byId("fmbtn");if(abrir===undefined)abrir=m.hidden;m.hidden=!abrir;b.setAttribute("aria-expanded",abrir?"true":"false")}
+  byId("fmbtn").onclick=function(e){e.stopPropagation();abreMenu()};
+  byId("fmenu").addEventListener("click",function(e){if(e.target.closest("button,a"))abreMenu(false)});
+  document.addEventListener("click",function(e){if(!byId("fmenu").hidden&&!e.target.closest("#fmenu,#fmbtn"))abreMenu(false)});
   function renderAccount(){
-    var a=byId("account");if(!a)return;
+    var a=byId("account");if(!a)return;setTimeout(rotMenu,0);
     if(user){
       var nm=firstName(user);
       a.innerHTML='<div class="acct-info">'+(nm?'<span class="acct-nm">'+esc(nm)+'</span>':'')+'<span class="acct-em" title="'+esc(user.email)+'">'+esc(user.email)+'</span></div><button class="acct-out" id="sair" type="button">Sair</button>';
@@ -720,6 +747,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     if(e.key!=="Escape")return;
     if(modalResolve){closeModal(null);return}
     if(document.querySelector(".cmenupop:not(.closing)")){closeMenu();return}
+    if(!byId("fmenu").hidden){abreMenu(false);return}
     if(byId("drawerEsc").classList.contains("open")){closeEsc();return}
     if(byId("drawer").classList.contains("open")){closeDrawer();return}
     closeNav();
@@ -745,6 +773,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     b.classList.toggle("on",sigiloPadrao);
     b.innerHTML='<span style="width:16px;height:16px;display:inline-flex">'+CADEADO+'</span>Modo sigilo<small>'+(sigiloPadrao?"LIGADO":"DESLIGADO")+'</small>';
     b.title=sigiloPadrao?"Novos contratos ficam só neste aparelho":"Novos contratos são salvos na sua conta";
+    rotMenu();
   }
   function alternaSigilo(c){
     c.sigilo=!c.sigilo;
@@ -1208,7 +1237,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       .then(function(rr){escAtual=rr[0].data||null;escRegras=rr[1].data||null;rotEsc();aplicaRegrasEsc(false)});
     });
   }
-  function rotEsc(){byId("escrot").textContent=escAtual?escAtual.nome:"Escritório"}
+  function rotEsc(){byId("escrot").textContent=escAtual?escAtual.nome:"Escritório";rotMenu()}
   // as regras do escritório substituem as locais quando o administrador publica uma versão nova
   function aplicaRegrasEsc(forcar){
     if(!escRegras||!Array.isArray(escRegras.regras)||!escRegras.regras.length)return false;
