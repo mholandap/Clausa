@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta name="clausa-versao" content="202611271200">
+<meta name="clausa-versao" content="202611271330">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Clausa — App</title>
@@ -144,6 +144,11 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
 .find .ft{font-weight:600}
 .find q{display:block;margin:9px 0;padding:8px 11px;border-left:2px solid var(--line);color:var(--gray);font-style:italic;font-size:13px}
 .find .why{font-size:13px;color:var(--gray)}
+.fref{display:inline-block;margin:9px 0 -3px;font:600 10.5px "JetBrains Mono",monospace;letter-spacing:.04em;color:var(--orange);opacity:.9}
+.find .fn{font:500 11px "Inter";color:var(--gray)}
+.outros{margin:-2px 0 10px}.outros summary{cursor:pointer;font:600 12px "Inter";color:var(--orange);list-style:none;padding:4px 0}
+.outros summary::-webkit-details-marker{display:none}.outros[open] summary{margin-bottom:2px}
+.outros .otr q{margin:6px 0}
 .sugg{margin-top:11px;background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:11px}
 .sugg .sl{font:600 11px "Inter";letter-spacing:.08em;text-transform:uppercase;color:var(--orange)}
 .sugg.note-ok .sl{color:var(--ok)}
@@ -169,6 +174,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
 .clock{flex:none;width:12px;height:12px;color:#FF8A33;margin-left:2px}
 .selo-sig{display:inline-flex;align-items:center;gap:5px;flex:none;font:600 11px "Inter";color:#FF8A33;border:1px solid rgba(255,138,51,.35);background:rgba(255,138,51,.08);border-radius:99px;padding:3px 9px;margin-left:8px;cursor:pointer}
 .selo-sig svg{width:11px;height:11px}
+.selo-sig[hidden],.side-foot .sigilo[hidden]{display:none}
 
 /* drawer regras */
 /* fundos escurecidos: aparecem e somem com fade (display:none não anima) */
@@ -338,17 +344,17 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     {id:"r27",on:true,sev:"medio",name:"Arbitragem",pat:"arbitragem|arbitral|c[âa]mara de (media|arbitr)",reason:"Disputas vão para um árbitro, fora do Judiciário; costuma ser mais rápido, mas pode custar caro.",sugg:"Avaliar se a arbitragem faz sentido para o valor do contrato e quem paga os custos do procedimento."},
     {id:"r28",on:true,sev:"medio",name:"Cessão do contrato",pat:"\\bceder\\b|\\bcess[ãa]o\\b|transferir[^.;]{0,30}(contrato|direitos|obriga)|subcontrat",reason:"Permite que uma parte passe o contrato ou as obrigações para terceiros.",sugg:"Exigir concordância prévia e por escrito para qualquer cessão ou subcontratação."},
     {id:"r22",on:true,sev:"medio",name:"Irrevogável e irretratável",pat:"irrevog|irretrat",reason:"Impede que as partes desistam ou voltem atrás por conta própria. O descumprimento ainda permite rescindir, mas a saída fica mais difícil.",sugg:"Avaliar se a irrevogabilidade é necessária para este negócio e prever hipóteses claras de saída."},
-    {id:"r5",on:true,sev:"medio",name:"Limitação de responsabilidade",pat:"limita[^.;]{0,50}responsab|responsab[^.;]{0,60}limitad|isen[çc][ãa]o de responsab",reason:"Define o teto de indenização; confira se é compatível com o risco.",sugg:"Rever o teto e excluir dolo, culpa grave e violação de sigilo do limite."},
+    {id:"r5",on:true,sev:"medio",name:"Limitação de responsabilidade",pat:"limita[^.;]{0,80}responsab|responsab[^.;]{0,120}limitad|isen[çc][ãa]o de responsab|lucros cessantes|danos indiretos|em nenhuma hip[óo]tese[^.;]{0,80}respon",reason:"Define o teto de indenização; confira se é compatível com o risco.",sugg:"Rever o teto e excluir dolo, culpa grave e violação de sigilo do limite."},
     {id:"r6",on:true,sev:"medio",name:"Reajuste de preço",pat:"reajust|corre[çc][ãa]o monet|[íi]ndice",reason:"Confirme o índice, a periodicidade e se há teto ou piso.",sugg:"Fixar índice claro (ex.: IPCA), periodicidade anual e, se possível, um teto."},
     {id:"r7",on:true,sev:"medio",name:"Aviso prévio",pat:"aviso pr[ée]vio|notifica[çc][ãa]o pr[ée]via",reason:"Prazo que deve ser controlado em calendário para não perder direitos.",sugg:"Registrar o prazo de aviso prévio no calendário de obrigações."},
     {id:"r8",on:true,sev:"medio",name:"Proteção de dados (LGPD)",pat:"lgpd|dados pessoais|prote[çc][ãa]o de dados|titular dos dados",reason:"O tratamento de dados pessoais exige base legal, finalidade e segurança definidas.",sugg:"Incluir cláusula de LGPD com base legal, finalidade, prazo de retenção e responsabilidades."},
     {id:"r9",on:true,sev:"medio",name:"Propriedade intelectual",pat:"propriedade intelectual|direitos autorais|titularidade|marca registrada|patente",reason:"Defina a quem pertencem os direitos sobre o que for criado ou utilizado.",sugg:"Deixar expressa a titularidade da propriedade intelectual e as licenças de uso."},
-    {id:"r10",on:true,sev:"ok",name:"Prazo e vigência",pat:"vig[êe]ncia|prazo determinad|prazo indeterminad|prazo de vig",reason:"Confira início, duração e se é por prazo determinado ou indeterminado.",sugg:"Confirmar a data de início e o prazo total da vigência."},
+    {id:"r10",on:true,sev:"ok",name:"Prazo e vigência",pat:"vig[êe]ncia|vigorar[áa]|prazo determinad|prazo indeterminad|prazo de vig",reason:"Confira início, duração e se é por prazo determinado ou indeterminado.",sugg:"Confirmar a data de início e o prazo total da vigência."},
     {id:"r11",on:true,sev:"ok",name:"Pagamento",pat:"pagamento|remunera[çc][ãa]o|valor mensal|fatura|boleto|vencimento",reason:"Verifique valores, datas de vencimento e forma de pagamento.",sugg:"Confirmar vencimentos, forma de pagamento e encargos por atraso."},
     {id:"r12",on:true,sev:"ok",name:"Confidencialidade",pat:"sigilo|confidencial|n[ãa]o divulga",reason:"Cláusula usual; confira prazo de duração e exceções.",sugg:"Confirmar o prazo de sigilo após o término e as exceções legais."},
     {id:"r13",on:true,sev:"ok",name:"Força maior / caso fortuito",pat:"for[çc]a maior|caso fortuito",reason:"Define o que ocorre em eventos imprevisíveis fora do controle das partes.",sugg:"Delimitar os eventos de força maior e seus efeitos sobre as obrigações."},
     {id:"r14",on:true,sev:"medio",name:"Foro de eleição",pat:"foro|comarca|jurisdi[çc][ãa]o",reason:"Define onde eventuais disputas serão resolvidas. Um foro em outra cidade encarece e dificulta a defesa.",sugg:"Verificar se o foro eleito é conveniente para o cliente."},
-    {id:"r15",on:true,sev:"ok",name:"Objeto do contrato",pat:"objeto do (contrato|presente)|objeto desta|tem por objeto|presente instrumento",reason:"Define o que está sendo contratado.",sugg:"Confirmar se o objeto está descrito de forma clara e completa."},
+    {id:"r15",on:true,sev:"ok",name:"Objeto do contrato",pat:"objeto do (contrato|presente)|objeto desta|tem por objeto",reason:"Define o que está sendo contratado.",sugg:"Confirmar se o objeto está descrito de forma clara e completa."},
     {id:"r16",on:true,sev:"ok",name:"Obrigações das partes",pat:"obriga[çc][õo]es|obriga-se|compromete-se|dever[áa]|incumb",reason:"Descreve os deveres de cada parte.",sugg:"Verificar se as obrigações estão equilibradas entre as partes."},
     {id:"r17",on:true,sev:"medio",name:"Garantia",pat:"garantia|garant[ie]",reason:"Verifique o prazo, a cobertura e as condições da garantia.",sugg:"Confirmar o prazo e o escopo da garantia oferecida."},
     {id:"r18",on:true,sev:"ok",name:"Identificação das partes",pat:"doravante|denominad[oa]s?|qualificad[oa]s?|neste ato representad|t[êe]m entre si",reason:"Confira a correta qualificação das partes (nome, CNPJ/CPF, endereço).",sugg:"Conferir a qualificação completa de cada parte no preâmbulo."},
@@ -363,7 +369,38 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
   function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
   function esc(s){return (s+"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
   // separa em frases sem cortar números como "R$ 12.500,00" (só corta em ponto/ponto e vírgula seguido de espaço)
-  function splitSents(t){return t.replace(/([.;])\s+/g,"$1\n").split(/\n+/)}
+  // ---------- Leitura do texto em frases (com cuidado com abreviações e numeração de itens) ----------
+  var PT="\u2024"; // ponto "protegido": não encerra frase
+  var ABREV=/\b(arts?|incs?|Sr|Sra|Srs|Sras|Dr|Dra|Drs|Dras|Av|Al|R|Rod|Ltda|LTDA|Cia|CIA|n|fls?|p|pp|p[áa]g|p[áa]gs|cf|Exmo|Exma|Ilmo|Ilma|tel|Ed|Qd|Bl|Cj|Apto|apto|Prof|Profa|Eng|Me|Ms|Min|Des)\.(?=\s)/g;
+  function splitSents(t){
+    var u=t.replace(/\bS\.\s?A\.(?=[\s,;])/g,"S"+PT+"A"+PT).replace(ABREV,function(m,a){return a+PT}).replace(new RegExp(PT+"\\s+","g"),PT+" ")
+      .replace(/(^|\n)([ \t]*\d+(?:\.\d+)*)\.(?=\s)/g,"$1$2"+PT)          // "11.2. " no começo da linha
+      .replace(/(\s)(\d+(?:\.\d+)+)\.(?=\s+[A-ZÀ-Ú])/g,"$1$2"+PT)          // "11.2. A CONTRATADA" no meio do texto (PDF)
+      .replace(/(^|\n)([ \t]*[IVXL]+)\.(?=\s)/g,"$1$2"+PT)                   // "IV. "
+      .replace(/(par[áa]grafo [úu]nico|§\s*\d+[ºo°]?)\.(?=\s)/gi,"$1"+PT);   // "Parágrafo único. "
+    return u.replace(/([.;])\s+/g,"$1\n").split(/\n+/).map(function(x){return x.split(PT).join(".")});
+  }
+  var ORD={primeira:1,segunda:2,"terceira":3,quarta:4,quinta:5,sexta:6,"s[ée]tima":7,oitava:8,nona:9,"d[ée]cima":10,"vig[ée]sima":20,"trig[ée]sima":30};
+  function titulo1(x){return x.toLowerCase().replace(/(^|\s)(\S)/g,function(m,a,b){return a+b.toUpperCase()}).replace(/\b(Da|De|Do|Das|Dos|E)\b/g,function(w){return w.toLowerCase()})}
+  function ehTitulo(x){
+    var t=x.trim();if(!t||t.length>140)return false;
+    if(/^(cl[áa]usula|cap[íi]tulo|se[çc][ãa]o|t[íi]tulo)\b/i.test(t)&&t.split(/\s+/).length<=14&&!/[.;:]\s+\S/.test(t))return true;
+    var letras=t.replace(/[^A-Za-zÀ-ÿ]/g,""),mai=t.replace(/[^A-ZÀ-Ý]/g,"");
+    return letras.length>=4&&t.length<100&&mai.length/letras.length>.85&&!/[;]$/.test(t);
+  }
+  // cada frase com a referência de onde está (Cláusula Décima · item 10.2)
+  function segmentos(text){
+    var cl="",it="";
+    return splitSents(text).map(function(x){
+      var t=x.trim(),m;
+      if((m=t.match(/^cl[áa]usula\s+(.+?)\s*(?:[–—:.-]|$)/i))){cl="Cláusula "+titulo1(m[1].split(/\s+/).slice(0,3).join(" "));it=""}
+      else if((m=t.match(/^(\d+)\s*[.)\-–]\s+(?:D[OAE]S?\s)?[A-ZÀ-Ú]{3}/))&&ehTitulo(t)){cl="Cláusula "+m[1];it=""}
+      if((m=t.match(/^(\d+(?:\.\d+)+)\.?(?=\s)/)))it="item "+m[1];
+      else if(/^par[áa]grafo [úu]nico/i.test(t))it="parágrafo único";
+      else if((m=t.match(/^(§\s*\d+[ºo°]?|par[áa]grafo\s+\S+)/i)))it=m[1].replace(/\s+/g," ");
+      return {s:x,ref:[cl,it].filter(Boolean).join(" · "),head:ehTitulo(t)};
+    });
+  }
   function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
 
   // nome automático: "Contrato de locação · 24/11" a partir do texto; senão, a 1ª linha limpa
@@ -378,7 +415,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     var first=(v.split("\n")[0]||"").replace(/^\s*cl[áa]usula\s+\S+\s*[.:–-]?\s*/i,"").trim();
     return first?(first.length>42?first.slice(0,42)+"…":first):("Contrato · "+dt);
   }
-  var RULES_VERSION=9;
+  var RULES_VERSION=10;
   var rules;
   var savedV=load("clausa-rules-v"), savedRules=load("clausa-rules");
   if(savedV===RULES_VERSION){rules=savedRules||clone(DEFAULTS)}
@@ -394,6 +431,9 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     // v9: corrige falsos positivos (exclusivamente, requer, multa por atraso) só em regras que a pessoa não editou
     var velhos={r3:"exclusiv",r21:"a[çc][ãa]o revisional|peti[çc][ãa]o inicial|requer|pedido de|tutela|liminar|danos morais|juros abusiv|revis[ãa]o (do|de)",r1:"multa|penalidade|cl[áa]usula penal"};
     rules.forEach(function(r){if(velhos[r.id]&&r.pat===velhos[r.id]){var d=DEFAULTS.filter(function(x){return x.id===r.id})[0];r.pat=d.pat;if(d.excl)r.excl=d.excl}});
+    // v10: contratos longos (limitação de responsabilidade mais ampla, vigência, objeto) — só em regras não editadas
+    var velhos10={r5:"limita[^.;]{0,50}responsab|responsab[^.;]{0,60}limitad|isen[çc][ãa]o de responsab",r10:"vig[êe]ncia|prazo determinad|prazo indeterminad|prazo de vig",r15:"objeto do (contrato|presente)|objeto desta|tem por objeto|presente instrumento"};
+    rules.forEach(function(r){if(velhos10[r.id]&&r.pat===velhos10[r.id])r.pat=DEFAULTS.filter(function(x){return x.id===r.id})[0].pat});
     DEFAULTS.forEach(function(d){if(!rules.some(function(r){return r.id===d.id}))rules.push(clone(d))});
     save("clausa-rules",rules);save("clausa-rules-v",RULES_VERSION)}
   else{rules=clone(DEFAULTS);save("clausa-rules",rules);save("clausa-rules-v",RULES_VERSION)}
@@ -484,21 +524,33 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
 
   // ---------- Análise ----------
   function computeFindings(text){
-    var sents=splitSents(text),found=[];
+    var seg=segmentos(text),found=[];
     rules.forEach(function(r){
       if(!r.on||!r.pat)return;
       var re;try{re=new RegExp(r.pat,"i")}catch(e){return}
       if(!re.test(text))return;
       var ex=null;if(r.excl){try{ex=new RegExp(r.excl,"i")}catch(e){}}
-      var hit="",excluidas=0;
-      for(var i=0;i<sents.length;i++){var s=sents[i].trim();if(s.length>=8&&re.test(s)){if(ex&&ex.test(s)){excluidas++;continue}hit=s;
-        // achou só o título da cláusula ("Cláusula 5ª – Da exclusividade."): mostra também a frase seguinte, que é o conteúdo
-        if(/^cl[áa]usula\b/i.test(s)&&s.split(/\s+/).length<=7&&sents[i+1]&&sents[i+1].trim())hit=s+" "+sents[i+1].trim();
-        break}}
-      if(!hit&&excluidas)return;   // só aparece em frases já cobertas por outra regra
-      if(!hit){var idx=text.search(re);hit=text.slice(Math.max(0,idx-30),idx+140).replace(/\s+/g," ").trim()}
+      var bate=function(x){return x.length>=8&&re.test(x)&&!(ex&&ex.test(x))};
+      var hits=[],vistos={},excluidas=0;
+      var poe=function(h){var k=h.s.trim();if(vistos[k])return;vistos[k]=1;hits.push(h)};
+      for(var i=0;i<seg.length;i++){
+        var g=seg[i],t=g.s.trim();if(t.length<8||!re.test(t))continue;
+        if(ex&&ex.test(t)){excluidas++;continue}
+        if(g.head){
+          // achou o título da cláusula ("CLÁUSULA SEXTA – DA EXCLUSIVIDADE"): mostra o título junto com o texto que vem logo depois
+          var nx=seg[i+1],nt=nx&&nx.s.trim();
+          if(nt&&!nx.head){if(bate(nt))continue;poe({s:t+" "+nt,ref:nx.ref||g.ref,partes:[t,nt],titulo:true})}
+          else poe({s:t,ref:g.ref,partes:[t],titulo:true});
+        }else poe({s:t,ref:g.ref,partes:[t]});
+      }
+      if(!hits.length&&excluidas)return;   // só aparece em frases já cobertas por outra regra
+      if(!hits.length){var idx=text.search(re);var tr=text.slice(Math.max(0,idx-30),idx+140).replace(/\s+/g," ").trim();hits.push({s:tr,ref:"",partes:[]})}
+      // o primeiro mostrado é um trecho com conteúdo (não só um título)
+      var k=0;for(var j=0;j<hits.length;j++)if(!hits[j].titulo){k=j;break}
+      var prim=hits.splice(k,1)[0];
+      var marcar=[];[prim].concat(hits).forEach(function(h){marcar=marcar.concat(h.partes)});
       // id da regra identifica o apontamento: aprovações não "pulam" de cláusula quando a lista de regras muda
-      found.push({id:r.id||r.name,sev:r.sev,name:r.name,reason:r.reason,sugg:r.sugg,s:hit});
+      found.push({id:r.id||r.name,sev:r.sev,name:r.name,reason:r.reason,sugg:r.sugg,s:prim.s,ref:prim.ref,outros:hits.slice(0,40),marcar:marcar});
     });
     found.sort(function(a,b){var o={alto:0,medio:1,ok:2};return o[a.sev]-o[b.sev]});
     return found;
@@ -767,8 +819,11 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     var rest='<div class="aireveal" id="rest"><div class="sumbar"><div class="stat alto"><b>'+cnt.alto+'</b><span>Risco alto</span></div><div class="stat medio"><b>'+cnt.medio+'</b><span>Atenção</span></div><div class="stat ok"><b>'+cnt.ok+'</b><span>Sem alerta</span></div><div class="stat apr"><b id="aprn">0</b><span>Aprovadas</span></div></div>';
     found.forEach(function(f,i){
       var dec=c.decisions[f.id];
-      var block='<div class="find '+f.sev+(dec==="rej"?" rej":"")+'" id="find'+i+'"><div class="fh"><span class="sev '+f.sev+'">'+LB[f.sev]+'</span><span class="ft">'+esc(f.name)+'</span></div>'+
-        '<q>'+esc(f.s.length>260?f.s.slice(0,260)+"…":f.s)+'</q><div class="why">'+esc(f.reason)+'</div>';
+      var block='<div class="find '+f.sev+(dec==="rej"?" rej":"")+'" id="find'+i+'"><div class="fh"><span class="sev '+f.sev+'">'+LB[f.sev]+'</span><span class="ft">'+esc(f.name)+'</span>'+(f.outros&&f.outros.length?'<span class="fn">'+(f.outros.length+1)+' trechos</span>':'')+'</div>'+
+        (f.ref?'<span class="fref">'+esc(f.ref)+'</span>':'')+'<q>'+esc(f.s.length>260?f.s.slice(0,260)+"…":f.s)+'</q>'+
+        (f.outros&&f.outros.length?'<details class="outros"><summary>+ '+pl(f.outros.length,"outro trecho","outros trechos")+' no contrato</summary>'+
+          f.outros.map(function(o){return '<div class="otr">'+(o.ref?'<span class="fref">'+esc(o.ref)+'</span>':'')+'<q>'+esc(o.s.length>260?o.s.slice(0,260)+"…":o.s)+'</q></div>'}).join("")+'</details>':'')+
+        '<div class="why">'+esc(f.reason)+'</div>';
       if(f.sugg){
         if(f.sev==="ok"){
           block+='<div class="sugg note-ok"><span class="sl">Observação</span><p>'+esc(f.sugg)+'</p></div>';
@@ -817,7 +872,9 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       "----------------------------------------",""];
     found.forEach(function(f){var d=c.decisions[f.id];
       lines.push("["+LB[f.sev].toUpperCase()+"] "+f.name);
-      lines.push("Trecho: "+f.s.trim());lines.push("Motivo: "+f.reason);
+      lines.push("Trecho"+(f.ref?" ("+f.ref+")":"")+": "+f.s.trim());
+      (f.outros||[]).forEach(function(o){lines.push("Outro trecho"+(o.ref?" ("+o.ref+")":"")+": "+o.s.trim())});
+      lines.push("Motivo: "+f.reason);
       if(f.sugg)lines.push("Sugestão: "+f.sugg+"  ->  "+(d==="apr"?"APROVADA":d==="rej"?"REJEITADA":"pendente"));
       lines.push("");
     });
@@ -833,11 +890,11 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     var itens=found.map(function(f,i){var d=c.decisions[f.id],st=d==="apr"?"Sugestão aprovada":d==="rej"?"Sugestão rejeitada":"Aguardando sua decisão";
       return '<section class="item"><i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i>'+
         '<div class="topo"><span class="n">'+String(i+1).padStart(2,"0")+' //</span><h3>'+esc(f.name)+'</h3><span class="sev" style="color:'+cores[f.sev]+';border-color:'+cores[f.sev]+'">'+rot[f.sev]+'</span></div>'+
-        '<blockquote style="border-left-color:'+cores[f.sev]+'">'+esc(f.s.trim())+'</blockquote>'+
+        [{s:f.s,ref:f.ref}].concat(f.outros||[]).map(function(o){return (o.ref?'<div class="ref">'+esc(o.ref)+'</div>':'')+'<blockquote style="border-left-color:'+cores[f.sev]+'">'+esc(o.s.trim())+'</blockquote>'}).join("")+
         '<div class="lin"><span class="k">Por que importa</span><span>'+esc(f.reason)+'</span></div>'+
         (f.sugg?'<div class="lin"><span class="k">Sugestão</span><span>'+esc(f.sugg)+'</span></div><div class="st"><span style="background:'+(d==="apr"?cores.ok:d==="rej"?cores.alto:"#B8B8BC")+'"></span>'+st+'</div>':'')+'</section>'});
     // anexo: o contrato com os trechos marcados (cada trecho só uma vez, pela cor mais grave)
-    var corpo=esc(c.text),marcados={};found.forEach(function(f){var t=esc(f.s.trim());if(marcados[t])return;marcados[t]=1;if(t.length>8&&corpo.indexOf(t)>=0)corpo=corpo.split(t).join('<mark style="background:'+cores[f.sev]+'1A;border-bottom:1.2pt solid '+cores[f.sev]+'">'+t+'</mark>')});
+    var corpo=esc(c.text),marcados={};found.forEach(function(f){(f.marcar&&f.marcar.length?f.marcar:[f.s]).forEach(function(pt){var t=esc(pt.trim());if(marcados[t])return;marcados[t]=1;if(t.length>8&&corpo.indexOf(t)>=0)corpo=corpo.split(t).join('<mark style="background:'+cores[f.sev]+'1A;border-bottom:1.2pt solid '+cores[f.sev]+'">'+t+'</mark>')})});
     var html='<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Clausa - '+esc(c.title||"Relatório")+'</title>'+
       '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">'+
       '<style>@page{size:A4;margin:14mm 14mm 16mm}*{box-sizing:border-box}html,body{margin:0;background:#fff}'+
@@ -855,7 +912,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       '.c4{bottom:-.6pt;right:-.6pt;border-bottom-width:1.6pt!important;border-right-width:1.6pt!important;border-bottom-right-radius:6pt}'+
       '.topo{display:flex;align-items:baseline;gap:7pt;margin-bottom:5pt}.n{font:700 8pt "JetBrains Mono";color:#E2590B}h3{margin:0;font:700 11pt/1.25 Inter;flex:1}'+
       '.sev{font:700 7pt "JetBrains Mono";letter-spacing:.12em;text-transform:uppercase;border:.8pt solid;border-radius:4pt;padding:1.5pt 6pt;white-space:nowrap}'+
-      'blockquote{margin:0 0 5pt;padding:3pt 0 3pt 8pt;border-left:1.6pt solid;font-style:italic;color:#3A3A40}'+
+      '.ref{font:600 7pt "JetBrains Mono";letter-spacing:.08em;text-transform:uppercase;color:#E2590B;margin:4pt 0 2pt}blockquote{margin:0 0 5pt;padding:3pt 0 3pt 8pt;border-left:1.6pt solid;font-style:italic;color:#3A3A40}'+
       '.lin{display:grid;grid-template-columns:27mm 1fr;gap:6pt;margin:2pt 0}.k{font:700 7pt/1.9 "JetBrains Mono";letter-spacing:.12em;text-transform:uppercase;color:#E2590B}'+
       '.st{display:flex;align-items:center;gap:5pt;margin-top:4pt;font:500 7.5pt "JetBrains Mono";letter-spacing:.08em;text-transform:uppercase;color:#77777D}.st span{width:5pt;height:5pt;border-radius:50%}'+
       'h2{font:800 12.5pt "Inter Tight";margin:0 0 6pt;padding-bottom:5pt;border-bottom:.8pt solid #E2590B;break-before:page}'+
@@ -977,7 +1034,15 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     (tipo==="pdf"?lerPdf(f):tipo==="docx"?lerDocx(f):lerTexto(f)).then(function(txt){
       txt=(txt||"").replace(/\r/g,"");
       // PDF quebra a linha no meio da frase: junta quando a linha seguinte continua a frase
-      if(tipo==="pdf")txt=txt.replace(/([^\n.;:!?])[ \t]*\n(?=[ \t]*[a-zà-ÿ0-9(,])/g,"$1 ");
+      if(tipo==="pdf"){
+        // junta as linhas quebradas pelo PDF, mas mantém separados os títulos ("CLÁUSULA OITAVA – DA ...") e o início de itens ("8.1. ")
+        var out=[];txt.split("\n").forEach(function(l){var ant=out.length?out[out.length-1]:"";
+          var lt=l.trim(),inicio=/^(\d+(\.\d+)*[.)]\s|cl[áa]usula\b|par[áa]grafo\b|§)/i.test(lt);
+          var junta=ant.trim()&&lt&&!/[.;:!?]\s*$/.test(ant)&&!ehTitulo(ant)&&!inicio&&
+            (/^[a-zà-ÿ0-9(,]/.test(lt)||(/[a-zà-ÿ,]\s*$/.test(ant)&&!ehTitulo(lt)));   // "...dos clientes da / CONTRATANTE para..." também é a mesma frase
+          if(junta)out[out.length-1]=ant.replace(/[ \t]+$/,"")+" "+l.replace(/^[ \t]+/,"");else out.push(l)});
+        txt=out.join("\n");
+      }
       txt=txt.replace(/\n{3,}/g,"\n\n").trim();
       if(txt.replace(/\s/g,"").length<40){
         dialog({title:"Não encontrei texto nesse arquivo",text:tipo==="pdf"?"Parece um PDF escaneado (uma foto do papel). Por enquanto a Clausa só lê PDFs com texto selecionável. Se tiver o arquivo original (Word ou PDF gerado pelo computador), carregue ele.":"O arquivo parece vazio. Confira e tente de novo.",ok:"Entendi",noCancel:true});return}
