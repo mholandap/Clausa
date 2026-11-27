@@ -21,11 +21,12 @@ Projeto do Pedro (GitHub `mholandap`, Instagram `@pedrom.holanda`). Clausa = app
 - Banco: tarefa `.github/workflows/manter-banco-ativo.yml` evita a pausa do Supabase grátis.
 - App instalável (PWA): `manifest.webmanifest`, `sw.js`, `js/instalar.js`. **Ao mudar `app.html`, atualize `<meta name="clausa-versao">` (AAAAMMDDhhmm):** é ela que faz o app avisar "Tem uma versão nova" no celular.
 
-## Agenda do Instagram (atualizado em 26/11/2026)
+## Agenda do Instagram (atualizado em 27/11/2026)
 - Ter 24/11 18h: anúncio vertical "Dia 2 construindo o Clausa" (`marketing/anuncio-tela/anuncio-vertical.mp4`).
 - Qua 25/11 10h05: Reel "5 avisos que não valem nada", narrado (`marketing/avisos/avisos-narrado.mp4`). Publicado.
 - Qui 26/11 ~10h30: Reel "Bom dia, Jarvis" (`marketing/jarvis/reel/bom-dia-jarvis.mp4`), postado pelo Pedro no celular com música da biblioteca do Instagram (Sweet Child O' Mine) e rótulo de IA. Música de terceiros só pela biblioteca do app, nunca embutida no arquivo; Metricool não consegue pôr música (conta sem Página do Facebook).
 - Sex 27/11 10h: Reel "3 palavras".
+- Sáb 28/11 10h: vídeo de demonstração do app (`marketing/demo-app/demo-clausa.mp4`, sem música), postado pelo Pedro. Legenda sugerida na conversa de 27/11 (avisa que o contrato é fictício).
 - Qua 02/12 10h: carrossel "Renovação automática".
 - Rascunho (não sai): anúncio com voz do Matheus "Comecei a construir uma coisa".
 
