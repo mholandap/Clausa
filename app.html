@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta name="clausa-versao" content="202611271500">
+<meta name="clausa-versao" content="202611271630">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Clausa — App</title>
@@ -225,6 +225,13 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
 .field textarea{min-height:50px;resize:vertical}
 .tpl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:9px}
 .tpl select,.tpl input{flex:1 1 130px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font:400 13px "Inter"}
+.escnome{font:800 22px/1.15 "Inter Tight","Inter";letter-spacing:-.02em;margin:2px 0 4px}
+.escmem{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+.escmem .em{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.escmem .pp{font:600 10px "JetBrains Mono",monospace;letter-spacing:.08em;color:var(--orange)}
+.esclink{display:flex;gap:8px;align-items:center}.esclink input{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 10px;font:500 12px "JetBrains Mono",monospace}
+.escnota{font-size:12.5px;color:var(--gray);margin:6px 0 0}
+.escaviso{border:1px solid rgba(255,138,51,.35);background:rgba(255,138,51,.08);border-radius:10px;padding:10px 12px;font-size:13px;margin:0 0 12px}
 .sec-ttl{font:600 12px "Inter";letter-spacing:.06em;text-transform:uppercase;color:var(--gray);margin:18px 0 8px}
 
 .navshade{display:none}
@@ -273,6 +280,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       <div class="side-acct" id="account"></div>
       <button type="button" data-instalar hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Instalar app</button>
       <button type="button" class="sigilo" id="sigilo" hidden></button>
+      <button type="button" id="openesc" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5M9 10h.01M15 10h.01"/></svg><span id="escrot">Escritório</span></button>
       <button id="openrules"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="12" r="2"/><circle cx="15" cy="18" r="2"/></svg>Regras e modelos</button>
       <a href="index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Voltar ao site</a>
     </div>
@@ -308,6 +316,11 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     <div class="tpl"><input id="tplname" placeholder="Nome do novo modelo"><button class="btn sm" id="savetpl">Salvar</button></div>
     <button class="btn ghost tiny" id="resetrules" style="margin-top:12px">Restaurar regras padrão</button>
   </div>
+</aside>
+
+<aside class="drawer" id="drawerEsc">
+  <div class="dh"><h2>Escritório</h2><button class="btn ghost sm" id="closeesc">Fechar</button></div>
+  <div class="db" id="escbox"></div>
 </aside>
 
 <div class="modal" id="modal" aria-hidden="true">
@@ -707,6 +720,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     if(e.key!=="Escape")return;
     if(modalResolve){closeModal(null);return}
     if(document.querySelector(".cmenupop:not(.closing)")){closeMenu();return}
+    if(byId("drawerEsc").classList.contains("open")){closeEsc();return}
     if(byId("drawer").classList.contains("open")){closeDrawer();return}
     closeNav();
   });
@@ -1008,6 +1022,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
   // ---------- Regras (drawer) ----------
   function renderRules(){
     var box=byId("rules");box.innerHTML="";
+    if(escAtual&&escRegras){var nt=el("div","escaviso");nt.innerHTML="Você está usando as regras do escritório <b>"+esc_html(escAtual.nome)+"</b>."+(souAdmin?" Depois de ajustar, envie para a equipe em “Escritório”.":" Mudanças aqui valem só para você.");box.appendChild(nt)}
     rules.forEach(function(r,i){
       var d=el("div","rule"+(r.on?"":" off"));
       d.innerHTML='<div class="rh"><label class="sw"><input type="checkbox" '+(r.on?"checked":"")+' data-t="'+i+'"><i></i></label><span class="nm">'+esc(r.name)+'</span><span class="sev '+r.sev+'">'+LB[r.sev]+'</span></div>'+
@@ -1171,10 +1186,95 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       renderAccount();
       renderMain();
       if(user)loadCloud();
+      byId("openesc").hidden=!user;
+      carregaEscritorio().then(processaConvite);
     });
   }else{
     renderAccount();
   }
+
+  // ---------- Conta de equipe (escritório): equipe, convite e regras compartilhadas. Contratos continuam individuais. ----------
+  var escAtual=null,escMembros=[],escRegras=null,souAdmin=false,escStatus="";
+  (function(){var m=location.search.match(/[?&]convite=([a-f0-9]{16,64})/i);if(m){save("clausa-convite",m[1]);history.replaceState(null,"",location.pathname)}})();
+  function carregaEscritorio(){
+    if(!user||!sb){escStatus=sb?"sem-login":"sem-banco";return Promise.resolve()}
+    return sb.from("membros").select("escritorio_id,user_id,email,papel,entrou_em").then(function(r){
+      if(r.error){escStatus="sem-tabela";escAtual=null;return}
+      escStatus="ok";
+      var eu=(r.data||[]).filter(function(m){return m.user_id===user.id})[0];
+      if(!eu){escAtual=null;escMembros=[];escRegras=null;souAdmin=false;rotEsc();return}
+      escMembros=r.data;souAdmin=eu.papel==="admin";
+      return Promise.all([sb.from("escritorios").select("*").eq("id",eu.escritorio_id).maybeSingle(),sb.from("escritorio_regras").select("*").eq("escritorio_id",eu.escritorio_id).maybeSingle()])
+      .then(function(rr){escAtual=rr[0].data||null;escRegras=rr[1].data||null;rotEsc();aplicaRegrasEsc(false)});
+    });
+  }
+  function rotEsc(){byId("escrot").textContent=escAtual?escAtual.nome:"Escritório"}
+  // as regras do escritório substituem as locais quando o administrador publica uma versão nova
+  function aplicaRegrasEsc(forcar){
+    if(!escRegras||!Array.isArray(escRegras.regras)||!escRegras.regras.length)return false;
+    if(!forcar&&load("clausa-regras-escAtual-em")===escRegras.atualizado_em)return false;
+    rules=clone(escRegras.regras);persistRules();save("clausa-regras-escAtual-em",escRegras.atualizado_em);
+    if(current)renderMain();return true;
+  }
+  function processaConvite(){
+    var cod=load("clausa-convite");if(!cod)return;
+    if(!user){dialog({title:"Convite para um escritório",html:"Você recebeu um convite para entrar na equipe de um escritório no Clausa. <b>Entre na sua conta</b> (ou crie uma) e o convite será aceito em seguida.",ok:"Entrar",cancel:"Agora não"}).then(function(ok){if(ok)location.href="entrar.html"});return}
+    if(escStatus!=="ok")return;
+    if(escAtual){save("clausa-convite",null);return}
+    dialog({title:"Entrar no escritório?",html:"Você recebeu um convite para a equipe de um escritório no Clausa. Ao entrar, você passa a usar as <b>regras do escritório</b>. Seus contratos continuam <b>só seus</b>: ninguém da equipe vê.",ok:"Entrar na equipe",cancel:"Recusar"})
+    .then(function(ok){save("clausa-convite",null);if(!ok)return;
+      sb.rpc("entrar_escritorio",{p_convite:cod}).then(function(r){
+        if(r.error){dialog({title:"Não deu certo",text:/invalido/.test(r.error.message)?"Esse convite não vale mais. Peça um link novo ao administrador do escritório.":/outro/.test(r.error.message)?"Você já faz parte de outro escritório. Saia dele antes de aceitar este convite.":"Tente de novo em instantes.",ok:"Entendi",noCancel:true});return}
+        carregaEscritorio().then(function(){aplicaRegrasEsc(true);dialog({title:"Bem-vindo à equipe!",html:"Agora você faz parte de <b>"+esc_(escAtual&&escAtual.nome)+"</b>"+(escRegras?" e já está usando as regras do escritório.":"."),ok:"Ótimo",noCancel:true})});
+      });
+    });
+  }
+  function esc_(t){return esc_html(t||"")}
+  function esc_html(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+  function linkConvite(){return new URL("app.html?convite="+escAtual.convite,location.href).href}
+  function erroEsc(r){if(r&&r.error){dialog({title:"Não deu certo",text:"Tente de novo em instantes. ("+(r.error.message||"erro")+")",ok:"Entendi",noCancel:true});return true}return false}
+  function renderEsc(){
+    var b=byId("escbox"),h="";
+    if(escStatus==="sem-login"){b.innerHTML='<p class="mut">Entre na sua conta para criar ou entrar num escritório.</p><a class="btn sm" href="entrar.html">Entrar</a>';return}
+    if(escStatus==="sem-tabela"){b.innerHTML='<div class="escaviso">A conta de equipe ainda não foi ativada no banco de dados do Clausa.</div>';return}
+    if(!escAtual){
+      b.innerHTML='<p class="mut small" style="margin:0 0 14px">Com a conta de equipe, todos os advogados do escritório usam as <b>mesmas regras</b> de revisão. Os contratos continuam <b>individuais</b>: ninguém vê o contrato do colega.</p>'+
+        '<div style="display:flex;flex-direction:column;gap:8px"><button class="btn sm" id="esccriar">Criar escritório</button><button class="btn ghost sm" id="escentrar">Tenho um convite</button></div>';
+      byId("esccriar").onclick=function(){dialog({title:"Nome do escritório",input:"",ok:"Criar"}).then(function(nm){nm=(nm||"").trim();if(nm.length<2)return;
+        sb.rpc("criar_escritorio",{p_nome:nm}).then(function(r){if(erroEsc(r))return;carregaEscritorio().then(function(){renderEsc();renderSidebar()})})})};
+      byId("escentrar").onclick=function(){dialog({title:"Cole o link ou o código do convite",input:"",ok:"Continuar"}).then(function(v){var m=(v||"").match(/([a-f0-9]{16,64})\s*$/i);if(!m)return;save("clausa-convite",m[1]);closeEsc();processaConvite()})};
+      return;
+    }
+    h+='<div class="rot" style="font:700 11px JetBrains Mono,monospace;letter-spacing:.14em;color:var(--orange)">'+(souAdmin?"VOCÊ É O ADMINISTRADOR":"VOCÊ FAZ PARTE DA EQUIPE")+'</div><div class="escnome">'+esc_(escAtual.nome)+'</div>';
+    h+='<p class="escnota">Os contratos de cada advogado continuam individuais. O que a equipe compartilha são as regras de revisão.</p>';
+    h+='<div class="sec-ttl">Regras do escritório</div>';
+    h+='<p class="escnota" style="margin:0 0 8px">'+(escRegras?"Atualizadas em "+new Date(escRegras.atualizado_em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})+(escRegras.atualizado_por?" por "+esc_(escRegras.atualizado_por):"")+".":"Ainda não foram enviadas regras para a equipe.")+'</p>';
+    if(souAdmin)h+='<button class="btn sm" id="escpub" style="width:100%">Enviar minhas regras para a equipe</button><p class="escnota">Ajuste as regras em “Regras e modelos” e envie: todos passam a usar a mesma versão.</p>';
+    else if(escRegras)h+='<button class="btn ghost sm" id="escusar" style="width:100%">Voltar para as regras do escritório</button><p class="escnota">Se você mudar alguma regra, ela vale só para você até o administrador enviar uma versão nova.</p>';
+    if(souAdmin)h+='<div class="sec-ttl">Convidar advogados</div><div class="esclink"><input id="esclk" readonly value="'+esc_(linkConvite())+'"><button class="btn sm" id="esccop">Copiar</button></div><p class="escnota">Mande este link para a equipe. Cada pessoa entra com a própria conta. <a href="#" id="escnovo" style="color:var(--orange)">Gerar um link novo</a> (o antigo deixa de valer).</p>';
+    h+='<div class="sec-ttl">Equipe ('+escMembros.length+')</div>';
+    escMembros.slice().sort(function(a,b){return (a.papel==="admin"?0:1)-(b.papel==="admin"?0:1)}).forEach(function(m){
+      h+='<div class="escmem"><span class="em">'+esc_(m.email||"(sem e-mail)")+(m.user_id===user.id?" (você)":"")+'</span><span class="pp">'+(m.papel==="admin"?"ADMIN":"MEMBRO")+'</span>'+(souAdmin&&m.user_id!==user.id?'<button class="btn ghost tiny" data-tirar="'+m.user_id+'">Remover</button>':'')+'</div>'});
+    h+='<div style="margin-top:20px">'+(souAdmin?'<button class="btn ghost tiny" id="escapagar" style="color:var(--alto)">Excluir escritório</button>':'<button class="btn ghost tiny" id="escsair">Sair do escritório</button>')+'</div>';
+    b.innerHTML=h;
+    var e;
+    if((e=byId("escpub")))e.onclick=function(){dialog({title:"Enviar regras para a equipe?",html:"As <b>"+rules.length+" regras</b> que você tem agora passam a valer para todos os advogados do escritório.",ok:"Enviar"}).then(function(ok){if(!ok)return;
+      var em=new Date().toISOString();sb.from("escritorio_regras").upsert({escritorio_id:escAtual.id,regras:rules,atualizado_em:em,atualizado_por:user.email}).then(function(r){if(erroEsc(r))return;save("clausa-regras-escAtual-em",em);carregaEscritorio().then(renderEsc)})})};
+    if((e=byId("escusar")))e.onclick=function(){aplicaRegrasEsc(true);dialog({title:"Pronto",text:"Você voltou a usar as regras do escritório.",ok:"OK",noCancel:true})};
+    if((e=byId("esccop")))e.onclick=function(){var i=byId("esclk");i.select();(navigator.clipboard?navigator.clipboard.writeText(i.value):Promise.reject()).then(function(){byId("esccop").textContent="Copiado!";setTimeout(function(){var c=byId("esccop");if(c)c.textContent="Copiar"},1800)},function(){document.execCommand&&document.execCommand("copy")})};
+    if((e=byId("escnovo")))e.onclick=function(ev){ev.preventDefault();dialog({title:"Gerar um link novo?",text:"O link antigo deixa de funcionar. Quem já está na equipe continua.",ok:"Gerar"}).then(function(ok){if(!ok)return;sb.rpc("novo_convite",{p_esc:escAtual.id}).then(function(r){if(erroEsc(r))return;escAtual.convite=r.data;renderEsc()})})};
+    $("[data-tirar]",b).forEach(function(x){x.onclick=function(){var m=escMembros.filter(function(y){return y.user_id===x.dataset.tirar})[0];
+      dialog({title:"Remover da equipe?",html:"<b>"+esc_(m&&m.email)+"</b> deixa de usar as regras do escritório. Os contratos dessa pessoa continuam com ela.",ok:"Remover",danger:true}).then(function(ok){if(!ok)return;
+        sb.from("membros").delete().eq("escritorio_id",escAtual.id).eq("user_id",x.dataset.tirar).then(function(r){if(erroEsc(r))return;carregaEscritorio().then(renderEsc)})})}});
+    if((e=byId("escsair")))e.onclick=function(){dialog({title:"Sair do escritório?",text:"Você continua com seus contratos e com as regras que tem agora.",ok:"Sair",danger:true}).then(function(ok){if(!ok)return;
+      sb.from("membros").delete().eq("user_id",user.id).then(function(r){if(erroEsc(r))return;carregaEscritorio().then(function(){renderEsc();rotEsc()})})})};
+    if((e=byId("escapagar")))e.onclick=function(){dialog({title:"Excluir o escritório?",html:"A equipe é desfeita e o link de convite deixa de valer. <b>Os contratos de cada advogado não são apagados.</b>",ok:"Excluir",danger:true}).then(function(ok){if(!ok)return;
+      sb.from("escritorios").delete().eq("id",escAtual.id).then(function(r){if(erroEsc(r))return;carregaEscritorio().then(function(){renderEsc();rotEsc()})})})};
+  }
+  function closeEsc(){byId("drawerEsc").classList.remove("open");byId("overlay").classList.remove("open")}
+  byId("openesc").onclick=function(){closeNav();byId("drawerEsc").classList.add("open");byId("overlay").classList.add("open");renderEsc();carregaEscritorio().then(renderEsc)};
+  byId("closeesc").onclick=closeEsc;
+  byId("overlay").addEventListener("click",closeEsc);
 
   // ---------- Atualização automática: ao voltar para o app, confere se há versão nova no site ----------
   (function(){
