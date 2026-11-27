@@ -1,0 +1,85 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Clausa para escritórios</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+@page{size:A4;margin:0}
+:root{--txt:#1A1A1C;--cinza:#5E5E63;--linha:#E6E2DD;--lar:#E2590B;--lar2:#FF8A33;--fundo:#FBF8F5}
+*{box-sizing:border-box}html,body{margin:0;background:#ECEAE7;color:var(--txt);font:400 10pt/1.45 Inter,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.folha{width:210mm;min-height:297mm;margin:0 auto;background:#fff;padding:14mm 16mm 13mm;position:relative;overflow:hidden}
+.folha::before{content:"";position:absolute;inset:0 0 auto 0;height:3mm;background:linear-gradient(90deg,var(--lar),var(--lar2) 60%,#FFC08A)}
+.canto{position:absolute;width:9mm;height:9mm;border:1.2px solid var(--lar2);opacity:.6}
+.c1{top:7mm;left:7mm;border-right:0;border-bottom:0;border-top-left-radius:3px}.c2{top:7mm;right:7mm;border-left:0;border-bottom:0;border-top-right-radius:3px}
+.c3{bottom:7mm;left:7mm;border-right:0;border-top:0;border-bottom-left-radius:3px}.c4{bottom:7mm;right:7mm;border-left:0;border-top:0;border-bottom-right-radius:3px}
+.topo{display:flex;align-items:center;gap:10px}.topo img{height:30px}.marca{font:800 20pt/1 "Inter Tight";letter-spacing:-.03em}
+.rot{font:700 7.5pt "JetBrains Mono";letter-spacing:.16em;text-transform:uppercase;color:var(--lar)}
+.topo .rot{margin-left:auto}
+h1{font:800 23pt/1.08 "Inter Tight";letter-spacing:-.035em;margin:7mm 0 2.5mm;max-width:160mm}
+h1 em{font-style:normal;color:var(--lar)}
+.lead{font-size:10.8pt;color:#333;max-width:165mm;margin:0}
+h2{font:800 12.5pt "Inter Tight";letter-spacing:-.02em;margin:0 0 2.5mm;display:flex;align-items:center;gap:8px}
+h2 span{font:700 7.5pt "JetBrains Mono";color:var(--lar);letter-spacing:.12em}
+section{margin-top:5.2mm}
+.passos{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm}
+.passo{border:1px solid var(--linha);border-top:2px solid var(--lar2);border-radius:8px;padding:3.5mm 4mm;background:var(--fundo)}
+.passo b{display:block;font:700 10.5pt Inter;margin-bottom:1mm}.passo p{margin:0;color:var(--cinza);font-size:9.5pt;line-height:1.45}
+.chips{display:flex;flex-wrap:wrap;gap:1.6mm}.chips span{border:1px solid #F1C9AE;background:#FFF6EF;color:#8A3A0A;border-radius:99px;padding:.8mm 2.8mm;font:500 8.6pt Inter}
+.duas{display:grid;grid-template-columns:1fr 1fr;gap:6mm}
+ul{margin:0;padding-left:4.5mm}li{margin:0 0 1mm}li::marker{color:var(--lar)}
+.caixa{border:1px solid var(--linha);border-left:3px solid var(--lar);border-radius:8px;padding:3.5mm 5mm;background:var(--fundo)}
+.piloto{display:grid;grid-template-columns:1.25fr 1fr;gap:6mm;align-items:start}
+.piloto .grande{font:800 17pt/1.1 "Inter Tight";letter-spacing:-.03em;margin:0 0 2mm}
+.nota{color:var(--cinza);font-size:9pt}
+.rodape{position:absolute;left:16mm;right:16mm;bottom:12mm;display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--linha);padding-top:3mm;font-size:9pt;color:var(--cinza)}
+.rodape b{color:var(--txt)}.rodape .mono{font:500 8pt "JetBrains Mono";letter-spacing:.06em}
+@media screen{body{padding:10mm 0}.folha{box-shadow:0 10px 40px rgba(0,0,0,.12);border-radius:4px}}
+</style></head><body>
+<div class="folha">
+<i class="canto c1"></i><i class="canto c2"></i><i class="canto c3"></i><i class="canto c4"></i>
+<div class="topo"><img src="../marca/clausa-simbolo-laranja.png" alt=""><span class="marca">Clausa</span><span class="rot">Proposta · Piloto com escritórios</span></div>
+
+<h1>Menos tempo caçando cláusulas.<br><em>Mais tempo advogando.</em></h1>
+<p class="lead">O Clausa lê o contrato e aponta, em segundos, as cláusulas que merecem atenção: multas, renovação automática, foro, exclusividade, rescisão e muito mais. O advogado revisa, aprova ou descarta cada ponto e gera um relatório em PDF para o cliente.</p>
+
+<section><h2><span>01</span>Como funciona</h2>
+<div class="passos">
+<div class="passo"><b>1. Carrega o contrato</b><p>PDF, Word (.docx) ou texto colado. No computador ou no celular.</p></div>
+<div class="passo"><b>2. O Clausa marca</b><p>Cada cláusula de atenção aparece destacada, com o trecho exato e o motivo.</p></div>
+<div class="passo"><b>3. O advogado decide</b><p>Aprova ou descarta cada ponto e baixa o relatório em PDF, pronto para enviar.</p></div>
+</div></section>
+
+<section><h2><span>02</span>O que ele aponta hoje</h2>
+<div class="chips"><span>Multa e cláusula penal</span><span>Rescisão</span><span>Renovação automática</span><span>Exclusividade</span><span>Não concorrência</span><span>Fiança / devedor solidário</span><span>Fidelidade</span><span>Encargos por atraso</span><span>Arbitragem</span><span>Cessão</span><span>Irrevogável e irretratável</span><span>Limitação de responsabilidade</span><span>Reajuste</span><span>Aviso prévio</span><span>LGPD</span><span>Propriedade intelectual</span><span>Confidencialidade</span><span>Força maior</span><span>Foro de eleição</span><span>Garantia</span><span>e outras</span></div>
+<p class="nota" style="margin:2mm 0 0">São mais de 25 tipos de cláusula. As regras podem ser ajustadas ao jeito de trabalhar do escritório.</p></section>
+
+<section class="duas">
+<div><h2><span>03</span>Sigilo e segurança</h2>
+<ul>
+<li><b>A análise é feita no próprio navegador</b>, por regras. O texto do contrato <b>não é enviado a serviços de inteligência artificial</b>.</li>
+<li>Sem login, o contrato <b>fica só no computador</b> de quem usa.</li>
+<li>Com login, os contratos ficam salvos na conta do usuário, com acesso restrito a ele, e continuam sendo do escritório.</li>
+</ul></div>
+<div><h2><span>04</span>Com honestidade</h2>
+<ul>
+<li>O Clausa <b>não substitui o advogado</b>: ele aponta onde olhar, e a análise continua sendo do profissional.</li>
+<li>É um produto novo, em evolução. Por isso o piloto: para ajustar o Clausa à rotina real do escritório.</li>
+</ul></div>
+</section>
+
+<section><h2><span>05</span>A proposta</h2>
+<div class="piloto">
+<div class="caixa"><p class="grande">Piloto gratuito de 30 dias</p>
+<ul>
+<li>Para a equipe que o escritório escolher.</li>
+<li>Acompanhamento direto com o fundador e regras ajustadas à prática do escritório.</li>
+<li>Sem contrato e sem custo durante o piloto.</li>
+</ul></div>
+<div><p style="margin:0 0 2mm"><b>Em troca, pedimos só uma coisa:</b> a opinião sincera de quem usar. O que ajudou, o que faltou e o que atrapalhou.</p>
+<p class="nota" style="margin:0">Ao fim dos 30 dias, conversamos sobre os próximos passos, sem compromisso.</p></div>
+</div></section>
+
+<div class="rodape">
+<div><b>Pedro Holanda</b> · fundador do Clausa<br>maiaholandap2@gmail.com · Instagram @pedrom.holanda</div>
+<div style="text-align:right"><span class="mono">TESTE AGORA</span><br><b>mholandap.github.io/Clausa</b></div>
+</div>
+</div>
+</body></html>
