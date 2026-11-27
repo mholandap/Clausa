@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta name="clausa-versao" content="202611261805">
+<meta name="clausa-versao" content="202611271200">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Clausa — App</title>
@@ -164,6 +164,11 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
 #anexo{flex:none;width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:var(--gray);cursor:pointer;transition:color .15s,background .15s}
 #anexo:hover{color:var(--orange);background:rgba(255,138,51,.08)}
 .chint{max-width:760px;margin:8px auto 0;text-align:center;font-size:12px;color:var(--gray)}
+.side-foot .sigilo.on{color:#FF8A33;background:rgba(255,138,51,.09)}
+.side-foot .sigilo small{margin-left:auto;font:600 10px "JetBrains Mono",monospace;letter-spacing:.08em;opacity:.85}
+.clock{flex:none;width:12px;height:12px;color:#FF8A33;margin-left:2px}
+.selo-sig{display:inline-flex;align-items:center;gap:5px;flex:none;font:600 11px "Inter";color:#FF8A33;border:1px solid rgba(255,138,51,.35);background:rgba(255,138,51,.08);border-radius:99px;padding:3px 9px;margin-left:8px;cursor:pointer}
+.selo-sig svg{width:11px;height:11px}
 
 /* drawer regras */
 /* fundos escurecidos: aparecem e somem com fade (display:none não anima) */
@@ -261,6 +266,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     <div class="side-foot">
       <div class="side-acct" id="account"></div>
       <button type="button" data-instalar hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Instalar app</button>
+      <button type="button" class="sigilo" id="sigilo" hidden></button>
       <button id="openrules"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="12" r="2"/><circle cx="15" cy="18" r="2"/></svg>Regras e modelos</button>
       <a href="index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Voltar ao site</a>
     </div>
@@ -270,7 +276,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
   <main class="main">
     <div class="main-top">
       <button class="menu-btn" id="menu" aria-label="Menu">☰</button>
-      <span class="mt" id="mtitle">Clausa</span>
+      <span class="mt" id="mtitle">Clausa</span><span class="selo-sig" id="selosig" hidden title="Este contrato fica só neste aparelho"></span>
     </div>
     <div class="scroll" id="scroll"><div class="inner" id="inner"></div></div>
     <div class="composer">
@@ -394,6 +400,9 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
   if(!Array.isArray(rules)||!rules.length){rules=clone(DEFAULTS);save("clausa-rules",rules)}
   var templates=load("clausa-templates")||{};
   var convos=load("clausa-convos")||[];
+  // Modo sigilo: contratos marcados assim nunca vão para a nuvem (ficam só neste aparelho)
+  var sigiloPadrao=!!load("clausa-sigilo");
+  var CADEADO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
   var current=null;
 
   // ---------- Conta / nuvem (Supabase) ----------
@@ -412,15 +421,18 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
   function toRow(c){return {id:c.id,user_id:user.id,titulo:c.title||"Contrato",texto:c.text||"",decisions:c.decisions||{},pinned:!!c.pinned,label:c.label||null,atualizado_em:new Date().toISOString()}}
   function toRowBasic(c){return {id:c.id,user_id:user.id,titulo:c.title||"Contrato",texto:c.text||"",decisions:c.decisions||{},atualizado_em:new Date().toISOString()}}
   function fromRow(r){return {id:r.id,title:r.titulo||"Contrato",text:r.texto||"",decisions:r.decisions||{},pinned:!!r.pinned,label:r.label||null,created:r.criado_em?Date.parse(r.criado_em):Date.now(),synced:true}}
-  function markSynced(){convos.forEach(function(c){c.synced=true});save("clausa-convos",convos)}
+  function markSynced(){convos.forEach(function(c){if(!c.sigilo)c.synced=true});save("clausa-convos",convos)}
 
   function cloudSync(){
-    if(!user||!sb||!convos.length)return;
+    if(!user||!sb)return;
+    var nuvem=convos.filter(function(c){return !c.sigilo});  // modo sigilo: não sobe
+    if(!nuvem.length)return;
     clearTimeout(syncTimer);
     syncTimer=setTimeout(function(){
-      sb.from("contracts").upsert(convos.map(toRow)).then(function(r){
+      nuvem=convos.filter(function(c){return !c.sigilo});
+      sb.from("contracts").upsert(nuvem.map(toRow)).then(function(r){
         if(r.error){ // colunas novas talvez ainda não existam — salva o básico
-          sb.from("contracts").upsert(convos.map(toRowBasic)).then(function(r2){if(r2.error)console.log("Sync (salvar) erro:",r2.error);else markSynced()});
+          sb.from("contracts").upsert(nuvem.map(toRowBasic)).then(function(r2){if(r2.error)console.log("Sync (salvar) erro:",r2.error);else markSynced()});
         }else markSynced();
       });
     },500);
@@ -436,9 +448,10 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       if(Array.isArray(r.data)){
         // não descarta o que foi feito como visitante: contratos locais que nunca subiram
         // para a nuvem são mantidos e enviados para a conta
-        var cloud=r.data.map(fromRow),ids={};
+        var sig={};convos.forEach(function(c){if(c.sigilo)sig[c.id]=1});
+        var cloud=r.data.map(fromRow).filter(function(c){return !sig[c.id]}),ids={};  // contrato em sigilo: vale a cópia deste aparelho
         cloud.forEach(function(c){ids[c.id]=1});
-        var soLocal=convos.filter(function(c){return !c.synced&&!ids[c.id]&&c.text});
+        var soLocal=convos.filter(function(c){return c.sigilo?!!c.text:(!c.synced&&!ids[c.id]&&c.text)});
         convos=soLocal.concat(cloud);
         save("clausa-convos",convos);
         // ao abrir, fica na tela de novo contrato; só mantém a conversa se o usuário já abriu uma com texto
@@ -525,7 +538,8 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       var d=el("div","convo"+(c.id===current?" active":""));
       var dot=(c.label&&LABELS[c.label])?'<span class="cdot" style="background:'+LABELS[c.label].c+'" title="'+LABELS[c.label].t+'"></span>':'';
       var pin=c.pinned?'<svg class="cpin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>':'';
-      d.innerHTML=DOC+dot+'<span class="ct">'+esc(c.title||"Sem título")+'</span>'+pin+'<button class="cmenu" title="Opções">⋯</button>';
+      var cad=c.sigilo?'<span class="clock" title="Modo sigilo: só neste aparelho">'+CADEADO+'</span>':'';
+      d.innerHTML=DOC+dot+'<span class="ct">'+esc(c.title||"Sem título")+'</span>'+cad+pin+'<button class="cmenu" title="Opções">⋯</button>';
       d.onclick=function(e){if(e.target.closest(".cmenu"))return;openConvo(c.id)};
       d.querySelector(".cmenu").onclick=function(e){
         e.stopPropagation();
@@ -605,6 +619,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     var m=el("div","cmenupop");m.dataset.cid=c.id;
     var html='<button data-a="rename">✏️ Renomear</button>'+
       '<button data-a="pin">📌 '+(c.pinned?"Desafixar":"Fixar no topo")+'</button>'+
+      '<button data-a="sig">🔒 '+(c.sigilo?"Desligar modo sigilo":"Modo sigilo (só neste aparelho)")+'</button>'+
       '<div class="sep"></div><div class="lbl">Etiqueta</div>';
     for(var k in LABELS){html+='<button data-a="lbl" data-k="'+k+'"><span class="dot" style="background:'+LABELS[k].c+'"></span>'+LABELS[k].t+(c.label===k?" ✓":"")+'</button>'}
     html+='<button data-a="lbl" data-k=""><span class="dot" style="background:var(--line)"></span>Sem etiqueta'+(!c.label?" ✓":"")+'</button>';
@@ -625,6 +640,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
       var a=b.dataset.a;
       if(a==="rename")renameConvo(c);
       else if(a==="pin"){c.pinned=!c.pinned;persistConvos();renderSidebar()}
+      else if(a==="sig")alternaSigilo(c);
       else if(a==="lbl"){c.label=b.dataset.k||null;persistConvos();renderSidebar()}
       else if(a==="del")delConvo(c.id);
       closeMenu();
@@ -646,19 +662,46 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
   function newConvo(){
     // reaproveita um contrato vazio em vez de acumular vários "Novo contrato" sem texto
     var empty=convos.filter(function(x){return !x.text})[0];
-    if(empty){current=empty.id}
+    if(empty){current=empty.id;empty.sigilo=sigiloPadrao}
     else{
-      var c={id:uid(),title:"Novo contrato",text:"",decisions:{},pinned:false,label:null,created:Date.now()};
+      var c={id:uid(),title:"Novo contrato",text:"",decisions:{},pinned:false,label:null,created:Date.now(),sigilo:sigiloPadrao};
       convos.unshift(c);current=c.id;persistConvos();
     }
     renderSidebar();renderMain();closeNav();
     byId("input").focus();
   }
+  // ---------- Modo sigilo ----------
+  function textoSigilo(){return "Com o modo sigilo, o contrato <b>não vai para a nuvem</b>: fica só neste aparelho. A análise já é sempre feita aqui mesmo, no navegador, sem IA."+
+    (user?" Atenção: ao sair da conta, os contratos em sigilo são apagados deste aparelho.":" Sem login, nada vai para a nuvem de qualquer forma.")}
+  function explicaSigilo(){dialog({title:"Modo sigilo",html:textoSigilo(),ok:"Entendi",noCancel:true})}
+  function renderSigilo(){
+    var b=byId("sigilo");if(!b)return;b.hidden=false;
+    b.classList.toggle("on",sigiloPadrao);
+    b.innerHTML='<span style="width:16px;height:16px;display:inline-flex">'+CADEADO+'</span>Modo sigilo<small>'+(sigiloPadrao?"LIGADO":"DESLIGADO")+'</small>';
+    b.title=sigiloPadrao?"Novos contratos ficam só neste aparelho":"Novos contratos são salvos na sua conta";
+  }
+  function alternaSigilo(c){
+    c.sigilo=!c.sigilo;
+    if(c.sigilo){cloudDelete(c.id);c.synced=false}   // tira a cópia da nuvem
+    persistConvos();renderSidebar();renderMain();
+  }
+  byId("sigilo").onclick=function(){
+    var ligar=!sigiloPadrao;
+    dialog({title:ligar?"Ligar o modo sigilo?":"Desligar o modo sigilo?",
+      html:ligar?textoSigilo()+"<br><br>Vale para os <b>próximos contratos</b>. Para um contrato que já existe, use o menu ⋯ dele.":"Os próximos contratos voltam a ser salvos na sua conta. Os que estão em sigilo continuam só neste aparelho.",
+      ok:ligar?"Ligar":"Desligar"}).then(function(ok){
+      if(!ok)return;sigiloPadrao=ligar;save("clausa-sigilo",ligar);
+      var c=current?getConvo(current):null;if(c&&!c.text)c.sigilo=ligar;  // a tela vazia atual segue o padrão
+      renderSigilo();renderMain();
+    });
+  };
+  renderSigilo();
+
   function openConvo(id){current=id;renderSidebar();renderMain();closeNav()}
   function delConvo(id){
     var c=getConvo(id);
     dialog({title:"Excluir contrato?",danger:true,icon:ICON.trash,ok:"Excluir",
-      html:"<b>"+esc((c&&c.title)||"Este contrato")+"</b> será apagado"+(user?" deste aparelho e da sua conta":"")+", junto com as aprovações. Essa ação não pode ser desfeita."
+      html:"<b>"+esc((c&&c.title)||"Este contrato")+"</b> será apagado"+(user&&!(c&&c.sigilo)?" deste aparelho e da sua conta":" deste aparelho")+", junto com as aprovações. Essa ação não pode ser desfeita."
     }).then(function(ok){
       if(!ok)return;
       convos=convos.filter(function(x){return x.id!==id});
@@ -674,6 +717,8 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
     clearInterval(typeTimer);       // para o "digitando" da conversa anterior
     var inner=byId("inner"),c=current?getConvo(current):null;
     byId("mtitle").textContent=c&&c.text?c.title:"Clausa";
+    var selo=byId("selosig"),sig=c?!!c.sigilo:sigiloPadrao;selo.hidden=!sig;
+    if(sig){selo.innerHTML=CADEADO+"Sigilo";selo.onclick=explicaSigilo}
     inner.innerHTML="";
     if(!c||!c.text){
       var gg=greetings();var g=gg[Math.floor(Math.random()*gg.length)];
@@ -851,7 +896,7 @@ h1,h2,h3{font-family:"Inter Tight","Inter",system-ui,sans-serif;font-weight:800;
   function send(){
     var v=byId("input").value.trim();if(!v)return;if(v.length<40){dialog({title:"Texto muito curto",text:"Cole o texto do contrato (pelo menos uma cláusula inteira) para a Clausa analisar.",ok:"Entendi",noCancel:true});return}
     var c=current?getConvo(current):null;
-    if(!c){c={id:uid(),title:"",text:"",decisions:{},pinned:false,label:null,created:Date.now()};convos.unshift(c);current=c.id}
+    if(!c){c={id:uid(),title:"",text:"",decisions:{},pinned:false,label:null,created:Date.now(),sigilo:sigiloPadrao};convos.unshift(c);current=c.id}
     c.text=v;c.decisions={};
     c.title=tituloDe(v);
     byId("input").value="";sizeInput();persistConvos();renderSidebar();renderMain(true);
