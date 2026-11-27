@@ -33,12 +33,12 @@ O envio padrão do Supabase **só entrega para a equipe do projeto** (2 por hora
 - Se não entrar, o caminho é uma **ME no Simples Nacional**, com contador.
 - Na dúvida, uma conversa rápida com um contador resolve.
 
-### 5. Preço ⏳ (decisão do Pedro; usar o piloto para validar)
-Sugestão para começar, a ser ajustada com o que o escritório do piloto disser:
-- **Individual:** um valor mensal por advogado.
-- **Escritório:** valor por advogado, com desconto a partir de N pessoas e conta de equipe incluída.
-- Teste grátis de 30 dias continua valendo.
-- Os valores em reais ficam para depois do piloto: perguntar à chefe do escritório quanto ela pagaria é o melhor dado.
+### 5. Preço ✅ (proposta do Pedro em 27/11; validar no piloto)
+- **Grátis:** R$ 0. Análise e relatório em PDF, até 5 contratos salvos.
+- **Profissional (autônomo):** **R$ 49/mês** (ou R$ 490/ano). Contratos ilimitados, Word, PDF escaneado, modo sigilo, regras próprias.
+- **Escritório:** **R$ 39 por advogado/mês** (mínimo de 3). Tudo do Profissional, mais conta de equipe, regras do escritório e suporte direto.
+- **Fundador:** quem fizer o piloto ganha 50% de desconto no primeiro ano.
+- Na demonstração, perguntar à chefe quanto faria sentido pagar antes de dizer os valores.
 
 ### 6. Receber pagamento ⏳ depois dos passos 4 e 5
 - Crie conta no **Asaas** ou no **Mercado Pago** (ambos aceitam Pix, boleto e cartão; cobram taxa por venda, sem mensalidade).
