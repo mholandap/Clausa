@@ -146,6 +146,7 @@ label{font-size:12.5px;font-weight:500;margin-bottom:3px;display:block}
     if(msg.indexOf("already registered")>=0||msg.indexOf("already exists")>=0) return "Este e-mail já tem conta. Tente entrar.";
     if(msg.indexOf("email not confirmed")>=0) return "Confirme seu e-mail antes de entrar (veja sua caixa de entrada).";
     if(msg.indexOf("rate limit")>=0||msg.indexOf("too many")>=0) return "Muitas tentativas. Espere um pouco e tente de novo.";
+    if(msg.indexOf("email signups are disabled")>=0||msg.indexOf("email logins are disabled")>=0) return "O cadastro por e-mail está desligado no momento. Use “Entrar com Google” ou tente mais tarde.";
     if(msg.indexOf("signups not allowed")>=0||msg.indexOf("signup is disabled")>=0) return "Cadastro desativado no Supabase (ligue em Authentication → Providers → Email).";
     if(msg.indexOf("database error")>=0) return "Erro no banco ao criar o usuário — provavelmente o schema.sql não rodou. Rode o SQL no Supabase e tente de novo.";
     if(msg.indexOf("invalid api key")>=0||msg.indexOf("no api key")>=0||msg.indexOf("api key")>=0) return "Chave do Supabase inválida. Confira a URL e a chave pública.";
