@@ -1,0 +1,114 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<title>Clausa · demonstração</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Inter:wght@500;600;700&family=JetBrains+Mono:wght@600;700&display=swap">
+<style>
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#0B0B0C}
+#palco{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse 80% 55% at 50% 62%,#2a150a 0%,#120c09 45%,#0B0B0C 80%)}
+.fundo{position:absolute;left:50%;top:1010px;transform:translate(-50%,-50%);font:900 330px/0.9 "Inter Tight";letter-spacing:-16px;color:#1b1512;white-space:nowrap;text-align:center}
+#cap{position:absolute;left:70px;right:70px;top:120px;font:900 92px/1.02 "Inter Tight";letter-spacing:-3.5px;color:#fff}
+#cap em{font-style:normal;color:#FF8A33}
+#cap small{display:block;margin-top:18px;font:600 34px/1.3 Inter;letter-spacing:0;color:#B9B3AE}
+#intro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font:900 150px/0.95 "Inter Tight";letter-spacing:-7px;color:#fff}
+#intro em{font-style:normal;color:#FF8A33}
+#cel{position:absolute;left:50%;top:430px;width:780px;height:1600px;margin-left:-390px;border-radius:92px;background:#050505;box-shadow:0 0 0 3px #2b2522,0 40px 120px rgba(0,0,0,.7),0 0 160px rgba(226,89,11,.18);transform-origin:50% 0}
+#tela{position:absolute;left:18px;top:18px;width:744px;height:1564px;border-radius:76px;overflow:hidden;background:#0B0B0C}
+#app{position:absolute;left:0;top:0;width:390px;height:820px;border:0;transform:scale(1.9077);transform-origin:0 0}
+#pdf{position:absolute;width:250px;height:310px;border-radius:22px;background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font:700 30px Inter;color:#1A1A1C}
+#pdf b{width:110px;height:130px;border-radius:12px;background:#E2590B;color:#fff;display:grid;place-items:center;font:800 34px "Inter Tight"}
+#toque{position:absolute;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;border:5px solid #FF8A33;background:rgba(255,138,51,.25);pointer-events:none}
+#fim{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff}
+#fim img{width:230px}
+#fim h1{margin:30px 0 0;font:900 170px/1 "Inter Tight";letter-spacing:-8px}
+#fim p{margin:26px 0 0;font:700 52px/1.25 "Inter Tight";letter-spacing:-1px;color:#FF8A33}
+#fim small{margin-top:40px;font:600 36px Inter;color:#B9B3AE}
+</style></head><body>
+<div id="palco">
+  <div class="fundo" id="fundo"></div>
+  <div id="intro"></div>
+  <div id="cap"></div>
+  <div id="cel"><div id="tela"><iframe id="app" src="../../app.html"></iframe></div></div>
+  <div id="pdf"><b>PDF</b>contrato.pdf</div>
+  <div id="toque"></div>
+  <div id="fim"><img src="../marca/clausa-simbolo-laranja.png" alt=""><h1>Clausa</h1><p>Saiba onde olhar<br>antes de assinar.</p><small>Teste grátis · link na bio</small></div>
+</div>
+<script>
+// ---------- linha do tempo (segundos) ----------
+window.DUR=41;
+const $=s=>document.querySelector(s),cl=(x,a,b)=>Math.max(a,Math.min(b,x)),io=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2,ou=x=>1-Math.pow(1-x,3);
+const fx=(t,a,b)=>cl((t-a)/(b-a),0,1);
+const CAPS=[ // [início, fim, html, palavra de fundo]
+  [4.0,8.6,'Arraste o contrato.<small>PDF, Word ou até escaneado.</small>','PDF'],
+  [8.6,12.6,'<em>25 pontos</em> em 2 segundos.<small>Cada um com o motivo e o nível de atenção.</small>','25'],
+  [12.6,20.4,'Todas as multas.<br><em>Com cláusula e item.</em><small>Inclusive a de R$ 500 mil, no item 7.2.</small>','MULTA'],
+  [20.4,25.2,'Você decide.<br><em>Relatório em Word.</em><small>Aprove ou rejeite cada sugestão.</small>','WORD'],
+  [25.2,30.8,'<em>Modo sigilo.</em><small>O contrato não sai do seu aparelho.</small>','SIGILO'],
+  [30.8,36.0,'A equipe toda<br><em>nas mesmas regras.</em><small>Convite por link. Contratos individuais.</small>','EQUIPE'],
+];
+let A=null,W=null,est={},Y={};
+window.pronto=new Promise(ok=>{$('#app').addEventListener('load',()=>{W=$('#app').contentWindow;A=W.document;
+  const st=A.createElement('style');st.textContent='*{transition:none!important;animation:none!important;caret-color:transparent!important}::-webkit-scrollbar{display:none}';A.head.appendChild(st);
+  setTimeout(ok,1500)})});
+const sc=()=>A.getElementById('scroll');
+function pos(el){const r=el.getBoundingClientRect();return r.top+sc().scrollTop}
+function clicaApp(sel){const e=A.querySelector(sel);if(e)e.click()}
+function toque(sel,t,t0){ // círculo de toque no ponto do elemento
+  const e=A.querySelector(sel),q=$('#toque');const k=fx(t,t0,t0+.55);
+  if(!e||t<t0||k>=1){q.style.opacity=0;return}
+  const r=e.getBoundingClientRect(),f=$('#app').getBoundingClientRect(),s=f.width/390;
+  q.style.left=(f.left+(r.left+r.width/2)*s)+'px';q.style.top=(f.top+(r.top+r.height/2)*s)+'px';
+  q.style.opacity=(1-k).toFixed(2);q.style.transform='scale('+(0.6+k*0.7)+')';
+}
+function uma(nome,t,quando,fn){if(t>=quando&&!est[nome]){est[nome]=1;fn()}}
+window.render=async function(t){
+  // abertura
+  const ki=fx(t,0,.6),ko=fx(t,3.2,3.7);
+  const intro=$('#intro');intro.style.opacity=(ki*(1-ko)).toFixed(3);
+  intro.innerHTML=t<1.7?'16 cláusulas.':'Onde está<br><em>o risco?</em>';
+  intro.style.transform='scale('+(1+0.05*t/3.7)+')';
+  // celular entra e flutua
+  const kc=ou(fx(t,3.3,4.4)),kf=fx(t,36.2,37.0);
+  const cel=$('#cel');cel.style.opacity=(kc*(1-kf)).toFixed(3);
+  cel.style.transform='translateY('+((1-kc)*900+Math.sin(t*1.3)*7+kf*60)+'px) rotate('+(Math.sin(t*.8)*.35)+'deg) scale(.9)';
+  // legendas e palavra de fundo
+  const c=CAPS.find(x=>t>=x[0]&&t<x[1]);const cap=$('#cap'),fu=$('#fundo');
+  if(c){if(cap.dataset.k!==String(c[0])){cap.innerHTML=c[2];fu.textContent=c[3];cap.dataset.k=c[0]}
+    const a=fx(t,c[0],c[0]+.35),b=fx(t,c[1]-.3,c[1]);cap.style.opacity=(a*(1-b)).toFixed(3);cap.style.transform='translateY('+((1-ou(a))*40)+'px)';
+    fu.style.opacity=(a*(1-b)).toFixed(3);fu.style.transform='translate(calc(-50% + '+(-(t-c[0])*22)+'px),-50%)'}
+  else{cap.style.opacity=0;fu.style.opacity=0}
+  // PDF voando para dentro do celular
+  const kp=fx(t,4.5,6.3),pdf=$('#pdf');
+  pdf.style.opacity=(t<4.5||t>6.6)?0:(1-fx(t,6.1,6.6)).toFixed(2);
+  pdf.style.left=(700-io(kp)*285)+'px';pdf.style.top=(1500-io(kp)*600)+'px';pdf.style.transform='rotate('+(8-io(kp)*8)+'deg) scale('+(1-fx(t,5.9,6.6)*.4)+')';
+  // ---------- ações no app ----------
+  uma('envia',t,6.3,()=>{A.getElementById('input').value=window.CONTRATO;W.document.getElementById('send').click()});
+  if(t>=6.3&&!A.querySelector('#rest.show')){for(let i=0;i<60&&!A.querySelector('#rest.show');i++)await new Promise(r=>setTimeout(r,100))}
+  if(t>=6.3&&!Y.multa&&A.querySelector('#rest')){const f=A.querySelector('.find');Y.sum=pos(A.querySelector('.sumbar'))-60;Y.multa=pos(f)-20}
+  const s=sc();
+  if(t>=7.2&&Y.sum!==undefined){
+    let y=Y.sum*io(fx(t,7.2,8.6));
+    if(t>=11.8)y=Y.sum+(Y.multa-Y.sum)*io(fx(t,11.8,13.0));
+    uma('abre',t,13.6,()=>{const d=A.querySelector('.find .outros');if(d){d.open=true;Y.out=pos(d)-120;Y.sug=pos(A.querySelector('.find .sugg'))-500}});
+    if(t>=14.2&&Y.out!==undefined)y=Y.multa+(Y.out-Y.multa)*io(fx(t,14.2,18.6));
+    if(t>=19.0&&Y.sug!==undefined)y=Y.out+(Y.sug-Y.out)*io(fx(t,19.0,20.4));
+    uma('aprova',t,21.6,()=>clicaApp('.find [data-apr="0"]'));
+    uma('fundo',t,22.4,()=>{Y.dl=pos(A.getElementById('dlw'))-560});
+    if(t>=22.6&&Y.dl!==undefined)y=Y.sug+(Y.dl-Y.sug)*io(fx(t,22.6,24.2));
+    s.scrollTop=y;
+  }
+  // sigilo: abre o menu, liga, confirma
+  uma('menu',t,25.8,()=>clicaApp('#menu'));
+  uma('fm',t,26.6,()=>clicaApp('#fmbtn'));
+  uma('sig',t,27.5,()=>clicaApp('#sigilo'));
+  uma('ok',t,28.7,()=>clicaApp('#mok'));
+  // escritório
+  uma('fm2',t,31.0,()=>clicaApp('#fmbtn'));
+  uma('esc',t,31.9,()=>clicaApp('#openesc'));
+  if(t>=31.9){const l=A.getElementById('esclk');if(l&&!/github/.test(l.value))l.value='mholandap.github.io/Clausa/app.html?convite=5f2c9a71b04e'}
+  // toques visíveis
+  const tq=[['.find .outros summary',13.3],['.find [data-apr="0"]',21.3],['#menu',25.5],['#fmbtn',26.3],['#sigilo',27.2],['#mok',28.4],['#fmbtn',30.7],['#openesc',31.6]];
+  const at=tq.filter(x=>t>=x[1]&&t<x[1]+.6).pop();if(at)toque(at[0],t,at[1]);else $('#toque').style.opacity=0;
+  // final
+  const kfim=fx(t,36.8,37.6);const fim=$('#fim');fim.style.opacity=kfim.toFixed(3);fim.style.transform='scale('+(0.96+0.04*ou(kfim)+0.01*fx(t,37.6,41))+')';
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+};
+</script></body></html>

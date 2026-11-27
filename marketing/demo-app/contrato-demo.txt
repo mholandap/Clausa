@@ -1,0 +1,70 @@
+INSTRUMENTO PARTICULAR DE CONTRATO DE PRESTAÇÃO DE SERVIÇOS DE TECNOLOGIA E OUTRAS AVENÇAS
+
+Pelo presente instrumento particular, de um lado, ALFA SOLUÇÕES DIGITAIS LTDA., pessoa jurídica de direito privado, inscrita no CNPJ sob o nº 00.000.000/0001-00, com sede na Av. Exemplo, nº 100, sala 1.201, Brasília/DF, neste ato representada por seu sócio-administrador, doravante denominada simplesmente CONTRATADA; e, de outro lado, BETA COMÉRCIO E INDÚSTRIA S.A., inscrita no CNPJ sob o nº 11.111.111/0001-11, com sede na R. Fictícia, nº 200, Goiânia/GO, doravante denominada CONTRATANTE; têm entre si justo e contratado o seguinte, que mutuamente aceitam e outorgam, nos termos dos arts. 593 e seguintes do Código Civil:
+
+CLÁUSULA PRIMEIRA – DO OBJETO
+1.1. O presente contrato tem por objeto a prestação, pela CONTRATADA, de serviços de desenvolvimento, implantação, suporte e manutenção do sistema de gestão descrito no Anexo I.
+1.2. Os serviços serão prestados conforme os níveis de serviço (SLA) definidos no Anexo II, que integra este instrumento para todos os fins.
+
+CLÁUSULA SEGUNDA – DO PRAZO
+2.1. O presente contrato vigorará pelo prazo de 36 (trinta e seis) meses, contados da data de sua assinatura.
+2.2. Findo o prazo previsto no item 2.1, o contrato será renovado automaticamente por períodos sucessivos de 12 (doze) meses, salvo manifestação em contrário de qualquer das partes com antecedência mínima de 90 (noventa) dias.
+
+CLÁUSULA TERCEIRA – DO PREÇO E DAS CONDIÇÕES DE PAGAMENTO
+3.1. Pelos serviços, a CONTRATANTE pagará à CONTRATADA o valor mensal de R$ 45.000,00 (quarenta e cinco mil reais), mediante boleto bancário com vencimento no dia 10 (dez) de cada mês.
+3.2. Em caso de atraso no pagamento, incidirão multa moratória de 2% (dois por cento), juros de mora de 1% (um por cento) ao mês e correção monetária pelo IPCA/IBGE.
+3.3. O valor será reajustado anualmente pela variação positiva do IGP-M/FGV ou, na sua falta, pelo índice que o substituir.
+
+CLÁUSULA QUARTA – DAS OBRIGAÇÕES DA CONTRATADA
+4.1. A CONTRATADA obriga-se a executar os serviços com zelo, diligência e observância das normas técnicas aplicáveis.
+4.2. A CONTRATADA deverá manter equipe técnica qualificada e responderá pelos encargos trabalhistas, previdenciários e fiscais de seus empregados, inexistindo vínculo empregatício com a CONTRATANTE.
+4.3. A CONTRATADA poderá subcontratar parte dos serviços, independentemente de anuência da CONTRATANTE, permanecendo responsável perante esta.
+
+CLÁUSULA QUINTA – DAS OBRIGAÇÕES DA CONTRATANTE
+5.1. A CONTRATANTE compromete-se a fornecer as informações e os acessos necessários à execução dos serviços, no prazo de 5 (cinco) dias úteis contados da solicitação.
+5.2. O descumprimento do item 5.1 suspenderá os prazos do SLA, sem prejuízo da cobrança integral da remuneração.
+
+CLÁUSULA SEXTA – DA EXCLUSIVIDADE E DA NÃO CONCORRÊNCIA
+6.1. Durante a vigência deste contrato, a CONTRATANTE não poderá contratar terceiros para a prestação de serviços de mesma natureza, em caráter de exclusividade com a CONTRATADA.
+6.2. Pelo prazo de 24 (vinte e quatro) meses após o término do contrato, a CONTRATANTE não poderá contratar, direta ou indiretamente, empregados ou ex-empregados da CONTRATADA, sob pena de multa equivalente a 12 (doze) remunerações mensais do profissional aliciado.
+
+CLÁUSULA SÉTIMA – DA CONFIDENCIALIDADE
+7.1. As partes obrigam-se a manter sigilo sobre todas as informações confidenciais a que tiverem acesso, pelo prazo de 5 (cinco) anos após o término deste contrato.
+7.2. A violação do dever de sigilo sujeitará a parte infratora ao pagamento de multa não compensatória de R$ 500.000,00 (quinhentos mil reais), sem prejuízo das perdas e danos apurados.
+
+CLÁUSULA OITAVA – DA PROTEÇÃO DE DADOS PESSOAIS
+8.1. As partes declaram conhecer e cumprir a Lei nº 13.709/2018 (LGPD), atuando a CONTRATADA como operadora dos dados pessoais tratados em nome da CONTRATANTE.
+8.2. A CONTRATADA comunicará à CONTRATANTE, em até 48 (quarenta e oito) horas, qualquer incidente de segurança envolvendo dados pessoais.
+
+CLÁUSULA NONA – DA PROPRIEDADE INTELECTUAL
+9.1. Todos os direitos de propriedade intelectual sobre o sistema, inclusive códigos-fonte, permanecerão de titularidade exclusiva da CONTRATADA, cabendo à CONTRATANTE apenas licença de uso não exclusiva e intransferível durante a vigência.
+
+CLÁUSULA DÉCIMA – DA RESPONSABILIDADE
+10.1. A responsabilidade total da CONTRATADA por quaisquer danos decorrentes deste contrato fica limitada ao valor equivalente a 1 (uma) remuneração mensal.
+10.2. Em nenhuma hipótese a CONTRATADA responderá por lucros cessantes, danos indiretos ou perda de dados.
+
+CLÁUSULA DÉCIMA PRIMEIRA – DA RESCISÃO
+11.1. O presente contrato poderá ser rescindido por qualquer das partes, mediante aviso prévio por escrito de 180 (cento e oitenta) dias.
+11.2. Na hipótese de rescisão imotivada pela CONTRATANTE antes do término do prazo previsto na Cláusula Segunda, será devida à CONTRATADA multa rescisória correspondente a 100% (cem por cento) das parcelas vincendas até o final do contrato.
+11.3. Parágrafo único. A rescisão não exime as partes do cumprimento das obrigações de confidencialidade previstas na Cláusula Sétima.
+
+CLÁUSULA DÉCIMA SEGUNDA – DAS GARANTIAS
+12.1. Para garantia das obrigações assumidas, o sócio da CONTRATANTE, Sr. Fulano de Tal, brasileiro, casado, empresário, portador do RG nº 0.000.000 SSP/DF e inscrito no CPF sob o nº 000.000.000-00, comparece neste ato como fiador e principal pagador, renunciando expressamente ao benefício de ordem previsto no art. 827 do Código Civil.
+
+CLÁUSULA DÉCIMA TERCEIRA – DA CESSÃO
+13.1. A CONTRATADA poderá ceder os créditos decorrentes deste contrato a instituições financeiras, independentemente de notificação à CONTRATANTE.
+
+CLÁUSULA DÉCIMA QUARTA – DA FORÇA MAIOR
+14.1. Nenhuma das partes será responsável pelo descumprimento de suas obrigações em razão de caso fortuito ou força maior, nos termos do art. 393 do Código Civil.
+
+CLÁUSULA DÉCIMA QUINTA – DA SOLUÇÃO DE CONTROVÉRSIAS
+15.1. Qualquer controvérsia oriunda deste contrato será dirimida por arbitragem, administrada pela Câmara de Comércio Exemplo, na cidade de São Paulo/SP, conforme a Lei nº 9.307/96.
+15.2. Para medidas urgentes, fica eleito o foro da Comarca de São Paulo/SP, com renúncia a qualquer outro, por mais privilegiado que seja.
+
+CLÁUSULA DÉCIMA SEXTA – DAS DISPOSIÇÕES GERAIS
+16.1. Este contrato é celebrado em caráter irrevogável e irretratável, obrigando as partes e seus sucessores.
+16.2. As notificações serão feitas por escrito, para os endereços eletrônicos indicados no preâmbulo.
+
+E, por estarem justas e contratadas, as partes assinam o presente instrumento em 2 (duas) vias de igual teor, na presença de 2 (duas) testemunhas.
+
+Brasília/DF, 27 de novembro de 2026.
